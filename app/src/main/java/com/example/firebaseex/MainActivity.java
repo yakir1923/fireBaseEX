@@ -30,7 +30,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     // Access a Cloud Firestore instance from your Activity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    int CORRAPT;
+
     public static String nameOfCollection="Users";
     private EditText name;
     private  EditText lastName;
