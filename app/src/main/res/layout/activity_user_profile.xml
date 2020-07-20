@@ -7,10 +7,10 @@
     tools:context=".User_profile">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/user_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
+        android:layout_marginTop="132dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,18 +19,18 @@
 
     <TextView
         android:id="@+id/user_name"
-        android:layout_width="122dp"
+        android:layout_width="130dp"
         android:layout_height="22dp"
         android:layout_marginTop="44dp"
         android:text="user name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/user_image" />
 
     <TextView
         android:id="@+id/user_email"
-        android:layout_width="122dp"
+        android:layout_width="130dp"
         android:layout_height="22dp"
         android:layout_marginTop="24dp"
         android:text="user email"
@@ -43,12 +43,13 @@
         android:id="@+id/user_level"
         android:layout_width="64dp"
         android:layout_height="39dp"
-        android:layout_marginTop="24dp"
         android:text="user lvl"
+        app:layout_constraintBottom_toTopOf="@+id/user_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_lose" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.666" />
 
     <TextView
         android:id="@+id/user_wins"
@@ -57,7 +58,7 @@
         android:layout_marginTop="24dp"
         android:text="user wins"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.42"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_email" />
 
@@ -65,7 +66,8 @@
         android:id="@+id/user_lose"
         android:layout_width="61dp"
         android:layout_height="22dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
         android:text="user lose"
         app:layout_constraintStart_toEndOf="@+id/user_wins"
         app:layout_constraintTop_toBottomOf="@+id/user_email" />

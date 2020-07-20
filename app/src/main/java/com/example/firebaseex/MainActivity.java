@@ -99,6 +99,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         }
 
         Button button = findViewById(R.id.send_to_firebase);
+
         googleButton = findViewById(R.id.google_button);
         googleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,7 +129,9 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
                 // response.getError().getErrorCode() and handle the error.
                 // ...
             }
-        }else if(requestCode==64206)
+        }
+        //facebook login
+        else if(requestCode==64206)
         {
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
