@@ -6,4 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".HomePage">
 
+    <Button
+        android:id="@+id/Start_Game"
+        android:layout_width="150dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="162dp"
+        android:layout_marginTop="338dp"
+        android:layout_marginEnd="162dp"
+        android:layout_marginBottom="346dp"
+        android:text="Start the game"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/shoe_profile"
+        android:layout_width="158dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="157dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="167dp"
+        android:layout_marginBottom="247dp"
+        android:text="Show my profile"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Start_Game"
+        app:layout_constraintVertical_bias="1.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>
