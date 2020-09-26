@@ -4,34 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4A03A9F4"
+    android:background="@drawable/start_background"
     tools:context=".MainActivity">
+
 
     <EditText
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="312dp"
         android:ems="10"
         android:hint="name"
         android:inputType="textPersonName"
+        android:text="name"
+        android:textColor="#EFE087"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.419"
+        app:layout_constraintHorizontal_bias="0.427"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/login_button"
-        android:layout_width="206dp"
-        android:layout_height="132dp"
-        android:layout_gravity="center_horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.414"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/google_button"
-        app:layout_constraintVertical_bias="0.124" />
 
     <EditText
         android:id="@+id/last_name"
@@ -41,6 +31,8 @@
         android:ems="10"
         android:hint="last_name"
         android:inputType="textPersonName"
+        android:text="last name"
+        android:textColor="#EFE087"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.419"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,6 +46,8 @@
         android:ems="10"
         android:hint="email"
         android:inputType="textEmailAddress"
+        android:text="email"
+        android:textColor="#EFE087"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.419"
         app:layout_constraintStart_toStartOf="parent"

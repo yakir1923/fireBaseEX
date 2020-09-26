@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/start_background"
     tools:context=".HomePage">
 
     <Button
@@ -14,7 +15,9 @@
         android:layout_marginTop="338dp"
         android:layout_marginEnd="162dp"
         android:layout_marginBottom="346dp"
+        android:background="#5A5959"
         android:text="Start the game"
+        android:textColor="#EFE087"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.408"
@@ -30,7 +33,9 @@
         android:layout_marginTop="50dp"
         android:layout_marginEnd="167dp"
         android:layout_marginBottom="247dp"
+        android:background="#5A5959"
         android:text="Show my profile"
+        android:textColor="#EFE087"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.333"
@@ -46,7 +51,9 @@
         android:layout_marginTop="54dp"
         android:layout_marginEnd="190dp"
         android:layout_marginBottom="144dp"
+        android:background="#5A5959"
         android:text="Shop"
+        android:textColor="#EFE087"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
