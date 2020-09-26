@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/profile_page"
     tools:context=".User_profile">
 
     <ImageView
@@ -63,8 +63,8 @@
 
     <TextView
         android:id="@+id/user_wins"
-        android:layout_width="78dp"
-        android:layout_height="75dp"
+        android:layout_width="91dp"
+        android:layout_height="73dp"
         android:layout_marginTop="28dp"
         android:background="#5A5959"
         android:text="user wins"
@@ -77,8 +77,8 @@
 
     <TextView
         android:id="@+id/user_lose"
-        android:layout_width="91dp"
-        android:layout_height="78dp"
+        android:layout_width="93dp"
+        android:layout_height="71dp"
         android:layout_marginStart="64dp"
         android:layout_marginTop="28dp"
         android:background="#5A5959"
@@ -88,24 +88,10 @@
         app:layout_constraintStart_toEndOf="@+id/user_wins"
         app:layout_constraintTop_toBottomOf="@+id/user_email" />
 
-    <TextView
-        android:id="@+id/Profile_Text"
-        android:layout_width="223dp"
-        android:layout_height="53dp"
-        android:fontFamily="sans-serif-condensed-light"
-        android:text="פרופיל שחקן "
-        android:textColor="#EFE087"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toTopOf="@+id/user_level"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.693" />
-
     <ImageButton
         android:id="@+id/Definitions_Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="44dp"
+        android:layout_height="58dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.045"
