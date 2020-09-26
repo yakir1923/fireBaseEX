@@ -23,7 +23,7 @@
         android:layout_width="130dp"
         android:layout_height="22dp"
         android:layout_marginTop="52dp"
-        android:background="#C9C9C9"
+        android:background="#5A5959"
         android:text="user name"
         android:textColor="#EFE087"
         android:textSize="18sp"
