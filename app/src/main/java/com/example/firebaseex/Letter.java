@@ -9,7 +9,7 @@ public class Letter {
 
     public Letter(){
     }
-
+//3
     public Letter(char lett, int scoring, Image image) {
         this.lett = lett;
         this.scoring = scoring;

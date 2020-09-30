@@ -11,7 +11,6 @@ public class boxesPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boxes_page);
 
-        //דף תיבות
-        //2=
+        //דף תיבות0
     }
 }

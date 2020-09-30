@@ -21,7 +21,7 @@
         android:layout_height="116dp"
         app:srcCompat="@drawable/wood_box"
         tools:layout_editor_absoluteX="137dp"
-        tools:layout_editor_absoluteY="200dp" />
+        tools:layout_editor_absoluteY="208dp" />
 
     <ImageButton
         android:id="@+id/gold_box"

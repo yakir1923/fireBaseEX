@@ -10,5 +10,6 @@ public class cardPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_page);
+        //1
     }
 }
