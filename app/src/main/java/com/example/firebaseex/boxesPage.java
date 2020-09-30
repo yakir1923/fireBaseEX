@@ -12,6 +12,6 @@ public class boxesPage extends AppCompatActivity {
         setContentView(R.layout.activity_boxes_page);
 
         //דף תיבות
-        //2
+        //2=
     }
 }
