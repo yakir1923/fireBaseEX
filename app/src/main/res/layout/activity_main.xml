@@ -57,11 +57,11 @@
         android:id="@+id/send_to_firebase"
         android:layout_width="204dp"
         android:layout_height="39dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="36dp"
         android:background="#3F51B5"
         android:text="sign in"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.414"
+        app:layout_constraintHorizontal_bias="0.41"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email" />
 
@@ -75,6 +75,6 @@
         app:layout_constraintHorizontal_bias="0.414"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/send_to_firebase"
-        app:layout_constraintVertical_bias="0.086" />
+        app:layout_constraintVertical_bias="0.258" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
