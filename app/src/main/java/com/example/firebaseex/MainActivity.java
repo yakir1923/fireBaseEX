@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +25,8 @@ import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.facebook.Profile;
+import com.facebook.login.Login;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.ui.auth.AuthUI;
@@ -35,7 +40,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -52,10 +62,13 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
     private Button googleButton;
     private EditText lastName;
     private EditText email;
+    private ImageView profilePic;
+    public static String userFacebookID;
     private StringBuilder text = new StringBuilder();
     public static final int GOOGLE_SIGN_IN = 1;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private HashMap<String, String> texts = new HashMap();
+    Intent goToHomePage;
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.GoogleBuilder().build()
     );
@@ -65,14 +78,16 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.i("useruseruser", "onCreate: "+user.getPhotoUrl());
+        goToHomePage=new Intent(this,User_profile.class);
          callbackManager = CallbackManager.Factory.create();
-        LoginButton  loginButton=findViewById(R.id.login_button);
+       /* LoginButton  loginButton=findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList(EMAIL));
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 // App code
+                userFacebookID=loginResult.getAccessToken().getUserId();
+
             }
 
             @Override
@@ -82,6 +97,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
             @Override
             public void onError(FacebookException exception) {
                 // App code
+
             }
         });
         try {
@@ -97,9 +113,14 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("error", "printHashKey()", e);
         }
-
+        */
         Button button = findViewById(R.id.send_to_firebase);
-
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fireBaseOnClick();
+            }
+        });
         googleButton = findViewById(R.id.google_button);
         googleButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,11 +212,16 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         lastName = findViewById(R.id.last_name);
         email = findViewById(R.id.email);
         User user = new User(name.getText().toString(), lastName.getText().toString(), email.getText().toString());
+        goToHomePage=new Intent(this,HomePage.class);
         //  db.collection(nameOfCollection).document(user.getEmail()).set(user);
         db.collection(nameOfCollection).document(name.getText().toString()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
+                goToHomePage.putExtra("first_name",name.toString());
+                goToHomePage.putExtra("last_name",lastName.toString());
+                goToHomePage.putExtra("email",email.toString());
+                startActivity(goToHomePage);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -213,7 +239,12 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
                         .setAvailableProviders(providers)
                         .build(),
                 GOOGLE_SIGN_IN);
+        Toast.makeText(this,"ok".toString(),Toast.LENGTH_SHORT).show();
+        goToHomePage=new Intent(this,HomePage.class);
+        startActivity(goToHomePage);
     }
+
+
 
 }
 

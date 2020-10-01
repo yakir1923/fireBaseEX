@@ -79,7 +79,7 @@
         android:id="@+id/user_lose"
         android:layout_width="93dp"
         android:layout_height="71dp"
-        android:layout_marginStart="68dp"
+        android:layout_marginStart="64dp"
         android:layout_marginTop="28dp"
         android:background="#5A5959"
         android:text="user lose"
@@ -98,7 +98,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.013"
-        app:srcCompat="@drawable/Definitions" />
+        app:srcCompat="@drawable/definitions" />
 
     <Button
         android:id="@+id/backButton"

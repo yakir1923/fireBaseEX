@@ -27,14 +27,14 @@
         android:id="@+id/last_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="last_name"
         android:inputType="textPersonName"
         android:text="last name"
         android:textColor="#EFE087"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.419"
+        app:layout_constraintHorizontal_bias="0.422"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name" />
 
@@ -42,14 +42,14 @@
         android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="email"
         android:inputType="textEmailAddress"
         android:text="email"
         android:textColor="#EFE087"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.419"
+        app:layout_constraintHorizontal_bias="0.422"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/last_name" />
 
@@ -57,11 +57,11 @@
         android:id="@+id/send_to_firebase"
         android:layout_width="204dp"
         android:layout_height="39dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="24dp"
         android:background="#3F51B5"
         android:text="sign in"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.414"
+        app:layout_constraintHorizontal_bias="0.439"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email" />
 
@@ -69,12 +69,11 @@
         android:id="@+id/google_button"
         android:layout_width="206dp"
         android:layout_height="33dp"
+        android:layout_marginTop="32dp"
         android:background="@mipmap/google_sign_in"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.414"
+        app:layout_constraintHorizontal_bias="0.434"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/send_to_firebase"
-        app:layout_constraintVertical_bias="0.086" />
+        app:layout_constraintTop_toBottomOf="@+id/send_to_firebase" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

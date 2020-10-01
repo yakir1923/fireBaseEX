@@ -12,52 +12,45 @@
         android:layout_width="158dp"
         android:layout_height="50dp"
         android:layout_marginStart="162dp"
-        android:layout_marginTop="338dp"
+        android:layout_marginTop="325dp"
         android:layout_marginEnd="162dp"
-        android:layout_marginBottom="346dp"
+        android:layout_marginBottom="32dp"
         android:background="#5A5959"
         android:text="Start the game"
         android:textColor="#EFE087"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/shoe_profile"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.408"
+        app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/shoe_profile"
         android:layout_width="158dp"
         android:layout_height="50dp"
         android:layout_marginStart="157dp"
-        android:layout_marginTop="50dp"
         android:layout_marginEnd="167dp"
-        android:layout_marginBottom="247dp"
+        android:layout_marginBottom="28dp"
         android:background="#5A5959"
         android:text="Show my profile"
         android:textColor="#EFE087"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/shop"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Start_Game"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintHorizontal_bias="0.436"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/shop"
         android:layout_width="158dp"
         android:layout_height="50dp"
         android:layout_marginStart="133dp"
-        android:layout_marginTop="54dp"
         android:layout_marginEnd="190dp"
-        android:layout_marginBottom="144dp"
+        android:layout_marginBottom="197dp"
         android:background="#5A5959"
         android:text="Shop"
         android:textColor="#EFE087"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shoe_profile"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
