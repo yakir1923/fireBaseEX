@@ -1,14 +1,14 @@
 package com.example.firebaseex;
 
-public class User {
+public class UserInfo {
     private  String name;
     private  String lastName;
     private  String email;
 
-    public User() {
+    public UserInfo() {
     }
 //5
-    public User(String name, String lastName, String email) {
+    public UserInfo(String name, String lastName, String email) {
         this.name = name;
         this.lastName = lastName;
         this.email = email;
