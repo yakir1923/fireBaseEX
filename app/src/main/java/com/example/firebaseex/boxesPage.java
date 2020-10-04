@@ -17,7 +17,7 @@ public class boxesPage extends AppCompatActivity {
     private Button showCards;
     private Intent goTOCards;
     public Bundle bundle;
-    ObjectAnimator animation;
+   public ObjectAnimator animation;
     private ImageButton woodBox;
     private ImageButton silverBox;
     private ImageButton goldBox;
