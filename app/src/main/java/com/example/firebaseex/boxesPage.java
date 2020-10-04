@@ -13,7 +13,7 @@ import android.animation.ObjectAnimator;
 public class boxesPage extends AppCompatActivity {
 
     private Button backHomeButton;
-    private Intent goTOhome;
+    private Intent goTOHome;
     private Button showCards;
     private Intent goTOCards;
     public Bundle bundle;
@@ -29,7 +29,7 @@ public class boxesPage extends AppCompatActivity {
 
         bundle=getIntent().getExtras();
         backHomeButton=findViewById(R.id.back_button);
-        goTOhome=new Intent(this,HomePage.class);
+        goTOHome=new Intent(this,HomePage.class);
         showCards=findViewById(R.id.show_cards);
         goTOCards=new Intent(this,cardPage.class);
         woodBox=findViewById(R.id.wood_box);
@@ -40,7 +40,7 @@ public class boxesPage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(boxesPage.this, "back",Toast.LENGTH_LONG).show();
-                startActivity(goTOhome);
+                startActivity(goTOHome);
             }
         });
 

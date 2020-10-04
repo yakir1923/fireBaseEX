@@ -29,6 +29,7 @@
         android:layout_width="158dp"
         android:layout_height="50dp"
         android:layout_marginStart="157dp"
+        android:layout_marginTop="44dp"
         android:layout_marginEnd="167dp"
         android:layout_marginBottom="44dp"
         android:background="#5A5959"
@@ -36,21 +37,23 @@
         android:textColor="#EFE087"
         app:layout_constraintBottom_toTopOf="@+id/shop"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.436"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.394"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Start_Game" />
 
     <Button
         android:id="@+id/shop"
         android:layout_width="158dp"
         android:layout_height="50dp"
-        android:layout_marginStart="133dp"
-        android:layout_marginEnd="190dp"
+        android:layout_marginStart="129dp"
+        android:layout_marginTop="37dp"
+        android:layout_marginEnd="124dp"
         android:layout_marginBottom="156dp"
         android:background="#5A5959"
         android:text="Shop"
         android:textColor="#EFE087"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shoe_profile" />
 </androidx.constraintlayout.widget.ConstraintLayout>

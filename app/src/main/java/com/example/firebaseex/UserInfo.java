@@ -4,14 +4,24 @@ public class UserInfo {
     private  String name;
     private  String lastName;
     private  String email;
+    private int level;
 
     public UserInfo() {
     }
 //5
-    public UserInfo(String name, String lastName, String email) {
+    public UserInfo(String name, String lastName, String email,int level) {
         this.name = name;
         this.lastName = lastName;
         this.email = email;
+        this.level=level;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public String getName() {

@@ -20,14 +20,13 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 
-//import static com.example.firebaseex.MainActivity.profileUser;
 
 public class User_profile extends AppCompatActivity {
     private ImageView userPic;
     private TextView userName;
     private TextView userEmail;
     private Button backHomeButton;
-    private Intent goTOhome;
+    private Intent goTOHome;
     public Bundle bundle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +38,15 @@ public class User_profile extends AppCompatActivity {
         userName=findViewById(R.id.user_name);
         userEmail=findViewById(R.id.user_email);
         backHomeButton=findViewById(R.id.backButton);
-        goTOhome=new Intent(this,HomePage.class);
+        goTOHome=new Intent(this,HomePage.class);
 
-     //   userName.setText(profileUser.getName()+" "+profileUser.getLastName());
     //   userEmail.setText(profileUser.getEmail());
 
         backHomeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(User_profile.this, "back",Toast.LENGTH_LONG).show();
-                startActivity(goTOhome);
+                startActivity(goTOHome);
             }
         });
         }

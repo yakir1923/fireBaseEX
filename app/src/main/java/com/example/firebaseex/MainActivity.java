@@ -105,7 +105,6 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
 
                 googleOnClick();
 
-
             }
         });
 
@@ -189,7 +188,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         name = findViewById(R.id.name);
         lastName = findViewById(R.id.last_name);
         email = findViewById(R.id.email);
-        final UserInfo user = new UserInfo(name.getText().toString(), lastName.getText().toString(), email.getText().toString());
+        final UserInfo user = new UserInfo(name.getText().toString(), lastName.getText().toString(), email.getText().toString(),0);
         goToHomePage=new Intent(this,HomePage.class);
          db.collection(nameOfCollection).document(user.getEmail()).set(user);
         db.collection(nameOfCollection).document(name.getText().toString()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -217,8 +216,13 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
                         .setAvailableProviders(providers)
                         .build(),
                 GOOGLE_SIGN_IN);
-
-        Toast.makeText(this,"ok",Toast.LENGTH_SHORT).show();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user==null){
+            Toast.makeText(this,"null",Toast.LENGTH_LONG).show();
+        }
+        else{
+        Toast.makeText(this,user.getEmail().toString(),Toast.LENGTH_SHORT).show();
+          }
         goToHomePage=new Intent(this,HomePage.class);
         startActivity(goToHomePage);
     }

@@ -22,7 +22,6 @@ public Bundle bundle;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         //2
-
         bundle=getIntent().getExtras();
         showProfile=findViewById(R.id.shoe_profile);
         goToProfile=new Intent(this,User_profile.class);
