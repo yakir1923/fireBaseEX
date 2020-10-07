@@ -13,7 +13,7 @@ public class UserInfo {
         this.name = name;
         this.lastName = lastName;
         this.email = email;
-        this.level=level;
+
     }
 
     public int getLevel() {

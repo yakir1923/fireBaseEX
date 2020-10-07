@@ -1,6 +1,8 @@
 package com.example.firebaseex;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.facebook.CallbackManager;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -40,6 +44,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
     private EditText lastName;
     private EditText email;
     private StringBuilder text = new StringBuilder();
+    private SharedPreferences.Editor editor;
 
 
     public static final int GOOGLE_SIGN_IN = 1;
@@ -190,14 +195,16 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         email = findViewById(R.id.email);
         final UserInfo user = new UserInfo(name.getText().toString(), lastName.getText().toString(), email.getText().toString(),0);
         goToHomePage=new Intent(this,HomePage.class);
+
          db.collection(nameOfCollection).document(user.getEmail()).set(user);
         db.collection(nameOfCollection).document(name.getText().toString()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(MainActivity.this, "ok "+user.getEmail().toString(), Toast.LENGTH_LONG).show();
-                goToHomePage.putExtra("first_name",user.getName().toString());
+                goToHomePage.putExtra("name",user.getName().toString());
                 goToHomePage.putExtra("last_name",user.getLastName().toString());
                 goToHomePage.putExtra("email",user.getEmail().toString());
+
                 startActivity(goToHomePage);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -224,7 +231,15 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         Toast.makeText(this,user.getEmail().toString(),Toast.LENGTH_SHORT).show();
           }
         goToHomePage=new Intent(this,HomePage.class);
-        startActivity(goToHomePage);
+
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
+        if (acct != null) {
+            goToHomePage.putExtra("name",acct.getDisplayName());
+            goToHomePage.putExtra("last_Name",acct.getFamilyName());
+            goToHomePage.putExtra("email", acct.getEmail());
+            String personId = acct.getId();
+            Uri personPhoto = acct.getPhotoUrl();
+        }
     }
     private String[] getSelectedProviders() {
         ArrayList<String> selectedProviders = new ArrayList<>();

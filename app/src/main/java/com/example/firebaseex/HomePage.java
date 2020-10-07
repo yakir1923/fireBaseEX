@@ -13,10 +13,12 @@ private Button showProfile;
 private Button shop;
 private Intent goToProfile;
 private Intent goToShop;
-private String name;
-private String lastName;
-private String email;
+
 public Bundle bundle;
+
+
+    public static UserInfo user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +28,7 @@ public Bundle bundle;
         showProfile=findViewById(R.id.shoe_profile);
         goToProfile=new Intent(this,User_profile.class);
         goToShop=new Intent(this,boxesPage.class);
+
 
         showProfile.setOnClickListener(new View.OnClickListener() {
             @Override
