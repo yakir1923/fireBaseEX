@@ -231,15 +231,16 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         Toast.makeText(this,user.getEmail().toString(),Toast.LENGTH_SHORT).show();
           }
         goToHomePage=new Intent(this,HomePage.class);
+        startActivity(goToHomePage);
 
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
+       /* GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
         if (acct != null) {
             goToHomePage.putExtra("name",acct.getDisplayName());
             goToHomePage.putExtra("last_Name",acct.getFamilyName());
             goToHomePage.putExtra("email", acct.getEmail());
             String personId = acct.getId();
             Uri personPhoto = acct.getPhotoUrl();
-        }
+        }*/
     }
     private String[] getSelectedProviders() {
         ArrayList<String> selectedProviders = new ArrayList<>();

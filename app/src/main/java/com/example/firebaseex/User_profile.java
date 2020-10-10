@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +31,8 @@ public class User_profile extends AppCompatActivity {
     protected TextView level;
     private Button backHomeButton;
     private Intent goTOHome;
+    private ImageButton goToSettings;
+    private Intent goSettings;
     public Bundle bundle;
 
 
@@ -53,6 +56,8 @@ public class User_profile extends AppCompatActivity {
         backHomeButton=findViewById(R.id.backButton);
         goTOHome=new Intent(this,HomePage.class);
 
+        goToSettings=findViewById(R.id.settings_Button);
+        goSettings=new Intent(this,settingsPage.class);
 
 
       //   userEmail.setText(profileUser.getEmail());
@@ -62,6 +67,13 @@ public class User_profile extends AppCompatActivity {
             public void onClick(View view) {
                 Toast.makeText(User_profile.this, "back",Toast.LENGTH_LONG).show();
                 startActivity(goTOHome);
+            }
+        });
+        goToSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(User_profile.this, "settings",Toast.LENGTH_LONG).show();
+                startActivity(goSettings);
             }
         });
         }
