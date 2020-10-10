@@ -67,9 +67,10 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/audio_image"
         app:layout_constraintEnd_toStartOf="@+id/music_switch"
+        app:layout_constraintHorizontal_bias="0.58"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.821"
+        app:layout_constraintVertical_bias="0.798"
         app:srcCompat="@drawable/music" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

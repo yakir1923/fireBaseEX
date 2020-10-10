@@ -29,4 +29,5 @@ public class settingsPage extends AppCompatActivity {
             }
         });
     }
+    //דך הגדרות
 }
