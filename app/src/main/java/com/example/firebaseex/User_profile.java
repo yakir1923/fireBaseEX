@@ -59,7 +59,6 @@ public class User_profile extends AppCompatActivity {
         goToSettings=findViewById(R.id.settings_Button);
         goSettings=new Intent(this,settingsPage.class);
 
-
       //   userEmail.setText(profileUser.getEmail());
 
         backHomeButton.setOnClickListener(new View.OnClickListener() {

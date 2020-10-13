@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.facebook.CallbackManager;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -196,8 +197,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         final UserInfo user = new UserInfo(name.getText().toString(), lastName.getText().toString(), email.getText().toString(),0);
         goToHomePage=new Intent(this,HomePage.class);
 
-         db.collection(nameOfCollection).document(user.getEmail()).set(user);
-        db.collection(nameOfCollection).document(name.getText().toString()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+         db.collection(nameOfCollection).document(user.getEmail()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(MainActivity.this, "ok "+user.getEmail().toString(), Toast.LENGTH_LONG).show();
@@ -213,6 +213,19 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "not ok", Toast.LENGTH_LONG).show();
             }
         });
+       /*  db.collection(nameOfCollection).document(user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+             @Override
+             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                 if(task.isSuccessful())
+                 {
+                   DocumentSnapshot  d=task.getResult();
+                   if (d.exists()){
+                      UserInfo userTest= d.toObject(UserInfo.class);
+                       Log.i("testD", userTest.getEmail());
+                   }
+                 }
+             }
+         });*/
 
     }
 
@@ -241,6 +254,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
             String personId = acct.getId();
             Uri personPhoto = acct.getPhotoUrl();
         }*/
+
     }
     private String[] getSelectedProviders() {
         ArrayList<String> selectedProviders = new ArrayList<>();
