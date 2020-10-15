@@ -2,16 +2,16 @@ package com.example.firebaseex;
 
 public class UserInfo {
     private  String name;
-    private  String lastName;
+    private  String password;
     private  String email;
     private int level;
 
     public UserInfo() {
     }
 //5
-    public UserInfo(String name, String lastName, String email,int level) {
+    public UserInfo(String name, String password, String email,int level) {
         this.name = name;
-        this.lastName = lastName;
+        this.password = password;
         this.email = email;
 
     }
@@ -32,12 +32,12 @@ public class UserInfo {
         this.name = name;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getPassword() {
+        return password;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
