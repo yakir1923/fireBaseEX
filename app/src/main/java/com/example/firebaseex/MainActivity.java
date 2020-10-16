@@ -19,6 +19,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -44,6 +47,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
     private SharedPreferences.Editor editor;
 
     private FirebaseAuth mAuth;
+
 
 
     public static final int GOOGLE_SIGN_IN = 1;
@@ -195,6 +199,24 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         password = findViewById(R.id.password);
         email = findViewById(R.id.email);
         final UserInfo user = new UserInfo(name.getText().toString(), password.getText().toString(), email.getText().toString(),0);
+        DocumentReference docRef = db.collection(nameOfCollection).document(user.getEmail());
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        String testDB= document.get("name").toString();
+                        Log.i("result", "DocumentSnapshot data: " + document.getData());
+
+                    } else {
+                        Log.i("result", "No such document");
+                    }
+                } else {
+                    Log.i("result", "get failed with ", task.getException());
+                }
+            }
+        });
         goToHomePage=new Intent(this,HomePage.class);
          db.collection(nameOfCollection).document(user.getEmail()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -212,6 +234,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "not ok", Toast.LENGTH_LONG).show();
             }
         });
+
        /*  db.collection(nameOfCollection).document(user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
              @Override
              public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -236,6 +259,8 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
                         .build(),
                 GOOGLE_SIGN_IN);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        mAuth.getCurrentUser().getEmail().toString();
+        Toast.makeText(this,mAuth.getCurrentUser().getEmail().toString(),Toast.LENGTH_LONG).show();
         if (user==null){
             Toast.makeText(this,"null",Toast.LENGTH_LONG).show();
         }
