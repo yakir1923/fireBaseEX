@@ -19,8 +19,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-//4
+
 public class MainActivity<mCallbackManager> extends AppCompatActivity {
     // Access a Cloud Firestore instance from your Activity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -67,11 +65,14 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
          callbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
 
-        userDitale=getSharedPreferences("login",MODE_PRIVATE);
+    /*    userDitale=getSharedPreferences("login",MODE_PRIVATE);
         if (userDitale!=null){
             goToHomePage=new Intent(this,HomePage.class);
             startActivity(goToHomePage);
-        }
+        }*/
+
+
+
        /* LoginButton  loginButton=findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList(EMAIL));
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -228,6 +229,8 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         selectedProviders.add(AuthUI.EMAIL_LINK_PROVIDER);
         return selectedProviders.toArray(new String[selectedProviders.size()]);
     }
+
+
 
 }
 

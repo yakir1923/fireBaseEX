@@ -1,28 +1,17 @@
 package com.example.firebaseex;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.text.NumberFormat;
+import androidx.appcompat.app.AppCompatActivity;
 
 
 public class User_profile extends AppCompatActivity {
@@ -60,6 +49,7 @@ public class User_profile extends AppCompatActivity {
                 userDitale.getInt("userWin",-1),
                 userDitale.getInt("userLose",-1)
                 );
+
         bundle=getIntent().getExtras();
         userPic=findViewById(R.id.user_image);
 
@@ -83,6 +73,7 @@ public class User_profile extends AppCompatActivity {
 
         goToSettings=findViewById(R.id.settings_Button);
         goSettings=new Intent(this,settingsPage.class);
+
 
       //   userEmail.setText(profileUser.getEmail());
 

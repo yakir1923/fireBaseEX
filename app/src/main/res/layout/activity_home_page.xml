@@ -12,20 +12,20 @@
         android:layout_width="158dp"
         android:layout_height="50dp"
         android:layout_marginStart="162dp"
-        android:layout_marginTop="325dp"
+        android:layout_marginTop="350dp"
         android:layout_marginEnd="162dp"
         android:layout_marginBottom="32dp"
         android:background="#5A5959"
         android:text="Start the game"
         android:textColor="#EFE087"
-        app:layout_constraintBottom_toTopOf="@+id/shoe_profile"
+        app:layout_constraintBottom_toTopOf="@+id/show_profile"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintHorizontal_bias="0.464"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/shoe_profile"
+        android:id="@+id/show_profile"
         android:layout_width="158dp"
         android:layout_height="50dp"
         android:layout_marginStart="157dp"
@@ -54,6 +54,7 @@
         android:textColor="#EFE087"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shoe_profile" />
+        app:layout_constraintTop_toBottomOf="@+id/show_profile" />
 </androidx.constraintlayout.widget.ConstraintLayout>

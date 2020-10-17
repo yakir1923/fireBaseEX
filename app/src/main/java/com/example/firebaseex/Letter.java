@@ -1,19 +1,20 @@
 package com.example.firebaseex;
 
-import android.media.Image;
-
 public class Letter {
     private char lett;
     private int scoring;
-    private Image image;
+    private String icon;
+    private Coord loc;
+
 
     public Letter(){
     }
-//3
-    public Letter(char lett, int scoring, Image image) {
+
+    public Letter(char lett, int scoring, String i) {
         this.lett = lett;
         this.scoring = scoring;
-        this.image = image;
+        this.icon = i;
+        loc  = new Coord(-1, -1);
     }
 
     public char getLett() {
@@ -32,12 +33,30 @@ public class Letter {
         this.scoring = scoring;
     }
 
-    public Image getImage() {
-        return image;
+    public String getIcon() { return icon; }
+
+    public void setIcon(String file) { icon = file;}
+
+    public Coord getLoc() { return loc; }
+
+    public void setLoc(Coord c) {
+        loc = c;
     }
 
-    public void setImage(Image image) {
-        this.image = image;
+
+
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Letter))
+            return false;
+        if (obj == this)
+            return true;
+        Letter c = (Letter) obj;
+        return (this.lett == c.lett&& this.loc.equals(c.loc));
     }
+
+    public int hashCode() {
+        return 0;
+    }
+
 }
 
