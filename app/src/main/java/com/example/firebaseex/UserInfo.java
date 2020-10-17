@@ -5,15 +5,35 @@ public class UserInfo {
     private  String password;
     private  String email;
     private int level;
+    private int userLose;
+    private int userWin;
 
     public UserInfo() {
     }
 //5
-    public UserInfo(String name, String password, String email,int level) {
+    public UserInfo(String name, String password, String email,int level,int userLose,int userWin) {
         this.name = name;
         this.password = password;
         this.email = email;
+        this.level=level;
+        this.userLose=userLose;
+        this.userWin=userWin;
 
+    }
+    public int getUserLose() {
+        return userLose;
+    }
+
+    public void setUserLose(int userLose) {
+        this.userLose = userLose;
+    }
+
+    public int getUserWin() {
+        return userWin;
+    }
+
+    public void setUserWin(int userWin) {
+        this.userWin = userWin;
     }
 
     public int getLevel() {

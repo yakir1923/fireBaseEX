@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,8 +35,12 @@ public class User_profile extends AppCompatActivity {
     private ImageButton goToSettings;
     private Intent goSettings;
     public Bundle bundle;
-
-
+    private TextView userWin;
+    private TextView userLose;
+    private SharedPreferences.Editor editor;
+    private SharedPreferences userDitale;
+    private  String i;
+    private UserInfo userInfo;
 
 
     @Override
@@ -43,15 +48,35 @@ public class User_profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+        userDitale=this.getSharedPreferences("login",MODE_PRIVATE);
+        Log.i("email", userDitale.getString("email",null));
+        Log.i("password", userDitale.getString("password",null));
+        Log.i("name", userDitale.getString("name",null));
 
+        userInfo=new UserInfo(userDitale.getString("name",null),
+                userDitale.getString("password",null),
+                userDitale.getString("email",null),
+                userDitale.getInt("level",-1),
+                userDitale.getInt("userWin",-1),
+                userDitale.getInt("userLose",-1)
+                );
         bundle=getIntent().getExtras();
         userPic=findViewById(R.id.user_image);
 
         userName=findViewById(R.id.user_name);
+        userName.setText(userDitale.getString("name",null));
 
         userEmail=findViewById(R.id.user_email);
+        userEmail.setText(userDitale.getString("email",null));
 
         level=findViewById(R.id.user_level);
+        level.setText(String.valueOf(userInfo.getLevel()));
+
+        userWin=findViewById(R.id.user_wins);
+        userWin.setText(String.valueOf(userInfo.getUserWin()));
+
+        userLose=findViewById(R.id.user_lose);
+        userLose.setText(String.valueOf(userInfo.getUserLose()));
 
         backHomeButton=findViewById(R.id.backButton);
         goTOHome=new Intent(this,HomePage.class);

@@ -45,7 +45,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
     private EditText email;
     private StringBuilder text = new StringBuilder();
     private SharedPreferences.Editor editor;
-
+    private SharedPreferences userDitale;
     private FirebaseAuth mAuth;
 
 
@@ -65,8 +65,13 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         goToHomePage=new Intent(this,User_profile.class);
          callbackManager = CallbackManager.Factory.create();
-
         mAuth = FirebaseAuth.getInstance();
+
+        userDitale=getSharedPreferences("login",MODE_PRIVATE);
+        if (userDitale!=null){
+            goToHomePage=new Intent(this,HomePage.class);
+            startActivity(goToHomePage);
+        }
        /* LoginButton  loginButton=findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList(EMAIL));
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -108,51 +113,6 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
                 fireBaseOnClick();
             }
         });
-        googleButton = findViewById(R.id.google_button);
-        googleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                googleOnClick();
-
-            }
-        });
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-
-        Log.i("requestCode", "onActivityResult: "+requestCode);
-        if (requestCode == GOOGLE_SIGN_IN) {
-            if (resultCode == RESULT_OK) {
-                // Successfully signed in
-                // ...
-            } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
-            }
-        }
-        //facebook login
-      /*  else if(requestCode==64206)
-        {
-            if (resultCode == RESULT_OK) {
-                // Successfully signed in
-                Toast.makeText(this,"ok",Toast.LENGTH_SHORT).show();
-                // ...
-            } else {
-                Toast.makeText(this,"cant sign in",Toast.LENGTH_SHORT).show();
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
-            }
-        }
-       */
     }
 
     public void addLetters() {
@@ -198,7 +158,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         name = findViewById(R.id.name);
         password = findViewById(R.id.password);
         email = findViewById(R.id.email);
-        final UserInfo user = new UserInfo(name.getText().toString(), password.getText().toString(), email.getText().toString(),0);
+        final UserInfo user = new UserInfo(name.getText().toString(), password.getText().toString(), email.getText().toString(),1,0,0);
         DocumentReference docRef = db.collection(nameOfCollection).document(user.getEmail());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -217,6 +177,17 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
                 }
             }
         });
+
+        userDitale=getSharedPreferences("login",MODE_PRIVATE);
+        editor=userDitale.edit();
+        editor.putString("name",user.getName());
+        editor.putString("email",user.getEmail());
+        editor.putString("password",user.getPassword());
+        editor.putInt("level",user.getLevel());
+        editor.putInt("userWin",user.getUserWin());
+        editor.putInt("userLose",user.getUserLose());
+        editor.apply();
+        Log.i("SharedPreferences", user.getEmail()+" "+user.getName()+" "+user.getPassword());
         goToHomePage=new Intent(this,HomePage.class);
          db.collection(nameOfCollection).document(user.getEmail()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -251,35 +222,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
 
     }
 
-    public void googleOnClick() {
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .build(),
-                GOOGLE_SIGN_IN);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        mAuth.getCurrentUser().getEmail().toString();
-        Toast.makeText(this,mAuth.getCurrentUser().getEmail().toString(),Toast.LENGTH_LONG).show();
-        if (user==null){
-            Toast.makeText(this,"null",Toast.LENGTH_LONG).show();
-        }
-        else{
-        Toast.makeText(this,user.getEmail().toString(),Toast.LENGTH_SHORT).show();
-          }
-        goToHomePage=new Intent(this,HomePage.class);
-        startActivity(goToHomePage);
 
-       /* GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
-        if (acct != null) {
-            goToHomePage.putExtra("name",acct.getDisplayName());
-            goToHomePage.putExtra("last_Name",acct.getFamilyName());
-            goToHomePage.putExtra("email", acct.getEmail());
-            String personId = acct.getId();
-            Uri personPhoto = acct.getPhotoUrl();
-        }*/
-
-    }
     private String[] getSelectedProviders() {
         ArrayList<String> selectedProviders = new ArrayList<>();
         selectedProviders.add(AuthUI.EMAIL_LINK_PROVIDER);

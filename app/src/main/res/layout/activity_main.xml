@@ -47,27 +47,13 @@
         android:layout_width="211dp"
         android:layout_height="39dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="15dp"
         android:background="#3F51B5"
         android:text="התחבר"
-        app:layout_constraintBottom_toTopOf="@+id/google_button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.41"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email" />
-
-    <Button
-        android:id="@+id/google_button"
-        android:layout_width="214dp"
-        android:layout_height="46dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="156dp"
-        android:background="@mipmap/google_sign_in"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.416"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/send_to_firebase" />
 
     <EditText
         android:id="@+id/password"
