@@ -38,7 +38,6 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
     public static UserInfo user;
     public static String nameOfCollection = "Users";
     private EditText name;
-    private Button googleButton;
     private EditText password;
     private EditText email;
     private StringBuilder text = new StringBuilder();
@@ -64,12 +63,13 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         goToHomePage=new Intent(this,User_profile.class);
          callbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
-
-    /*    userDitale=getSharedPreferences("login",MODE_PRIVATE);
-        if (userDitale!=null){
-            goToHomePage=new Intent(this,HomePage.class);
+        userDitale=getSharedPreferences("login",MODE_PRIVATE);
+        //deleteSharedPreferences1();
+       if (userDitale.getString("name",null)!=null&&
+        userDitale.getString("email",null)!=null) {
+            goToHomePage = new Intent(this, HomePage.class);
             startActivity(goToHomePage);
-        }*/
+        }
 
 
 
@@ -114,6 +114,12 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
                 fireBaseOnClick();
             }
         });
+    }
+
+    private void deleteSharedPreferences1() {
+        editor=userDitale.edit();
+        editor.clear();
+        editor.apply();
     }
 
     public void addLetters() {
@@ -187,6 +193,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         editor.putInt("level",user.getLevel());
         editor.putInt("userWin",user.getUserWin());
         editor.putInt("userLose",user.getUserLose());
+        editor.commit();
         editor.apply();
         Log.i("SharedPreferences", user.getEmail()+" "+user.getName()+" "+user.getPassword());
         goToHomePage=new Intent(this,HomePage.class);
