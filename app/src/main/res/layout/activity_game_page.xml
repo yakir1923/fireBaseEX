@@ -6,4 +6,60 @@
     android:layout_height="match_parent"
     tools:context=".GamePage">
 
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="413dp"
+        android:layout_height="112dp"
+        android:layout_marginTop="3dp"
+        android:background="#FF5722"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/opponent_name"
+            android:layout_width="106dp"
+            android:layout_height="35dp"
+            android:background="#FF9800"
+            android:text="TextView" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="412dp"
+        android:layout_height="182dp"
+        android:background="#FF5722"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/player_name"
+            android:layout_width="126dp"
+            android:layout_height="35dp"
+            android:background="#FF9800"
+            android:text="TextView" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#00BCD4"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+
+        <RelativeLayout
+            android:id="@+id/game_layout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </RelativeLayout>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
