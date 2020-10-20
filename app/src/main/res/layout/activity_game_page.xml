@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="101dp"
         android:layout_marginTop="3dp"
-        android:background="#FF5722"
+        android:background="#3C3B3A"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/tableLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,16 +23,18 @@
             android:id="@+id/opponent_name"
             android:layout_width="110dp"
             android:layout_height="50dp"
-            android:background="#FF9800"
+            android:background="#4A4948"
             android:gravity="bottom|center"
+            android:textColor="#EFE087"
             />
 
         <TextView
             android:id="@+id/opponent_points"
             android:layout_width="110dp"
             android:layout_height="50dp"
-            android:background="#FF9800"
+            android:background="#4A4948"
             android:gravity="bottom|center"
+            android:textColor="#EFE087"
           />
     </LinearLayout>
 
@@ -40,7 +42,7 @@
         android:id="@+id/linearLayout2"
         android:layout_width="413dp"
         android:layout_height="124dp"
-        android:background="#FF5722"
+        android:background="#3C3B3A"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,16 +54,18 @@
             android:id="@+id/player_name"
             android:layout_width="110dp"
             android:layout_height="50dp"
-            android:background="#FF9800"
+            android:background="#4A4948"
             android:gravity="bottom|center"
+            android:textColor="#EFE087"
             />
 
         <TextView
             android:id="@+id/player_points"
             android:layout_width="110dp"
             android:layout_height="50dp"
-            android:background="#FF9800"
+            android:background="#4A4948"
             android:gravity="bottom|center"
+            android:textColor="#EFE087"
         />
     </LinearLayout>
 
@@ -70,7 +74,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="#00BCD4"
+        android:background="#000000"
         android:shrinkColumns="*"
         android:stretchColumns="0,1,2,3,4,5,6,7,8,9,10"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
