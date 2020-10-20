@@ -1,9 +1,12 @@
 package com.example.firebaseex;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -15,18 +18,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GamePage extends AppCompatActivity {
-private TableRow tableRow;
 private Button button;
-private    int i,j;
-private RelativeLayout relativeLayout;
+private int i,j;
+private TableLayout tableLayout;
+private TableRow tableRow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_page);
-        relativeLayout=findViewById(R.id.game_layout1);
+        tableLayout=findViewById(R.id.tableLayout);
+        for (i=0;i<10;i++) {
+            tableRow=new TableRow(this);
+            tableLayout.addView(tableRow);
+            for (j=1;j<11;j++){
+                  button=new Button(this);
+                  button.setId(i);
+                  button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-        for (i=0;i<100;i++) {
-            relativeLayout.addView(new Button(this));
+                }
+            });
+                tableRow.addView(button);
+        }
         }
 
 
