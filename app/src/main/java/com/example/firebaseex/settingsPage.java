@@ -35,26 +35,27 @@ public class settingsPage extends AppCompatActivity {
         });
 
         music=MediaPlayer.create(settingsPage.this,R.raw.background_music);
-        music_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    playIt();
+            music_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    if (isChecked) {
+                        playIt();
+                    } else {
+                        onPause();
+                    }
                 }
-                else {
-                    onPause();
-                }
-            }
             });
 
     }
     public void playIt(){
-
             music.start();
+            music.setLooping(true);
+
 
     }
 
     protected void onPause(){
         super.onPause();
-        music.release();
+        music.pause();
     }
 }
