@@ -1,24 +1,16 @@
 package com.example.firebaseex;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.GridLayout;
-import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GamePage extends AppCompatActivity {
@@ -36,6 +28,7 @@ private SharedPreferences.Editor editor;
 private SharedPreferences userDitale;
 private Drawable drawable;
 private int idNum;
+private List letterList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +46,12 @@ private int idNum;
         userDitale=getSharedPreferences("login",MODE_PRIVATE);
         playerName.setText(userDitale.getString("name",null));
         idNum=0;
-
+        opponentName.setText("shani moses temp");
         for (i=0;i<10;i++) {
             tableRow=new TableRow(this);
             tableLayout.addView(tableRow);
             for (j=1;j<11;j++){
-                  button=new Button(this);
+                  button=new MyButton(this);
                   button.setId(idNum);
                   idNum++;
                   button.setBackground(getDrawable(R.drawable.my_button));
