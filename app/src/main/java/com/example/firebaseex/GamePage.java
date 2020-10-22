@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GamePage extends AppCompatActivity {
 private MyButton button;
@@ -31,12 +32,12 @@ private SharedPreferences.Editor editor;
 private SharedPreferences userDitale;
 private Drawable drawable;
 private int idNum;
-private List letterList;
 private ArrayList<Button> buttonList;
 private ArrayList<Letter> letterArrayList;
 private TableRow playerHand;
 private TableRow opponentHand;
 private static String tempLetter;
+private int buttonId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +60,28 @@ private static String tempLetter;
         opponentName.setText("שני מוזס זמני");
         buttonList=new ArrayList<Button>();
         letterArrayList=new ArrayList<Letter>();
-        letterArrayList.add(new Alef());
+        letterArrayList.add(new Letter("א",10,"---"));
+        letterArrayList.add(new Letter("ב",10,"---"));
+        letterArrayList.add(new Letter("ג",20,"---"));
+        letterArrayList.add(new Letter("ד",30,"---"));
+        letterArrayList.add(new Letter("ה",10,"---"));
+        letterArrayList.add(new Letter("ו",5,"---"));
+        letterArrayList.add(new Letter("ז",80,"---"));
+        letterArrayList.add(new Letter("ח",30,"---"));
+        letterArrayList.add(new Letter("ט",40,"---"));
+        letterArrayList.add(new Letter("י",30,"---"));
+        letterArrayList.add(new Letter("כ",70,"---"));
+        letterArrayList.add(new Letter("ל",40,"---"));
+        letterArrayList.add(new Letter("מ",60,"---"));
+        letterArrayList.add(new Letter("נ",30,"---"));
+        letterArrayList.add(new Letter("ס",50,"---"));
+        letterArrayList.add(new Letter("ע",80,"---"));
+        letterArrayList.add(new Letter("פ",90,"---"));
+        letterArrayList.add(new Letter("צ",100,"---"));
+        letterArrayList.add(new Letter("ק",60,"---"));
+        letterArrayList.add(new Letter("ר",40,"---"));
+        letterArrayList.add(new Letter("ש",50,"---"));
+        letterArrayList.add(new Letter("ת",40,"---"));
         for (i=0;i<10;i++) {
             tableRow=new TableRow(this);
             tableLayout.addView(tableRow);
@@ -72,9 +94,14 @@ private static String tempLetter;
                 @Override
                 public void onClick(View view) {
                     MyButton myButton=(MyButton)view;
-                    myButton.setText(tempLetter);
-                    if (tempLetter==null)
-                    Toast.makeText(GamePage.this, "not ok", Toast.LENGTH_LONG).show();
+                    if (myButton.getLetter()==null) {
+                        myButton.setText(tempLetter);
+                       tempLetter = "";
+                    }else{
+                        tempLetter=myButton.getText().toString();
+                        myButton.setText("");
+
+                    }
                 }
             });
                 tableRow.addView(button);
@@ -82,18 +109,25 @@ private static String tempLetter;
         }
         }
         for (i=0;i<10;i++){
+            Random random=new Random();
+            int rndNum=random.nextInt(22);
             playerHand.addView(button=new MyButton(this,0,0));
             button.setBackground(getDrawable(R.drawable.my_button));
-            button.setText(new Alef().getLett());
-            button.setLetter(new Alef().getLett());
+            button.setText(letterArrayList.get(rndNum).getLett());
+            button.setLetter(letterArrayList.get(rndNum).getLett());
             button.setBackground(getDrawable(R.drawable.active_button_color));
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     MyButton myButton=(MyButton)view;
-                    tempLetter=myButton.getLetter();
-                    Toast.makeText(GamePage.this, tempLetter, Toast.LENGTH_LONG).show();
-
+                    if (myButton.getLetter()!=null) {
+                        tempLetter = myButton.getText().toString();
+                        myButton.setText("");
+                    }
+                    else{
+                        myButton.setText(tempLetter);
+                        tempLetter="";
+                    }
                 }
             });
 
