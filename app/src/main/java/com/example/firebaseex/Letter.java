@@ -1,7 +1,7 @@
 package com.example.firebaseex;
 
 public class Letter {
-    private char lett;
+    private String lett;
     private int scoring;
     private String icon;
     private Coord loc;
@@ -10,18 +10,18 @@ public class Letter {
     public Letter(){
     }
 
-    public Letter(char lett, int scoring, String i) {
+    public Letter(String lett, int scoring, String i) {
         this.lett = lett;
         this.scoring = scoring;
         this.icon = i;
         loc  = new Coord(-1, -1);
     }
 
-    public char getLett() {
+    public String getLett() {
         return lett;
     }
 
-    public void setLett(char lett) {
+    public void setLett(String lett) {
         this.lett = lett;
     }
 

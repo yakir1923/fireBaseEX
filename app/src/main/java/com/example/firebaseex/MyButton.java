@@ -10,7 +10,6 @@ public class MyButton extends androidx.appcompat.widget.AppCompatButton {
         super(context);
         this.x=x;
         this.y=y;
-        this.letter="";
     }
     public MyButton(Context context) {
         super(context);
@@ -48,9 +47,6 @@ public class MyButton extends androidx.appcompat.widget.AppCompatButton {
 
     public void setLetter(String letter) {
         this.letter = letter;
-    }
-    public void setLetterOnButton(String s){
-        this.setText(this.letter);
     }
 
 }

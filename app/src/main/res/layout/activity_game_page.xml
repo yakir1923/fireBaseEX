@@ -6,39 +6,53 @@
     android:layout_height="match_parent"
     tools:context=".GamePage">
 
-    <LinearLayout
+    <TableLayout
+        android:shrinkColumns="*"
         android:id="@+id/opponent_side"
         android:layout_width="0dp"
         android:layout_height="101dp"
         android:layout_marginTop="3dp"
         android:background="#3C3B3A"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/tableLayout"
+        app:layout_constraintBottom_toTopOf="@+id/game_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/opponent_name"
-            android:layout_width="110dp"
-            android:layout_height="50dp"
-            android:background="#4A4948"
-            android:gravity="bottom|center"
-            android:textColor="#EFE087"
-            />
+        <TableRow
+            android:id="@+id/opponent_hand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/opponent_points"
-            android:layout_width="110dp"
-            android:layout_height="50dp"
-            android:background="#4A4948"
-            android:gravity="bottom|center"
-            android:textColor="#EFE087"
-          />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/opponent_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#4A4948"
+                android:gravity="bottom|center"
+                android:textColor="#EFE087" />
+        </TableRow>
 
-    <LinearLayout
+        <TableRow
+            android:id="@+id/game_ditales"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/opponent_points"
+                android:layout_width="110dp"
+                android:layout_height="50dp"
+                android:background="#4A4948"
+                android:gravity="bottom|center"
+                android:textColor="#EFE087" />
+
+        </TableRow>
+
+    </TableLayout>
+
+    <TableLayout
+        android:shrinkColumns="*"
         android:id="@+id/player_side"
         android:layout_width="413dp"
         android:layout_height="124dp"
@@ -48,29 +62,37 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tableLayout">
+        app:layout_constraintTop_toBottomOf="@+id/game_layout">
 
-        <TextView
-            android:id="@+id/player_name"
-            android:layout_width="110dp"
-            android:layout_height="50dp"
-            android:background="#4A4948"
-            android:gravity="bottom|center"
-            android:textColor="#EFE087"
-            />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
 
-        <TextView
-            android:id="@+id/player_points"
-            android:layout_width="110dp"
-            android:layout_height="50dp"
-            android:background="#4A4948"
-            android:gravity="bottom|center"
-            android:textColor="#EFE087"
-        />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/player_name"
+                android:layout_width="110dp"
+                android:layout_height="50dp"
+                android:background="#4A4948"
+                android:gravity="bottom|center"
+                android:textColor="#EFE087" />
+        </TableRow>
+        <TableRow
+            android:id="@+id/player_hand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/player_points"
+                android:layout_width="110dp"
+                android:layout_height="50dp"
+                android:background="#4A4948"
+                android:gravity="bottom|center"
+                android:textColor="#EFE087" />
+        </TableRow>
+
+    </TableLayout>
 
     <TableLayout
-        android:id="@+id/tableLayout"
+        android:id="@+id/game_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
