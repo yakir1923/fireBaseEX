@@ -51,7 +51,6 @@ private int buttonId;
         opponentHand=findViewById(R.id.opponent_hand);
         playerCurrentPoints=0;
         opponentCurrentPoints=0;
-        tempLetter=null;
         playerPoints.setText("0");
         opponentPoints.setText("0");
         userDitale=getSharedPreferences("login",MODE_PRIVATE);
@@ -90,16 +89,17 @@ private int buttonId;
                   button.setId(idNum);
                   idNum++;
                   button.setBackground(getDrawable(R.drawable.my_button));
+                  button.setText(null);
                   button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     MyButton myButton=(MyButton)view;
-                    if (myButton.getLetter()==null) {
-                        myButton.setText(tempLetter);
-                       tempLetter = "";
+                    if (myButton.getLetter()!=null) {
+                        tempLetter=myButton.getLetter();
+                        myButton.setText(null);
                     }else{
-                        tempLetter=myButton.getText().toString();
-                        myButton.setText("");
+                        myButton.setText(tempLetter);
+                        tempLetter = null;
 
                     }
                 }
@@ -121,12 +121,12 @@ private int buttonId;
                 public void onClick(View view) {
                     MyButton myButton=(MyButton)view;
                     if (myButton.getLetter()!=null) {
-                        tempLetter = myButton.getText().toString();
-                        myButton.setText("");
+                        tempLetter = myButton.getLetter();
+                        myButton.setText(null);
                     }
                     else{
                         myButton.setText(tempLetter);
-                        tempLetter="";
+                        tempLetter=null;
                     }
                 }
             });
