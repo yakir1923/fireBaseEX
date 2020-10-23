@@ -1,7 +1,7 @@
 package com.example.firebaseex;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -39,6 +39,9 @@ private static String tempLetter;
 private int buttonId;
 private TextView timer;
 private Button nextTurn;
+
+private Intent showActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +90,8 @@ private Button nextTurn;
         letterArrayList.add(new Letter("ר",40,"---"));
         letterArrayList.add(new Letter("ש",50,"---"));
         letterArrayList.add(new Letter("ת",40,"---"));
+
+
         for (i=0;i<10;i++) {
             tableRow=new TableRow(this);
             tableLayout.addView(tableRow);
@@ -160,5 +165,9 @@ private Button nextTurn;
                 timer.setText("done!");
             }
         }.start();
+    }
+    private void sendScore(){
+        showActivity = new Intent(GamePage.this, winnerScreen.class);
+        showActivity.putExtra("score",Integer.toString(playerCurrentPoints));
     }
 }
