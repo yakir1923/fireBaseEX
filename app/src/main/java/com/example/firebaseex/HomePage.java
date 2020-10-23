@@ -29,7 +29,7 @@ public Bundle bundle;
         showProfile=findViewById(R.id.show_profile);
         goToProfile=new Intent(this,User_profile.class);
         goToShop=new Intent(this,boxesPage.class);
-        startTheGame=new Intent(this,GamePage.class);
+        startTheGame=new Intent(this,loadingScreen.class);
 
         showProfile.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".GamePage"></activity>
+        <activity android:name=".loadingScreen"></activity>
+        <activity android:name=".GamePage" />
         <activity android:name=".settingsPage" />
         <activity android:name=".cardPage" />
         <activity android:name=".boxesPage" />
