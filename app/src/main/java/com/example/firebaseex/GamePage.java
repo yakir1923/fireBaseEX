@@ -97,8 +97,10 @@ private int buttonId;
                     if (myButton.getLetter()!=null) {
                         tempLetter=myButton.getLetter();
                         myButton.setText(null);
+                        myButton.setLetter(null);
                     }else{
                         myButton.setText(tempLetter);
+                        myButton.setLetter(tempLetter);
                         tempLetter = null;
 
                     }
@@ -123,9 +125,11 @@ private int buttonId;
                     if (myButton.getLetter()!=null) {
                         tempLetter = myButton.getLetter();
                         myButton.setText(null);
+                        myButton.setLetter(null);
                     }
                     else{
                         myButton.setText(tempLetter);
+                        myButton.setLetter(tempLetter);
                         tempLetter=null;
                     }
                 }
