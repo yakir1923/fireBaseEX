@@ -4,17 +4,16 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class GamePage extends AppCompatActivity {
@@ -38,6 +37,8 @@ private TableRow playerHand;
 private TableRow opponentHand;
 private static String tempLetter;
 private int buttonId;
+private TextView timer;
+private Button nextTurn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +58,11 @@ private int buttonId;
         playerName.setText(userDitale.getString("name",null));
         idNum=0;
         opponentName.setText("שני מוזס זמני");
+        timer=findViewById(R.id.timer_round);
+        setTimer();
+        nextTurn=findViewById(R.id.next_turn);
+        nextTurn.setBackground(getDrawable(R.drawable.active_button_color));
+        nextTurn.setText("סיום");
         buttonList=new ArrayList<Button>();
         letterArrayList=new ArrayList<Letter>();
         letterArrayList.add(new Letter("א",10,"---"));
@@ -136,10 +142,23 @@ private int buttonId;
             });
 
         }
-        for (i=0;i<10;i++){
-            opponentHand.addView(button=new MyButton(this));
-            button.setBackground(getDrawable(R.drawable.active_button_color));
-        }
+        nextTurn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
+    }
+    public void setTimer(){
+        new CountDownTimer(30000, 1000) {
 
+            public void onTick(long millisUntilFinished) {
+                timer.setText("seconds remaining: " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                timer.setText("done!");
+            }
+        }.start();
     }
 }
