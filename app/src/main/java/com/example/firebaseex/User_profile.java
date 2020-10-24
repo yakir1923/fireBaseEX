@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+
 
 public class User_profile extends AppCompatActivity {
     private ImageView userPic;
@@ -30,6 +32,8 @@ public class User_profile extends AppCompatActivity {
     private SharedPreferences userDitale;
     private  String i;
     private UserInfo userInfo;
+
+
 
 
     @Override

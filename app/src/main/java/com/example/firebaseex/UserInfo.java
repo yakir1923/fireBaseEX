@@ -1,5 +1,7 @@
 package com.example.firebaseex;
 
+import java.util.ArrayList;
+
 public class UserInfo {
     private  String name;
     private  String password;
@@ -8,6 +10,8 @@ public class UserInfo {
     private int userLose;
     private int userWin;
     private int playerPoints;
+
+    private ArrayList<cards> spacedCards;
 
     public UserInfo() {
     }
@@ -76,5 +80,23 @@ public class UserInfo {
 
     public void setPlayerPoints(int playerPoints) {
         this.playerPoints = playerPoints;
+    }
+
+    public ArrayList<cards> getSpacedCards() {
+        return spacedCards;
+    }
+
+    public void setSpacedCards(ArrayList<cards> spacedCards) {
+        this.spacedCards = spacedCards;
+    }
+
+    public void addCard(cards card){
+        this.spacedCards.add(card);
+        for(cards card1:spacedCards)
+        {
+        if (card.getCardName()==card1.getCardName())
+            card.setCountingCards();
+
+        }
     }
 }

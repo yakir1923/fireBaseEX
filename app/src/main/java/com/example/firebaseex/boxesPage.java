@@ -1,14 +1,17 @@
 package com.example.firebaseex;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import android.animation.ObjectAnimator;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class boxesPage extends AppCompatActivity {
 
@@ -21,6 +24,12 @@ public class boxesPage extends AppCompatActivity {
     private ImageButton woodBox;
     private ImageButton silverBox;
     private ImageButton goldBox;
+    private ArrayList <cards> cardsArrayList;
+    private cards card;
+    private UserInfo user;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +44,7 @@ public class boxesPage extends AppCompatActivity {
         woodBox=findViewById(R.id.wood_box);
         silverBox=findViewById(R.id.silver_box);
         goldBox=findViewById(R.id.gold_box);
+
 
         backHomeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,11 +62,25 @@ public class boxesPage extends AppCompatActivity {
             }
         });
 
+
+        cardsArrayList=new ArrayList<cards>();
+        cardsArrayList.add(card=new cards("Freeze_time",R.drawable.card1));
+        cardsArrayList.add(card=new cards("Letter_theft",R.drawable.card2));
+        cardsArrayList.add(card=new cards("Exchange_letters",R.drawable.card3));
+        cardsArrayList.add(card=new cards("Stealing_time",R.drawable.card4));
+        cardsArrayList.add(card=new cards("Doubling_the_score",R.drawable.card5));
+        cardsArrayList.add(card=new cards("5_bonuses",R.drawable.card6));
+
+
         woodBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 anima(woodBox);
-                Toast.makeText(boxesPage.this,"נקנה בהצלחה",Toast.LENGTH_LONG).show();
+                Toast.makeText(boxesPage.this,"כרטיס 1 התווסף",Toast.LENGTH_LONG).show();
+                Random random = new Random();
+                int rndNum = random.nextInt(6);
+                card.setCardName(cardsArrayList.get(rndNum).getCardName());
+                MainActivity.user.addCard(card);
             }
         });
 
@@ -64,7 +88,14 @@ public class boxesPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 anima(silverBox);
-                Toast.makeText(boxesPage.this,"נקנה בהצלחה",Toast.LENGTH_LONG).show();
+                Toast.makeText(boxesPage.this,"שני כרטיסים התווספו",Toast.LENGTH_LONG).show();
+
+                for (int i=0;i<2;i++) {
+                    Random random = new Random();
+                    int rndNum = random.nextInt(6);
+                    card.setCardName(cardsArrayList.get(rndNum).getCardName());
+                    MainActivity.user.addCard(card);
+                }
             }
         });
 
@@ -72,7 +103,13 @@ public class boxesPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 anima(goldBox);
-                Toast.makeText(boxesPage.this,"נקנה בהצלחה",Toast.LENGTH_LONG).show();
+                Toast.makeText(boxesPage.this,"ארבעה כרטיסים התווספו",Toast.LENGTH_LONG).show();
+                for (int i=0;i<4;i++) {
+                    Random random = new Random();
+                    int rndNum = random.nextInt(6);
+                    card.setCardName(cardsArrayList.get(rndNum).getCardName());
+                    MainActivity.user.addCard(card);
+                }
             }
         });
 

@@ -197,4 +197,6 @@ private Intent showActivity;
         showActivity = new Intent(GamePage.this, winnerScreen.class);
         showActivity.putExtra("score",Integer.toString(playerCurrentPoints));
     }
+
+
 }
