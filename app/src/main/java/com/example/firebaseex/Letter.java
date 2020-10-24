@@ -3,14 +3,14 @@ package com.example.firebaseex;
 public class Letter {
     private String lett;
     private int scoring;
-    private String icon;
+    private int icon;
 
 
 
     public Letter(){
     }
 
-    public Letter(String lett, int scoring, String i) {
+    public Letter(String lett, int scoring, int i) {
         this.lett = lett;
         this.scoring = scoring;
         this.icon = i;
@@ -33,9 +33,9 @@ public class Letter {
         this.scoring = scoring;
     }
 
-    public String getIcon() { return icon; }
+    public int getIcon() { return icon; }
 
-    public void setIcon(String file) { icon = file;}
+    public void setIcon(int file) { icon = file;}
 
 
 

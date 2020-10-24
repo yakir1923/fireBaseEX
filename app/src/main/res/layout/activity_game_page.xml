@@ -7,14 +7,12 @@
     tools:context=".GamePage">
 
     <TableLayout
-        android:shrinkColumns="*"
         android:id="@+id/opponent_side"
         android:layout_width="0dp"
         android:layout_height="101dp"
-        android:layout_marginTop="3dp"
         android:background="#3C3B3A"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/game_layout"
+        android:shrinkColumns="*"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,8 +29,9 @@
                 android:layout_height="50dp"
                 android:background="#4A4948"
                 android:gravity="bottom|center"
-                android:textColor="#EFE087"
-                android:text="נקודות היריב"/>
+                android:text="נקודות היריב"
+                android:textColor="#EFE087" />
+
             <TextView
                 android:id="@+id/opponent_name"
                 android:layout_width="96dp"
@@ -75,21 +74,20 @@
     </TableLayout>
 
     <TableLayout
-        android:shrinkColumns="*"
         android:id="@+id/player_side"
         android:layout_width="413dp"
         android:layout_height="124dp"
         android:background="#3C3B3A"
         android:orientation="vertical"
+        android:shrinkColumns="*"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/game_layout">
+        app:layout_constraintStart_toStartOf="parent">
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/player_name"
@@ -99,10 +97,12 @@
                 android:gravity="bottom|center"
                 android:textColor="#EFE087" />
         </TableRow>
+
         <TableRow
             android:id="@+id/player_hand"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:id="@+id/player_points"
                 android:layout_width="110dp"
@@ -116,12 +116,11 @@
 
     <TableLayout
         android:id="@+id/game_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:background="#000000"
         android:shrinkColumns="*"
-        android:stretchColumns="0,1,2,3,4,5,6,7,8,9,10"
         app:layout_constraintBottom_toTopOf="@+id/player_side"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
