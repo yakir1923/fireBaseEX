@@ -193,6 +193,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         editor.putInt("level",user.getLevel());
         editor.putInt("userWin",user.getUserWin());
         editor.putInt("userLose",user.getUserLose());
+        editor.putInt("userPoints",user.getPlayerPoints());
         editor.commit();
         editor.apply();
         Log.i("SharedPreferences", user.getEmail()+" "+user.getName()+" "+user.getPassword());

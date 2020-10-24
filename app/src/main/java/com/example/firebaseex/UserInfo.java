@@ -7,6 +7,7 @@ public class UserInfo {
     private int level;
     private int userLose;
     private int userWin;
+    private int playerPoints;
 
     public UserInfo() {
     }
@@ -18,6 +19,7 @@ public class UserInfo {
         this.level=level;
         this.userLose=userLose;
         this.userWin=userWin;
+        this.playerPoints=0;
 
     }
     public int getUserLose() {
@@ -66,5 +68,13 @@ public class UserInfo {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public int getPlayerPoints() {
+        return playerPoints;
+    }
+
+    public void setPlayerPoints(int playerPoints) {
+        this.playerPoints = playerPoints;
     }
 }
