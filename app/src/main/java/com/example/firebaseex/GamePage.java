@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,25 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.annotations.Nullable;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -42,12 +60,16 @@ private int buttonId;
 private TextView timer;
 private Button nextTurn;
 private Letter letter;
-
+private Boolean myTurn;
 private Intent showActivity;
-
+  private   int turns=0;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        joinGame();
+       //startGame("kE18TB2qTAsmpKc2dnGT");
+        myTurn=false;
         setContentView(R.layout.activity_game_page);
         tableLayout=findViewById(R.id.game_layout);
         playerPoints=findViewById(R.id.player_points);
@@ -64,8 +86,8 @@ private Intent showActivity;
         playerName.setText(userDitale.getString("name",null));
         idNum=0;
         opponentName.setText("שני מוזס זמני");
-        timer=findViewById(R.id.timer_round);
-        setTimer();
+            timer = findViewById(R.id.timer_round);
+            setTimer();
         nextTurn=findViewById(R.id.next_turn);
         nextTurn.setBackground(getDrawable(R.drawable.active_button_color));
         nextTurn.setText("סיום");
@@ -113,6 +135,8 @@ private Intent showActivity;
                 @Override
                 public void onClick(View view) {
                     MyButton myButton=(MyButton)view;
+                    //check location of button
+                    //Toast.makeText(getApplicationContext(),myButton.getX()+","+myButton.getY(),Toast.LENGTH_SHORT).show();
                     if (myButton.getLetter()!=null) {
                         tempLetter=myButton.getLetter();
                         myButton.setBackground(getDrawable(R.drawable.my_button));
@@ -180,23 +204,124 @@ private Intent showActivity;
             }
         });
     }
+
+
     //טיימר
     public void setTimer(){
-        new CountDownTimer(30000, 1000) {
-
+        new CountDownTimer(3000, 1000) {
             public void onTick(long millisUntilFinished) {
                 timer.setText("seconds remaining: " + millisUntilFinished / 1000);
             }
 
             public void onFinish() {
                 timer.setText("done!");
-            }
+                    try {
+                        if (turns<10) {
+                            Thread.sleep(2000);
+                            myTurn = !myTurn;
+                            setTimer();
+                            turns++;
+                        }
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
         }.start();
+
     }
     private void sendScore(){
         showActivity = new Intent(GamePage.this, winnerScreen.class);
         showActivity.putExtra("score",Integer.toString(playerCurrentPoints));
     }
 
+
+    private void joinGame() {
+        db.collection("games")
+                .whereEqualTo("user2", "").limit(1)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if(task.getResult().size()==1){
+                                DocumentSnapshot documentSnapshot= task.getResult().getDocuments().get(0);
+                                Toast.makeText(getApplicationContext(),documentSnapshot.getId(),Toast.LENGTH_LONG).show();
+                                Game game=documentSnapshot.toObject(Game.class);
+                                if(!game.getUser1().equals(userDitale.getString("email",null))) {
+                                    update(documentSnapshot.getId());
+                                }else {
+                                    startGame(documentSnapshot.getId());
+                                }
+                            }else{
+                                creatGame();
+                            }
+                        } else {
+                            Log.d("notJoined", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+public void creatGame(){
+        Game game=new Game(userDitale.getString("email",null),"","hello");
+    db.collection("games")
+            .add(game)
+            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                @Override
+                public void onSuccess(DocumentReference documentReference) {
+                    Log.d("sucsesDB", "DocumentSnapshot written with ID: " + documentReference.getId());
+                Toast.makeText(getApplicationContext(),documentReference.getId(),Toast.LENGTH_LONG).show();
+                startGame(documentReference.getId());
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w("fDb", "Error adding document", e);
+                }
+            });
+}
+    public void  startGame(String gameId){
+        final DocumentReference docRef = db.collection("games").document(gameId);
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w("result", "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d("result", "Current data: " + snapshot.getData());
+                    Toast.makeText(getApplicationContext(),"workes",Toast.LENGTH_LONG).show();
+                } else {
+                    Log.d("result", "Current data: null");
+                }
+            }
+        });
+
+    }
+    public void update(final String gameId){
+        DocumentReference washingtonRef = db.collection("games").document(gameId);
+
+// Set the "isCapital" field of the city 'DC'
+        washingtonRef
+                .update("user2", userDitale.getString("email",null))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("sucsesUpDate", "DocumentSnapshot successfully updated!");
+                        startGame(gameId);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("fail", "Error updating document", e);
+                    }
+                });
+    }
 
 }

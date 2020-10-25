@@ -64,10 +64,12 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
          callbackManager = CallbackManager.Factory.create();
         mAuth = FirebaseAuth.getInstance();
         userDitale=getSharedPreferences("login",MODE_PRIVATE);
+        //TODO need
         //deleteSharedPreferences1();
        if (userDitale.getString("name",null)!=null&&
         userDitale.getString("email",null)!=null) {
             goToHomePage = new Intent(this, HomePage.class);
+
             startActivity(goToHomePage);
         }
 
