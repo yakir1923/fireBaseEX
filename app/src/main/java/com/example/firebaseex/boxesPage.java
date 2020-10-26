@@ -29,8 +29,6 @@ public class boxesPage extends AppCompatActivity {
     private UserInfo user;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
