@@ -50,6 +50,7 @@ private Drawable drawable;
 private int idNum;
 private ArrayList<Button> buttonList;
 private ArrayList<Letter> letterArrayList;
+ private ArrayList<Button> playerArrayList;
 private TableRow playerHand;
 private TableRow opponentHand;
 private static String tempLetter;
@@ -169,6 +170,7 @@ private Intent showActivity;
 
             //יצרה של היד של השחקן
         }
+
         for (i=0;i<10;i++){
             Random random=new Random();
             int rndNum=random.nextInt(22);
@@ -179,6 +181,7 @@ private Intent showActivity;
             button.setLetter(letterArrayList.get(rndNum).getLett());
             TableRow.LayoutParams buttonParamsPlayer=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             button.setLayoutParams(buttonParamsPlayer);
+        //   playerArrayList.add(button);
           //  button.setBackground(getDrawable(R.drawable.active_button_color));
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -315,7 +318,7 @@ public void creatGame(){
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("result", "Current data: " + snapshot.getData());
                     Toast.makeText(getApplicationContext(),snapshot.getString("data"),Toast.LENGTH_LONG).show();
-                    if (snapshot.getString("user1").toString()!="yakir1923@gmail.com"){
+                    if (snapshot.getString("user1").toString()=="yakir1923@gmail.com"){
                         playerName.setText("yakir moses");
                         opponentName.setText("shani moses");
                     }else {

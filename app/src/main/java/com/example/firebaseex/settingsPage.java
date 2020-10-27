@@ -35,6 +35,7 @@ public class settingsPage extends AppCompatActivity {
         });
 
         music=MediaPlayer.create(settingsPage.this,R.raw.background_music);
+
             music_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
