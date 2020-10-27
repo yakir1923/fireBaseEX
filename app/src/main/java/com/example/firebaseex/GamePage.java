@@ -28,10 +28,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -63,11 +60,22 @@ private Letter letter;
 private Boolean myTurn;
 private Intent showActivity;
   private   int turns=0;
+
+  private   static String gameID;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        joinGame();
+        Thread tg=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                joinGame();
+            }
+        });
+        tg.start();
+
+
+
        //startGame("kE18TB2qTAsmpKc2dnGT");
         myTurn=false;
         setContentView(R.layout.activity_game_page);
@@ -85,7 +93,7 @@ private Intent showActivity;
         userDitale=getSharedPreferences("login",MODE_PRIVATE);
         playerName.setText(userDitale.getString("name",null));
         idNum=0;
-        opponentName.setText("שני מוזס זמני");
+       opponentName.setText(setUserName());
             timer = findViewById(R.id.timer_round);
             setTimer();
         nextTurn=findViewById(R.id.next_turn);
@@ -205,10 +213,19 @@ private Intent showActivity;
         });
     }
 
+    private String setUserName() {
+        if (userDitale.getString("name",null)=="yakir moses")
+        {
+            return "שני";
+        }else{
+           return "yakir moses";
+        }
+    }
+
 
     //טיימר
     public void setTimer(){
-        new CountDownTimer(3000, 1000) {
+        new CountDownTimer(30000, 1000) {
             public void onTick(long millisUntilFinished) {
                 timer.setText("seconds remaining: " + millisUntilFinished / 1000);
             }
@@ -264,13 +281,14 @@ private Intent showActivity;
     }
 
 public void creatGame(){
-        Game game=new Game(userDitale.getString("email",null),"","hello");
+        final Game game=new Game(userDitale.getString("email",null),"","hello");
     db.collection("games")
             .add(game)
             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
                     Log.d("sucsesDB", "DocumentSnapshot written with ID: " + documentReference.getId());
+                 gameID=documentReference.getId();
                 Toast.makeText(getApplicationContext(),documentReference.getId(),Toast.LENGTH_LONG).show();
                 startGame(documentReference.getId());
                 }
@@ -281,6 +299,7 @@ public void creatGame(){
                     Log.w("fDb", "Error adding document", e);
                 }
             });
+
 }
     public void  startGame(String gameId){
         final DocumentReference docRef = db.collection("games").document(gameId);
@@ -295,7 +314,8 @@ public void creatGame(){
 
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("result", "Current data: " + snapshot.getData());
-                    Toast.makeText(getApplicationContext(),"workes",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),snapshot.getString("data"),Toast.LENGTH_LONG).show();
+                    opponentName.setText(snapshot.getString("user2"));
                 } else {
                     Log.d("result", "Current data: null");
                 }
@@ -322,6 +342,8 @@ public void creatGame(){
                         Log.w("fail", "Error updating document", e);
                     }
                 });
+
     }
+
 
 }

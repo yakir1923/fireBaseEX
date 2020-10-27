@@ -1,0 +1,19 @@
+Index: .idea/inspectionProfiles/Project_Default.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/inspectionProfiles/Project_Default.xml	(date 1603533519382)
++++ .idea/inspectionProfiles/Project_Default.xml	(date 1603533519382)
+@@ -0,0 +1,10 @@
++<component name="InspectionProjectProfileManager">
++  <profile version="1.0">
++    <option name="myName" value="Project Default" />
++    <inspection_tool class="ConstantConditions" enabled="true" level="WARNING" enabled_by_default="true">
++      <option name="SUGGEST_NULLABLE_ANNOTATIONS" value="false" />
++      <option name="DONT_REPORT_TRUE_ASSERT_STATEMENTS" value="false" />
++    </inspection_tool>
++    <inspection_tool class="Deprecation" enabled="false" level="WARNING" enabled_by_default="false" />
++  </profile>
++</component>
+\ No newline at end of file
