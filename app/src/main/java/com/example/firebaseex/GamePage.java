@@ -303,6 +303,7 @@ public void creatGame(){
 }
     public void  startGame(String gameId){
         final DocumentReference docRef = db.collection("games").document(gameId);
+        final DocumentReference usersname=db.collection("Users").document("email");
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -311,11 +312,18 @@ public void creatGame(){
                     Log.w("result", "Listen failed.", e);
                     return;
                 }
-
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("result", "Current data: " + snapshot.getData());
                     Toast.makeText(getApplicationContext(),snapshot.getString("data"),Toast.LENGTH_LONG).show();
-                    opponentName.setText(snapshot.getString("user2"));
+                    if (snapshot.getString("user1").toString()!="yakir1923@gmail.com"){
+                        playerName.setText("yakir moses");
+                        opponentName.setText("shani moses");
+                    }else {
+                        playerName.setText("shani moses");
+                        opponentName.setText("yakir moses");
+
+
+                    }
                 } else {
                     Log.d("result", "Current data: null");
                 }
