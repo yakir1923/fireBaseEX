@@ -61,12 +61,12 @@ private Letter letter;
 private Boolean myTurn;
 private Intent showActivity;
   private   int turns=0;
-
   private   static String gameID;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_game_page);
         Thread tg=new Thread(new Runnable() {
             @Override
             public void run() {
@@ -78,8 +78,8 @@ private Intent showActivity;
 
 
        //startGame("kE18TB2qTAsmpKc2dnGT");
-        myTurn=false;
-        setContentView(R.layout.activity_game_page);
+
+        db = FirebaseFirestore.getInstance();
         tableLayout=findViewById(R.id.game_layout);
         playerPoints=findViewById(R.id.player_points);
         playerName=findViewById(R.id.player_name);
@@ -306,7 +306,6 @@ public void creatGame(){
 }
     public void  startGame(String gameId){
         final DocumentReference docRef = db.collection("games").document(gameId);
-        final DocumentReference usersname=db.collection("Users").document("email");
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -318,7 +317,8 @@ public void creatGame(){
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("result", "Current data: " + snapshot.getData());
                     Toast.makeText(getApplicationContext(),snapshot.getString("data"),Toast.LENGTH_LONG).show();
-                    if (snapshot.getString("user1").toString()=="yakir1923@gmail.com"){
+
+                    if (snapshot.getString("user1").toString()!="yakir1923@gmail.com"){
                         playerName.setText("yakir moses");
                         opponentName.setText("shani moses");
                     }else {
