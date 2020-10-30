@@ -54,14 +54,14 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.GoogleBuilder().build()
     );
-    CallbackManager callbackManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         goToHomePage=new Intent(this,User_profile.class);
-         callbackManager = CallbackManager.Factory.create();
+
         mAuth = FirebaseAuth.getInstance();
         userDitale=getSharedPreferences("login",MODE_PRIVATE);
         //TODO need
@@ -74,41 +74,6 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
         }
 
 
-
-       /* LoginButton  loginButton=findViewById(R.id.login_button);
-        loginButton.setReadPermissions(Arrays.asList(EMAIL));
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                // App code
-                userFacebookID=loginResult.getAccessToken().getUserId();
-
-            }
-
-            @Override
-            public void onCancel() {
-                // App code
-            }
-            @Override
-            public void onError(FacebookException exception) {
-                // App code
-
-            }
-        });
-        try {
-            PackageInfo info = this.getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                String hashKey = new String(Base64.encode(md.digest(), 0));
-                Log.i("ssssssss", "printHashKey() Hash Key: " + hashKey);
-            }
-        } catch (NoSuchAlgorithmException e) {
-            Log.e("error", "printHashKey()", e);
-        } catch (Exception e) {
-            Log.e("error", "printHashKey()", e);
-        }
-        */
         Button button = findViewById(R.id.send_to_firebase);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,19 +182,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
             }
         });
 
-       /*  db.collection(nameOfCollection).document(user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-             @Override
-             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                 if(task.isSuccessful())
-                 {
-                   DocumentSnapshot  d=task.getResult();
-                   if (d.exists()){
-                      UserInfo userTest= d.toObject(UserInfo.class);
-                       Log.i("testD", userTest.getEmail());
-                   }
-                 }
-             }
-         });*/
+
 
     }
 

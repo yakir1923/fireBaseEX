@@ -58,7 +58,7 @@ private int buttonId;
 private TextView timer;
 private Button nextTurn;
 private Letter letter;
-private Boolean myTurn;
+//private Boolean myTurn;
 private Intent showActivity;
   private   int turns=0;
   private   static String gameID;
@@ -238,7 +238,7 @@ private Intent showActivity;
                     try {
                         if (turns<10) {
                             Thread.sleep(2000);
-                            myTurn = !myTurn;
+       //                     myTurn = !myTurn;
                             setTimer();
                             turns++;
                         }
