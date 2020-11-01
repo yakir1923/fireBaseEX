@@ -29,6 +29,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.okhttp.internal.DiskLruCache;
@@ -55,7 +56,7 @@ private SharedPreferences.Editor editor;
 private SharedPreferences userDitale;
 private Drawable drawable;
 private int idNum;
-private ArrayList<Button> buttonList;
+private ArrayList<MyButton> buttonList;
 private ArrayList<Letter> letterArrayList;
  private ArrayList<Button> playerArrayList;
 private TableRow playerHand;
@@ -74,13 +75,15 @@ private String gameId;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_page);
-        Thread tg=new Thread(new Runnable() {
-            @Override
-            public void run() {
-                joinGame();
-            }
-        });
-        tg.start();
+        userDitale=getSharedPreferences("login",MODE_PRIVATE);
+//        Thread tg=new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        });
+ //     tg.start();
+        joinGame();
 
        //startGame("kE18TB2qTAsmpKc2dnGT");
         db = FirebaseFirestore.getInstance();
@@ -95,7 +98,7 @@ private String gameId;
         opponentCurrentPoints=0;
         playerPoints.setText("0");
         opponentPoints.setText("0");
-        userDitale=getSharedPreferences("login",MODE_PRIVATE);
+
         playerName.setText(userDitale.getString("name",null));
         idNum=0;
        opponentName.setText(setUserName());
@@ -131,7 +134,7 @@ private String gameId;
         letterArrayList.add(letter=new Letter("ת",40,R.drawable.taf));
 
         //יצירת מסך וגם שמירה של כל הכפתורים ברשימה
-        buttonList=new ArrayList<Button>();
+        buttonList=new ArrayList<MyButton>();
         for (i=0;i<10;i++) {
             tableRow=new TableRow(this);
             TableRow.LayoutParams params=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -357,8 +360,7 @@ public void creatGame(){
     }
 
     public String searchForGameId(){
-        CollectionReference collectionReference=db.collection("games");
-
-        return "game_id";
+        final String gameId="gameId";
+  return gameId;
     }
 }

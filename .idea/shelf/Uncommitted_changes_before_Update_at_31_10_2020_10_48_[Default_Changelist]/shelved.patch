@@ -1,0 +1,365 @@
+Index: app/src/main/java/com/example/firebaseex/GamePage.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.firebaseex;\r\n\r\nimport android.content.Intent;\r\nimport android.content.SharedPreferences;\r\nimport android.graphics.drawable.Drawable;\r\nimport android.os.Bundle;\r\nimport android.os.CountDownTimer;\r\nimport android.util.Log;\r\nimport android.view.Gravity;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.Button;\r\nimport android.widget.TableLayout;\r\nimport android.widget.TableRow;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport com.google.android.gms.tasks.OnCompleteListener;\r\nimport com.google.android.gms.tasks.OnFailureListener;\r\nimport com.google.android.gms.tasks.OnSuccessListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.firebase.database.annotations.Nullable;\r\nimport com.google.firebase.firestore.DocumentReference;\r\nimport com.google.firebase.firestore.DocumentSnapshot;\r\nimport com.google.firebase.firestore.EventListener;\r\nimport com.google.firebase.firestore.FirebaseFirestore;\r\nimport com.google.firebase.firestore.FirebaseFirestoreException;\r\nimport com.google.firebase.firestore.QuerySnapshot;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.Random;\r\n\r\npublic class GamePage extends AppCompatActivity {\r\nprivate MyButton button;\r\nprivate int i,j;\r\nprivate TableLayout tableLayout;\r\nprivate TableRow tableRow;\r\nprivate TextView playerPoints;\r\nprivate TextView playerName;\r\nprivate TextView opponentName;\r\nprivate TextView opponentPoints;\r\nprivate int playerCurrentPoints;\r\nprivate int opponentCurrentPoints;\r\nprivate SharedPreferences.Editor editor;\r\nprivate SharedPreferences userDitale;\r\nprivate Drawable drawable;\r\nprivate int idNum;\r\nprivate ArrayList<Button> buttonList;\r\nprivate ArrayList<Letter> letterArrayList;\r\n private ArrayList<Button> playerArrayList;\r\nprivate TableRow playerHand;\r\nprivate TableRow opponentHand;\r\nprivate static String tempLetter;\r\nprivate int buttonId;\r\nprivate TextView timer;\r\nprivate Button nextTurn;\r\nprivate Letter letter;\r\nprivate Boolean myTurn;\r\nprivate Intent showActivity;\r\n  private   int turns=0;\r\n  private   static String gameID;\r\n    FirebaseFirestore db = FirebaseFirestore.getInstance();\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_game_page);\r\n        Thread tg=new Thread(new Runnable() {\r\n            @Override\r\n            public void run() {\r\n                joinGame();\r\n            }\r\n        });\r\n        tg.start();\r\n\r\n\r\n\r\n       //startGame(\"kE18TB2qTAsmpKc2dnGT\");\r\n\r\n        db = FirebaseFirestore.getInstance();\r\n        tableLayout=findViewById(R.id.game_layout);\r\n        playerPoints=findViewById(R.id.player_points);\r\n        playerName=findViewById(R.id.player_name);\r\n        opponentName=findViewById(R.id.opponent_name);\r\n        opponentPoints=findViewById(R.id.opponent_points);\r\n        playerHand=findViewById(R.id.player_hand);\r\n        opponentHand=findViewById(R.id.opponent_hand);\r\n        playerCurrentPoints=0;\r\n        opponentCurrentPoints=0;\r\n        playerPoints.setText(\"0\");\r\n        opponentPoints.setText(\"0\");\r\n        userDitale=getSharedPreferences(\"login\",MODE_PRIVATE);\r\n        playerName.setText(userDitale.getString(\"name\",null));\r\n        idNum=0;\r\n       opponentName.setText(setUserName());\r\n            timer = findViewById(R.id.timer_round);\r\n            setTimer();\r\n        nextTurn=findViewById(R.id.next_turn);\r\n        nextTurn.setBackground(getDrawable(R.drawable.active_button_color));\r\n        nextTurn.setText(\"סיום\");\r\n\r\n        //יצירת רשימה של אותיות\r\n        letterArrayList=new ArrayList<Letter>();\r\n        letterArrayList.add(letter=new Letter(\"א\",10,R.drawable.alef));\r\n        letterArrayList.add(letter=new Letter(\"ב\",10,R.drawable.beit));\r\n        letterArrayList.add(letter=new Letter(\"ג\",20,R.drawable.gimel));\r\n        letterArrayList.add(letter=new Letter(\"ד\",30,R.drawable.daled));\r\n        letterArrayList.add(letter=new Letter(\"ה\",10,R.drawable.hei));\r\n        letterArrayList.add(letter=new Letter(\"ו\",5,R.drawable.vav));\r\n        letterArrayList.add(letter=new Letter(\"ז\",80,R.drawable.zain));\r\n        letterArrayList.add(letter=new Letter(\"ח\",30,R.drawable.chet));\r\n        letterArrayList.add(letter=new Letter(\"ט\",40,R.drawable.tet));\r\n        letterArrayList.add(letter=new Letter(\"י\",30,R.drawable.yud));\r\n        letterArrayList.add(letter=new Letter(\"כ\",70,R.drawable.chaf));\r\n        letterArrayList.add(letter=new Letter(\"ל\",40,R.drawable.lamed));\r\n        letterArrayList.add(letter=new Letter(\"מ\",60,R.drawable.mem));\r\n        letterArrayList.add(letter=new Letter(\"נ\",30,R.drawable.non));\r\n        letterArrayList.add(letter=new Letter(\"ס\",50,R.drawable.samech));\r\n        letterArrayList.add(letter=new Letter(\"ע\",80,R.drawable.aein));\r\n        letterArrayList.add(letter=new Letter(\"פ\",90,R.drawable.pey));\r\n        letterArrayList.add(letter=new Letter(\"צ\",100,R.drawable.tzadik));\r\n        letterArrayList.add(letter=new Letter(\"ק\",60,R.drawable.kof));\r\n        letterArrayList.add(letter=new Letter(\"ר\",40,R.drawable.resha));\r\n        letterArrayList.add(letter=new Letter(\"ש\",50,R.drawable.shin));\r\n        letterArrayList.add(letter=new Letter(\"ת\",40,R.drawable.taf));\r\n\r\n        //יצירת מסך וגם שמירה של כל הכפתורים ברשימה\r\n        buttonList=new ArrayList<Button>();\r\n        for (i=0;i<10;i++) {\r\n            tableRow=new TableRow(this);\r\n            TableRow.LayoutParams params=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);\r\n            tableLayout.addView(tableRow);\r\n            tableRow.setGravity(Gravity.CENTER);\r\n            tableRow.setLayoutParams(params);\r\n            for (j=0;j<10;j++){\r\n                  button=new MyButton(this,i,j);\r\n                  button.setId(idNum);\r\n                  idNum++;\r\n                  button.setBackground(getDrawable(R.drawable.my_button));\r\n                  button.setText(null);\r\n                  button.setOnClickListener(new View.OnClickListener() {\r\n                @Override\r\n                public void onClick(View view) {\r\n                    MyButton myButton=(MyButton)view;\r\n                    //check location of button\r\n                    //Toast.makeText(getApplicationContext(),myButton.getX()+\",\"+myButton.getY(),Toast.LENGTH_SHORT).show();\r\n                    if (myButton.getLetter()!=null) {\r\n                        tempLetter=myButton.getLetter();\r\n                        myButton.setBackground(getDrawable(R.drawable.my_button));\r\n                        myButton.setLetter(null);\r\n                    }else{\r\n\r\n                        for (Letter l:letterArrayList){\r\n                            if (l.getLett()==tempLetter)\r\n                            myButton.setBackgroundDrawable(getDrawable(l.getIcon()));\r\n                            myButton.setLetter(tempLetter);\r\n                            TableRow.LayoutParams buttonParams=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);\r\n                            myButton.setLayoutParams(buttonParams);\r\n                        }\r\n                        tempLetter = null;\r\n\r\n                    }\r\n                }\r\n            });\r\n                tableRow.addView(button);\r\n                buttonList.add(button);\r\n        }\r\n\r\n            //יצרה של היד של השחקן\r\n        }\r\n\r\n        for (i=0;i<10;i++){\r\n            Random random=new Random();\r\n            int rndNum=random.nextInt(22);\r\n            playerHand.addView(button=new MyButton(this,0,0));\r\n            button.setBackground(getDrawable(R.drawable.my_button));\r\n            //button.setText(letterArrayList.get(rndNum).getLett());\r\n            button.setBackgroundDrawable(getDrawable(letterArrayList.get(rndNum).getIcon()));\r\n            button.setLetter(letterArrayList.get(rndNum).getLett());\r\n            TableRow.LayoutParams buttonParamsPlayer=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);\r\n            button.setLayoutParams(buttonParamsPlayer);\r\n        //   playerArrayList.add(button);\r\n          //  button.setBackground(getDrawable(R.drawable.active_button_color));\r\n            button.setOnClickListener(new View.OnClickListener() {\r\n                @Override\r\n                public void onClick(View view) {\r\n                    MyButton myButton=(MyButton)view;\r\n                    if (myButton.getLetter()!=null) {\r\n                        tempLetter = myButton.getLetter();\r\n                        myButton.setLetter(null);\r\n                        myButton.setBackground(getDrawable(R.drawable.my_button));\r\n                    }\r\n                    else{\r\n                        for (Letter l:letterArrayList){\r\n                            if (l.getLett()==tempLetter){\r\n                                myButton.setBackgroundDrawable(getDrawable(l.getIcon()));\r\n                                myButton.setBackground(getDrawable(l.getIcon()));\r\n                                myButton.setLetter(tempLetter);\r\n                                TableRow.LayoutParams buttonParamsPlayer=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);\r\n                                myButton.setLayoutParams(buttonParamsPlayer);\r\n                         }\r\n                        }\r\n                        tempLetter=null;\r\n                    }\r\n                }\r\n            });\r\n\r\n        }\r\n        nextTurn.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                \r\n            }\r\n        });\r\n    }\r\n\r\n    private String setUserName() {\r\n        if (userDitale.getString(\"name\",null)==\"yakir moses\")\r\n        {\r\n            return \"שני\";\r\n        }else{\r\n           return \"yakir moses\";\r\n        }\r\n    }\r\n\r\n\r\n    //טיימר\r\n    public void setTimer(){\r\n        new CountDownTimer(30000, 1000) {\r\n            public void onTick(long millisUntilFinished) {\r\n                timer.setText(\"seconds remaining: \" + millisUntilFinished / 1000);\r\n            }\r\n\r\n            public void onFinish() {\r\n                timer.setText(\"done!\");\r\n                    try {\r\n                        if (turns<10) {\r\n                            Thread.sleep(2000);\r\n                            myTurn = !myTurn;\r\n                            setTimer();\r\n                            turns++;\r\n                        }\r\n\r\n                    } catch (InterruptedException e) {\r\n                        e.printStackTrace();\r\n                    }\r\n                }\r\n        }.start();\r\n\r\n    }\r\n    private void sendScore(){\r\n        showActivity = new Intent(GamePage.this, winnerScreen.class);\r\n        showActivity.putExtra(\"score\",Integer.toString(playerCurrentPoints));\r\n    }\r\n\r\n\r\n    private void joinGame() {\r\n        db.collection(\"games\")\r\n                .whereEqualTo(\"user2\", \"\").limit(1)\r\n                .get()\r\n                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {\r\n                    @Override\r\n                    public void onComplete(@NonNull Task<QuerySnapshot> task) {\r\n                        if (task.isSuccessful()) {\r\n                            if(task.getResult().size()==1){\r\n                                DocumentSnapshot documentSnapshot= task.getResult().getDocuments().get(0);\r\n                                Toast.makeText(getApplicationContext(),documentSnapshot.getId(),Toast.LENGTH_LONG).show();\r\n                                Game game=documentSnapshot.toObject(Game.class);\r\n                                if(!game.getUser1().equals(userDitale.getString(\"email\",null))) {\r\n                                    update(documentSnapshot.getId());\r\n                                }else {\r\n                                    startGame(documentSnapshot.getId());\r\n                                }\r\n                            }else{\r\n                                creatGame();\r\n                            }\r\n                        } else {\r\n                            Log.d(\"notJoined\", \"Error getting documents: \", task.getException());\r\n                        }\r\n                    }\r\n                });\r\n    }\r\n\r\npublic void creatGame(){\r\n        final Game game=new Game(userDitale.getString(\"email\",null),\"\",\"hello\");\r\n    db.collection(\"games\")\r\n            .add(game)\r\n            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {\r\n                @Override\r\n                public void onSuccess(DocumentReference documentReference) {\r\n                    Log.d(\"sucsesDB\", \"DocumentSnapshot written with ID: \" + documentReference.getId());\r\n                 gameID=documentReference.getId();\r\n                Toast.makeText(getApplicationContext(),documentReference.getId(),Toast.LENGTH_LONG).show();\r\n                startGame(documentReference.getId());\r\n                }\r\n            })\r\n            .addOnFailureListener(new OnFailureListener() {\r\n                @Override\r\n                public void onFailure(@NonNull Exception e) {\r\n                    Log.w(\"fDb\", \"Error adding document\", e);\r\n                }\r\n            });\r\n\r\n}\r\n    public void  startGame(String gameId){\r\n        final DocumentReference docRef = db.collection(\"games\").document(gameId);\r\n        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {\r\n            @Override\r\n            public void onEvent(@Nullable DocumentSnapshot snapshot,\r\n                                @Nullable FirebaseFirestoreException e) {\r\n                if (e != null) {\r\n                    Log.w(\"result\", \"Listen failed.\", e);\r\n                    return;\r\n                }\r\n                if (snapshot != null && snapshot.exists()) {\r\n                    Log.d(\"result\", \"Current data: \" + snapshot.getData());\r\n                    Toast.makeText(getApplicationContext(),snapshot.getString(\"data\"),Toast.LENGTH_LONG).show();\r\n\r\n                    if (snapshot.getString(\"user1\").toString()!=\"yakir1923@gmail.com\"){\r\n                        playerName.setText(\"yakir moses\");\r\n                        opponentName.setText(\"shani moses\");\r\n                    }else {\r\n                        playerName.setText(\"shani moses\");\r\n                        opponentName.setText(\"yakir moses\");\r\n\r\n\r\n                    }\r\n                } else {\r\n                    Log.d(\"result\", \"Current data: null\");\r\n                }\r\n            }\r\n        });\r\n\r\n    }\r\n    public void update(final String gameId){\r\n        DocumentReference washingtonRef = db.collection(\"games\").document(gameId);\r\n\r\n// Set the \"isCapital\" field of the city 'DC'\r\n        washingtonRef\r\n                .update(\"user2\", userDitale.getString(\"email\",null))\r\n                .addOnSuccessListener(new OnSuccessListener<Void>() {\r\n                    @Override\r\n                    public void onSuccess(Void aVoid) {\r\n                        Log.d(\"sucsesUpDate\", \"DocumentSnapshot successfully updated!\");\r\n                        startGame(gameId);\r\n                    }\r\n                })\r\n                .addOnFailureListener(new OnFailureListener() {\r\n                    @Override\r\n                    public void onFailure(@NonNull Exception e) {\r\n                        Log.w(\"fail\", \"Error updating document\", e);\r\n                    }\r\n                });\r\n\r\n    }\r\n\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/firebaseex/GamePage.java	(revision 7dc6bb46be0f8cab925e4f78ab728dff6c6c49b6)
++++ app/src/main/java/com/example/firebaseex/GamePage.java	(date 1604007368941)
+@@ -48,7 +48,7 @@
+ private SharedPreferences userDitale;
+ private Drawable drawable;
+ private int idNum;
+-private ArrayList<Button> buttonList;
++private ArrayList<MyButton> buttonList;
+ private ArrayList<Letter> letterArrayList;
+  private ArrayList<Button> playerArrayList;
+ private TableRow playerHand;
+@@ -127,7 +127,7 @@
+         letterArrayList.add(letter=new Letter("ת",40,R.drawable.taf));
+ 
+         //יצירת מסך וגם שמירה של כל הכפתורים ברשימה
+-        buttonList=new ArrayList<Button>();
++        buttonList=new ArrayList<MyButton>();
+         for (i=0;i<10;i++) {
+             tableRow=new TableRow(this);
+             TableRow.LayoutParams params=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+@@ -238,7 +238,6 @@
+                     try {
+                         if (turns<10) {
+                             Thread.sleep(2000);
+-                            myTurn = !myTurn;
+                             setTimer();
+                             turns++;
+                         }
+@@ -344,6 +343,10 @@
+                     @Override
+                     public void onSuccess(Void aVoid) {
+                         Log.d("sucsesUpDate", "DocumentSnapshot successfully updated!");
++                        String letters[][]=new String[10][10];
++                        for (MyButton button:buttonList){
++
++                        }
+                         startGame(gameId);
+                     }
+                 })
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_23_10_2020_12_00__Default_Changelist_.xml
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_23_10_2020_12_00__Default_Changelist_.xml	(revision 7dc6bb46be0f8cab925e4f78ab728dff6c6c49b6)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_23_10_2020_12_00__Default_Changelist_.xml	(revision 7dc6bb46be0f8cab925e4f78ab728dff6c6c49b6)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_23_10_2020_12_00_[Default_Changelist]" date="1603443651846" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_23_10_2020_12_00_[Default_Changelist]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 23/10/2020 12:00 [Default Changelist]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_23_10_2020_12_00_[Default_Changelist]/shelved.patch
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_23_10_2020_12_00_[Default_Changelist]/shelved.patch	(revision 7dc6bb46be0f8cab925e4f78ab728dff6c6c49b6)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_23_10_2020_12_00_[Default_Changelist]/shelved.patch	(revision 7dc6bb46be0f8cab925e4f78ab728dff6c6c49b6)
+@@ -1,284 +0,0 @@
+-Index: app/src/main/java/com/example/firebaseex/Coord.java
+-===================================================================
+---- app/src/main/java/com/example/firebaseex/Coord.java	(revision 745c9e54e53d79b45ab8100c01c127ded61703e9)
+-+++ app/src/main/java/com/example/firebaseex/Coord.java	(revision 745c9e54e53d79b45ab8100c01c127ded61703e9)
+-@@ -1,45 +0,0 @@
+--package com.example.firebaseex;
+--
+--public class Coord {
+--
+--    private int row;
+--    private int col;
+--
+--
+--    public Coord(int r, int c) {
+--        row = r;
+--        col = c;
+--    }
+--
+--
+--    public int getRow() {
+--        return row;
+--    }
+--
+--    public int getCol() {
+--        return col;
+--    }
+--
+--    @Override
+--    public boolean equals(Object obj) {
+--        if (!(obj instanceof Coord))
+--            return false;
+--        if (obj == this)
+--            return true;
+--        Coord c = (Coord) obj;
+--        return (this.row == c.row && this.col == c.col);
+--
+--    }
+--
+--    @Override
+--    public int hashCode() {
+--        return 0;
+--    }
+--
+--    @Override
+--    public String toString() {
+--        if (row < 0 || col < 0)
+--            return "(-,-)";
+--        return "(" + row + "," + col + ")";
+--    }
+--}
+-Index: app/src/main/java/com/example/firebaseex/vocabulary.java
+-===================================================================
+---- app/src/main/java/com/example/firebaseex/vocabulary.java	(revision 745c9e54e53d79b45ab8100c01c127ded61703e9)
+-+++ app/src/main/java/com/example/firebaseex/vocabulary.java	(revision 745c9e54e53d79b45ab8100c01c127ded61703e9)
+-@@ -1,80 +0,0 @@
+--package com.example.firebaseex;
+--
+--import java.io.File;
+--import java.io.FileNotFoundException;
+--import java.util.ArrayList;
+--import java.util.Scanner;
+--
+--public class vocabulary {
+--
+--    private File file;
+--    private ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+--    private ArrayList<String> allChecked = new ArrayList<String>();
+--    private ArrayList<String> legalChecked = new ArrayList<String>();
+--
+--    public vocabulary(String filename) {
+--        file = new File(filename);
+--        saveWordsAlphabetically();
+--    }
+--// saves the words in the dictionary to arraylist
+--    private void saveWordsAlphabetically() {
+--        try {
+--            Scanner scanner = new Scanner(file);
+--            //checking if word is in the file
+--            String firstTwoLetters = null;
+--            ArrayList<String> currentLetterList = new ArrayList<String>(400);
+--            while (scanner.hasNextLine()) {
+--                String word = scanner.nextLine().toLowerCase();
+--                if (firstTwoLetters == null)
+--                    firstTwoLetters = word.substring(0, 2);
+--
+--                if (firstTwoLetters.equals(word.substring(0, 2)))
+--                    currentLetterList.add(word);
+--                else {
+--                    list.add(currentLetterList);
+--                    firstTwoLetters = word.substring(0, 2);
+--                    currentLetterList = new ArrayList<String>();
+--                    currentLetterList.add(word);
+--                }
+--            }
+--            scanner.close();
+--        } catch (FileNotFoundException e) {
+--            System.out.println("File not found: " + file);
+--        }
+--        for (int i = list.size() - 1; i >= 0; i--)
+--            if (list.get(i).size() == 0)
+--                list.remove(i);
+--    }
+--//checks if the given word is a legal scrabble word  'word' word to check return true or false
+--    public boolean isWord(String word) {
+--        if (legalChecked.contains(word))
+--            return true;
+--        if (allChecked.contains(word) && !legalChecked.contains(word))
+--            return false;
+--        if (inDict(word)) {
+--            legalChecked.add(word);
+--            allChecked.add(word);
+--            return true;
+--        }
+--        allChecked.add(word);
+--        return false;
+--    }
+--//checks if the given word is in the supplied dictionary
+--    private boolean inDict(String word) {
+--        if (word.length() < 2)
+--            return false;
+--        String w = word.toLowerCase();
+--        char firstLetter = w.charAt(0);
+--        char secondLetter = w.charAt(1);
+--        for (int i = 0; i < list.size(); i++)
+--            if (list.get(i).get(0).charAt(0) == firstLetter
+--                    && list.get(i).get(0).charAt(1) == secondLetter) {
+--                for (int j = 0; j < list.get(i).size(); j++) {
+--                    if (list.get(i).get(j).toLowerCase().equals(w))
+--                        return true;
+--                }
+--                return false;
+--            }
+--        return false;
+--    }
+--}
+-\ No newline at end of file
+-Index: app/src/main/java/com/example/firebaseex/progressBarAnimation.java
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- app/src/main/java/com/example/firebaseex/progressBarAnimation.java	(date 1603443648423)
+-+++ app/src/main/java/com/example/firebaseex/progressBarAnimation.java	(date 1603443648423)
+-@@ -0,0 +1,6 @@
+-+package com.example.firebaseex;
+-+
+-+public class progressBarAnimation {
+-+
+-+
+-+}
+-Index: app/src/main/AndroidManifest.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    package=\"com.example.firebaseex\">\r\n\r\n    <uses-permission android:name=\"android.permission.INTERNET\" />\r\n\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/AppTheme\">\r\n        <activity android:name=\".GamePage\"></activity>\r\n        <activity android:name=\".settingsPage\" />\r\n        <activity android:name=\".cardPage\" />\r\n        <activity android:name=\".boxesPage\" />\r\n        <activity android:name=\".HomePage\" />\r\n        <activity android:name=\".User_profile\" />\r\n        <activity android:name=\".MainActivity\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n\r\n        <meta-data\r\n            android:name=\"com.facebook.sdk.ApplicationId\"\r\n            android:value=\"@string/facebook_app_id\"\r\n            tools:replace=\"android:value\" />\r\n        <meta-data\r\n            android:name=\"preloaded_fonts\"\r\n            android:resource=\"@array/preloaded_fonts\" />\r\n\r\n        <activity\r\n            android:name=\"com.facebook.FacebookActivity\"\r\n            android:configChanges=\"keyboard|keyboardHidden|screenLayout|screenSize|orientation\"\r\n            android:label=\"@string/app_name\" />\r\n        <activity\r\n            android:name=\"com.facebook.CustomTabActivity\"\r\n            android:exported=\"true\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.VIEW\" />\r\n\r\n                <category android:name=\"android.intent.category.DEFAULT\" />\r\n                <category android:name=\"android.intent.category.BROWSABLE\" />\r\n\r\n                <data android:scheme=\"@string/fb_login_protocol_scheme\" />\r\n            </intent-filter>\r\n        </activity>\r\n    </application>\r\n\r\n</manifest>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- app/src/main/AndroidManifest.xml	(revision 745c9e54e53d79b45ab8100c01c127ded61703e9)
+-+++ app/src/main/AndroidManifest.xml	(date 1603397751853)
+-@@ -12,7 +12,8 @@
+-         android:roundIcon="@mipmap/ic_launcher_round"
+-         android:supportsRtl="true"
+-         android:theme="@style/AppTheme">
+--        <activity android:name=".GamePage"></activity>
+-+        <activity android:name=".LoadingScreen"></activity>
+-+        <activity android:name=".GamePage" />
+-         <activity android:name=".settingsPage" />
+-         <activity android:name=".cardPage" />
+-         <activity android:name=".boxesPage" />
+-Index: app/src/main/java/com/example/firebaseex/LoadingScreen.java
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- app/src/main/java/com/example/firebaseex/LoadingScreen.java	(date 1603397778232)
+-+++ app/src/main/java/com/example/firebaseex/LoadingScreen.java	(date 1603397778232)
+-@@ -0,0 +1,14 @@
+-+package com.example.firebaseex;
+-+
+-+import android.os.Bundle;
+-+
+-+import androidx.appcompat.app.AppCompatActivity;
+-+
+-+public class LoadingScreen extends AppCompatActivity {
+-+
+-+    @Override
+-+    protected void onCreate(Bundle savedInstanceState) {
+-+        super.onCreate(savedInstanceState);
+-+        setContentView(R.layout.activity_loading_screen);
+-+    }
+-+}
+-\ No newline at end of file
+-Index: app/src/main/res/layout/activity_loading_screen.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- app/src/main/res/layout/activity_loading_screen.xml	(date 1603441321465)
+-+++ app/src/main/res/layout/activity_loading_screen.xml	(date 1603441321465)
+-@@ -0,0 +1,32 @@
+-+<?xml version="1.0" encoding="utf-8"?>
+-+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+-+    xmlns:app="http://schemas.android.com/apk/res-auto"
+-+    xmlns:tools="http://schemas.android.com/tools"
+-+    android:layout_width="match_parent"
+-+    android:layout_height="match_parent"
+-+    android:padding="16dp"
+-+    android:background="@drawable/background"
+-+    tools:context=".LoadingScreen">
+-+
+-+    <TextView
+-+        android:layout_width="wrap_content"
+-+        android:layout_height="wrap_content"
+-+        android:text="0 %"
+-+        android:textColor="#fff"
+-+        android:textSize="25sp"
+-+        android:id="@+id/text_view"
+-+        android:layout_centerHorizontal="true"
+-+        android:layout_above="@+id/progress_bar"
+-+
+-+    />
+-+
+-+    <progressBar
+-+        android:layout_width="wrap_content"
+-+        android:layout_height="wrap_content"
+-+        android:id="@+id/progress_bar"
+-+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+-+        android:layout_alignParentBottom="true"
+-+        android:layout_marginBottom="20dp"
+-+        />
+-+
+-+</RelativeLayout>
+-\ No newline at end of file
+-Index: app/src/main/java/com/example/firebaseex/Letter.java
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>package com.example.firebaseex;\r\n\r\npublic class Letter {\r\n    private String lett;\r\n    private int scoring;\r\n    private String icon;\r\n    private Coord loc;\r\n\r\n\r\n    public Letter(){\r\n    }\r\n\r\n    public Letter(String lett, int scoring, String i) {\r\n        this.lett = lett;\r\n        this.scoring = scoring;\r\n        this.icon = i;\r\n        loc  = new Coord(-1, -1);\r\n    }\r\n\r\n    public String getLett() {\r\n        return lett;\r\n    }\r\n\r\n    public void setLett(String lett) {\r\n        this.lett = lett;\r\n    }\r\n\r\n    public int getScoring() {\r\n        return scoring;\r\n    }\r\n\r\n    public void setScoring(int scoring) {\r\n        this.scoring = scoring;\r\n    }\r\n\r\n    public String getIcon() { return icon; }\r\n\r\n    public void setIcon(String file) { icon = file;}\r\n\r\n    public Coord getLoc() { return loc; }\r\n\r\n    public void setLoc(Coord c) {\r\n        loc = c;\r\n    }\r\n\r\n\r\n\r\n    public boolean equals(Object obj) {\r\n        if (!(obj instanceof Letter))\r\n            return false;\r\n        if (obj == this)\r\n            return true;\r\n        Letter c = (Letter) obj;\r\n        return (this.lett == c.lett&& this.loc.equals(c.loc));\r\n    }\r\n\r\n    public int hashCode() {\r\n        return 0;\r\n    }\r\n\r\n}\r\n\r\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- app/src/main/java/com/example/firebaseex/Letter.java	(revision 745c9e54e53d79b45ab8100c01c127ded61703e9)
+-+++ app/src/main/java/com/example/firebaseex/Letter.java	(date 1603440384665)
+-@@ -4,7 +4,7 @@
+-     private String lett;
+-     private int scoring;
+-     private String icon;
+--    private Coord loc;
+-+
+- 
+- 
+-     public Letter(){
+-@@ -14,7 +14,7 @@
+-         this.lett = lett;
+-         this.scoring = scoring;
+-         this.icon = i;
+--        loc  = new Coord(-1, -1);
+-+
+-     }
+- 
+-     public String getLett() {
+-@@ -37,22 +37,8 @@
+- 
+-     public void setIcon(String file) { icon = file;}
+- 
+--    public Coord getLoc() { return loc; }
+--
+--    public void setLoc(Coord c) {
+--        loc = c;
+--    }
+- 
+- 
+--
+--    public boolean equals(Object obj) {
+--        if (!(obj instanceof Letter))
+--            return false;
+--        if (obj == this)
+--            return true;
+--        Letter c = (Letter) obj;
+--        return (this.lett == c.lett&& this.loc.equals(c.loc));
+--    }
+- 
+-     public int hashCode() {
+-         return 0;
+-diff --git .idea/shelf/Uncommitted_changes_before_Update_at_21_10_2020_12_44__Default_Changelist_.xml .idea/shelf/Uncommitted_changes_before_Update_at_21_10_2020_12_44__Default_Changelist_.xml
+Index: app/src/main/java/com/example/firebaseex/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.firebaseex;\r\n\r\nimport android.content.Intent;\r\nimport android.content.SharedPreferences;\r\nimport android.os.Bundle;\r\nimport android.util.Log;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport com.facebook.CallbackManager;\r\nimport com.firebase.ui.auth.AuthUI;\r\nimport com.google.android.gms.tasks.OnCompleteListener;\r\nimport com.google.android.gms.tasks.OnFailureListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.auth.FirebaseUser;\r\nimport com.google.firebase.firestore.DocumentReference;\r\nimport com.google.firebase.firestore.DocumentSnapshot;\r\nimport com.google.firebase.firestore.FirebaseFirestore;\r\n\r\nimport java.io.BufferedReader;\r\nimport java.io.IOException;\r\nimport java.io.InputStreamReader;\r\nimport java.util.ArrayList;\r\nimport java.util.Arrays;\r\nimport java.util.HashMap;\r\nimport java.util.List;\r\n\r\npublic class MainActivity<mCallbackManager> extends AppCompatActivity {\r\n    // Access a Cloud Firestore instance from your Activity\r\n    FirebaseFirestore db = FirebaseFirestore.getInstance();\r\n    private static final String EMAIL = \"email\";\r\n    public static UserInfo user;\r\n    public static String nameOfCollection = \"Users\";\r\n    private EditText name;\r\n    private EditText password;\r\n    private EditText email;\r\n    private StringBuilder text = new StringBuilder();\r\n    private SharedPreferences.Editor editor;\r\n    private SharedPreferences userDitale;\r\n    private FirebaseAuth mAuth;\r\n\r\n\r\n\r\n    public static final int GOOGLE_SIGN_IN = 1;\r\n    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();\r\n    private HashMap<String, String> texts = new HashMap();\r\n    public Intent goToHomePage;\r\n    List<AuthUI.IdpConfig> providers = Arrays.asList(\r\n            new AuthUI.IdpConfig.GoogleBuilder().build()\r\n    );\r\n    CallbackManager callbackManager;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_main);\r\n        goToHomePage=new Intent(this,User_profile.class);\r\n         callbackManager = CallbackManager.Factory.create();\r\n        mAuth = FirebaseAuth.getInstance();\r\n        userDitale=getSharedPreferences(\"login\",MODE_PRIVATE);\r\n        //TODO need\r\n        //deleteSharedPreferences1();\r\n       if (userDitale.getString(\"name\",null)!=null&&\r\n        userDitale.getString(\"email\",null)!=null) {\r\n            goToHomePage = new Intent(this, HomePage.class);\r\n\r\n            startActivity(goToHomePage);\r\n        }\r\n\r\n\r\n\r\n       /* LoginButton  loginButton=findViewById(R.id.login_button);\r\n        loginButton.setReadPermissions(Arrays.asList(EMAIL));\r\n        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {\r\n            @Override\r\n            public void onSuccess(LoginResult loginResult) {\r\n                // App code\r\n                userFacebookID=loginResult.getAccessToken().getUserId();\r\n\r\n            }\r\n\r\n            @Override\r\n            public void onCancel() {\r\n                // App code\r\n            }\r\n            @Override\r\n            public void onError(FacebookException exception) {\r\n                // App code\r\n\r\n            }\r\n        });\r\n        try {\r\n            PackageInfo info = this.getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES);\r\n            for (Signature signature : info.signatures) {\r\n                MessageDigest md = MessageDigest.getInstance(\"SHA\");\r\n                md.update(signature.toByteArray());\r\n                String hashKey = new String(Base64.encode(md.digest(), 0));\r\n                Log.i(\"ssssssss\", \"printHashKey() Hash Key: \" + hashKey);\r\n            }\r\n        } catch (NoSuchAlgorithmException e) {\r\n            Log.e(\"error\", \"printHashKey()\", e);\r\n        } catch (Exception e) {\r\n            Log.e(\"error\", \"printHashKey()\", e);\r\n        }\r\n        */\r\n        Button button = findViewById(R.id.send_to_firebase);\r\n        button.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n                fireBaseOnClick();\r\n            }\r\n        });\r\n    }\r\n\r\n    private void deleteSharedPreferences1() {\r\n        editor=userDitale.edit();\r\n        editor.clear();\r\n        editor.apply();\r\n    }\r\n\r\n    public void addLetters() {\r\n        BufferedReader reader = null;\r\n\r\n        try {\r\n            reader = new BufferedReader(\r\n                    new InputStreamReader(getAssets().open(\"text.txt\")));\r\n\r\n            // do reading, usually loop until end of file reading\r\n            String mLine;\r\n            int i = 0;\r\n            while ((mLine = reader.readLine()) != null) {\r\n\r\n                texts.put(mLine.split(\":\")[0], mLine.split(\":\")[1]);\r\n\r\n\r\n            }\r\n            db.collection(\"translation\").document(\"translation\").set(texts);\r\n            db.collection(\"translation\").document(\"translation\").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {\r\n                @Override\r\n                public void onComplete(@NonNull Task<DocumentSnapshot> task) {\r\n                    HashMap<String, String> translation = new HashMap<>();\r\n                    Log.i(\"TAG\", \"onComplete: \" + task.getResult().get(\"test\"));\r\n                }\r\n            });\r\n        } catch (IOException e) {\r\n            Toast.makeText(getApplicationContext(), \"Error reading file!\", Toast.LENGTH_LONG).show();\r\n            e.printStackTrace();\r\n        } finally {\r\n            if (reader != null) {\r\n                try {\r\n                    reader.close();\r\n                } catch (IOException e) {\r\n                    //log the exception\r\n                }\r\n\r\n            }\r\n        }\r\n    }\r\n\r\n    public void fireBaseOnClick() {\r\n        name = findViewById(R.id.name);\r\n        password = findViewById(R.id.password);\r\n        email = findViewById(R.id.email);\r\n        final UserInfo user = new UserInfo(name.getText().toString(), password.getText().toString(), email.getText().toString(),1,0,0);\r\n        DocumentReference docRef = db.collection(nameOfCollection).document(user.getEmail());\r\n        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {\r\n            @Override\r\n            public void onComplete(@NonNull Task<DocumentSnapshot> task) {\r\n                if (task.isSuccessful()) {\r\n                    DocumentSnapshot document = task.getResult();\r\n                    if (document.exists()) {\r\n                        String testDB= document.get(\"name\").toString();\r\n                        Log.i(\"result\", \"DocumentSnapshot data: \" + document.getData());\r\n\r\n                    } else {\r\n                        Log.i(\"result\", \"No such document\");\r\n                    }\r\n                } else {\r\n                    Log.i(\"result\", \"get failed with \", task.getException());\r\n                }\r\n            }\r\n        });\r\n\r\n        userDitale=getSharedPreferences(\"login\",MODE_PRIVATE);\r\n        editor=userDitale.edit();\r\n        editor.putString(\"name\",user.getName());\r\n        editor.putString(\"email\",user.getEmail());\r\n        editor.putString(\"password\",user.getPassword());\r\n        editor.putInt(\"level\",user.getLevel());\r\n        editor.putInt(\"userWin\",user.getUserWin());\r\n        editor.putInt(\"userLose\",user.getUserLose());\r\n        editor.putInt(\"userPoints\",user.getPlayerPoints());\r\n        editor.commit();\r\n        editor.apply();\r\n        Log.i(\"SharedPreferences\", user.getEmail()+\" \"+user.getName()+\" \"+user.getPassword());\r\n        goToHomePage=new Intent(this,HomePage.class);\r\n         db.collection(nameOfCollection).document(user.getEmail()).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {\r\n            @Override\r\n            public void onComplete(@NonNull Task<Void> task) {\r\n                Toast.makeText(MainActivity.this, \"ok \"+user.getEmail().toString(), Toast.LENGTH_LONG).show();\r\n                goToHomePage.putExtra(\"name\",user.getName().toString());\r\n                goToHomePage.putExtra(\"password\",user.getPassword().toString());\r\n                goToHomePage.putExtra(\"email\",user.getEmail().toString());\r\n\r\n                startActivity(goToHomePage);\r\n            }\r\n        }).addOnFailureListener(new OnFailureListener() {\r\n            @Override\r\n            public void onFailure(@NonNull Exception e) {\r\n                Toast.makeText(MainActivity.this, \"not ok\", Toast.LENGTH_LONG).show();\r\n            }\r\n        });\r\n\r\n       /*  db.collection(nameOfCollection).document(user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {\r\n             @Override\r\n             public void onComplete(@NonNull Task<DocumentSnapshot> task) {\r\n                 if(task.isSuccessful())\r\n                 {\r\n                   DocumentSnapshot  d=task.getResult();\r\n                   if (d.exists()){\r\n                      UserInfo userTest= d.toObject(UserInfo.class);\r\n                       Log.i(\"testD\", userTest.getEmail());\r\n                   }\r\n                 }\r\n             }\r\n         });*/\r\n\r\n    }\r\n\r\n\r\n    private String[] getSelectedProviders() {\r\n        ArrayList<String> selectedProviders = new ArrayList<>();\r\n        selectedProviders.add(AuthUI.EMAIL_LINK_PROVIDER);\r\n        return selectedProviders.toArray(new String[selectedProviders.size()]);\r\n    }\r\n\r\n\r\n\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/firebaseex/MainActivity.java	(revision 7dc6bb46be0f8cab925e4f78ab728dff6c6c49b6)
++++ app/src/main/java/com/example/firebaseex/MainActivity.java	(date 1604007520042)
+@@ -61,7 +61,6 @@
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_main);
+         goToHomePage=new Intent(this,User_profile.class);
+-         callbackManager = CallbackManager.Factory.create();
+         mAuth = FirebaseAuth.getInstance();
+         userDitale=getSharedPreferences("login",MODE_PRIVATE);
+         //TODO need
+diff --git .idea/shelf/Uncommitted_changes_before_Update_at_16_10_2020_15_02__Default_Changelist_.xml .idea/shelf/Uncommitted_changes_before_Update_at_16_10_2020_15_02__Default_Changelist_.xml
+diff --git .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_22_50__Default_Changelist_.xml .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_22_50__Default_Changelist_.xml
+diff --git .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_20_12__Default_Changelist_.xml .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_20_12__Default_Changelist_.xml
