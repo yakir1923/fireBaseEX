@@ -23,14 +23,21 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.annotations.Nullable;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.okhttp.internal.DiskLruCache;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class GamePage extends AppCompatActivity {
@@ -58,10 +65,10 @@ private int buttonId;
 private TextView timer;
 private Button nextTurn;
 private Letter letter;
-//private Boolean myTurn;
+private Boolean myTurn;
 private Intent showActivity;
-  private   int turns=0;
-  private   static String gameID;
+private int turns=0;
+private String gameId;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +82,7 @@ private Intent showActivity;
         });
         tg.start();
 
-
-
        //startGame("kE18TB2qTAsmpKc2dnGT");
-
         db = FirebaseFirestore.getInstance();
         tableLayout=findViewById(R.id.game_layout);
         playerPoints=findViewById(R.id.player_points);
@@ -238,7 +242,6 @@ private Intent showActivity;
                     try {
                         if (turns<10) {
                             Thread.sleep(2000);
-       //                     myTurn = !myTurn;
                             setTimer();
                             turns++;
                         }
@@ -266,7 +269,7 @@ private Intent showActivity;
                         if (task.isSuccessful()) {
                             if(task.getResult().size()==1){
                                 DocumentSnapshot documentSnapshot= task.getResult().getDocuments().get(0);
-                                Toast.makeText(getApplicationContext(),documentSnapshot.getId(),Toast.LENGTH_LONG).show();
+                             //   Toast.makeText(getApplicationContext(),documentSnapshot.getId(),Toast.LENGTH_LONG).show();
                                 Game game=documentSnapshot.toObject(Game.class);
                                 if(!game.getUser1().equals(userDitale.getString("email",null))) {
                                     update(documentSnapshot.getId());
@@ -291,8 +294,6 @@ public void creatGame(){
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
                     Log.d("sucsesDB", "DocumentSnapshot written with ID: " + documentReference.getId());
-                 gameID=documentReference.getId();
-                Toast.makeText(getApplicationContext(),documentReference.getId(),Toast.LENGTH_LONG).show();
                 startGame(documentReference.getId());
                 }
             })
@@ -317,7 +318,6 @@ public void creatGame(){
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("result", "Current data: " + snapshot.getData());
                     Toast.makeText(getApplicationContext(),snapshot.getString("data"),Toast.LENGTH_LONG).show();
-
                     if (snapshot.getString("user1").toString()!="yakir1923@gmail.com"){
                         playerName.setText("yakir moses");
                         opponentName.setText("shani moses");
@@ -356,5 +356,9 @@ public void creatGame(){
 
     }
 
+    public String searchForGameId(){
+        CollectionReference collectionReference=db.collection("games");
 
+        return "game_id";
+    }
 }
