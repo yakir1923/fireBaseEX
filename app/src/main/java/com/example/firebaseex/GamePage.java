@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -61,7 +62,7 @@ private Drawable drawable;
 private int idNum;
 private ArrayList<MyButton> buttonList;
 private ArrayList<Letter> letterArrayList;
- private ArrayList<Button> playerArrayList;
+private ArrayList<Button> playerArrayList;
 private TableRow playerHand;
 private TableRow opponentHand;
 private static String tempLetter;
@@ -73,19 +74,17 @@ private Boolean myTurn;
 private Intent showActivity;
 private int turns=0;
 private String gameId;
+private EditText getWord;
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_page);
         userDitale=getSharedPreferences("login",MODE_PRIVATE);
-//        Thread tg=new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        });
-//      tg.start();
+
+
+
         int check=CheckWord("אבא");
         myTurn=true;
         joinGame();
@@ -100,6 +99,8 @@ private String gameId;
         opponentPoints=findViewById(R.id.opponent_points);
         playerHand=findViewById(R.id.player_hand);
         opponentHand=findViewById(R.id.opponent_hand);
+        getWord=findViewById(R.id.getWord);
+
         playerCurrentPoints=0;
         opponentCurrentPoints=0;
         playerPoints.setText("0");
@@ -107,12 +108,10 @@ private String gameId;
 
         playerName.setText(userDitale.getString("name",null));
         idNum=0;
-       opponentName.setText(setUserName());
-            timer = findViewById(R.id.timer_round);
-            setTimer();
+        opponentName.setText(setUserName());
+        timer = findViewById(R.id.timer_round);
+        setTimer();
         nextTurn=findViewById(R.id.next_turn);
-        nextTurn.setBackground(getDrawable(R.drawable.active_button_color));
-        nextTurn.setText("סיום");
 
         //יצירת רשימה של אותיות
         letterArrayList=new ArrayList<Letter>();
@@ -183,7 +182,6 @@ private String gameId;
 
             //יצרה של היד של השחקן
         }
-
         for (i=0;i<10;i++){
             Random random=new Random();
             int rndNum=random.nextInt(22);
@@ -204,6 +202,7 @@ private String gameId;
                         tempLetter = myButton.getLetter();
                         myButton.setLetter(null);
                         myButton.setBackground(getDrawable(R.drawable.my_button));
+
                     }
                     else{
                         for (Letter l:letterArrayList){
@@ -213,6 +212,7 @@ private String gameId;
                                 myButton.setLetter(tempLetter);
                                 TableRow.LayoutParams buttonParamsPlayer=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                                 myButton.setLayoutParams(buttonParamsPlayer);
+
                          }
                         }
                         tempLetter=null;
@@ -223,8 +223,16 @@ private String gameId;
         }
         nextTurn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                
+            public void onClick(View view) {
+                String word=getWord.getText().toString();
+                int ok=CheckWord(word);
+                if (ok==1)
+                {
+                    Toast.makeText(GamePage.this,"existe",Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(GamePage.this," an existe",Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -367,8 +375,9 @@ public void creatGame(){
 
     public String searchForGameId(){
         final String gameId="gameId";
-  return gameId;
+         return gameId;
     }
+
     public int CheckWord(String str) {
         char c = str.charAt(0);
         ArrayList<InputStream> filesList = new ArrayList<>();
@@ -397,6 +406,11 @@ public void creatGame(){
             }
         }
         return val;
+    }
+    public int CheckIfLetters(String word){
+
+
+        return 0;
     }
 //
 //        if (c == 'א' || c == 'ב' || c == 'ג' || c == 'ד') {
@@ -473,5 +487,6 @@ public void creatGame(){
 //            }
 //        }
 //        return 0;
+
     }
 
