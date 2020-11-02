@@ -51,7 +51,7 @@ private TextView playerName;
 private TextView opponentName;
 private TextView opponentPoints;
 private int playerCurrentPoints;
-private int opponentCurrentPoints;
+private int opponentCurrentPoints; 
 private SharedPreferences.Editor editor;
 private SharedPreferences userDitale;
 private Drawable drawable;
@@ -70,6 +70,7 @@ private Boolean myTurn;
 private Intent showActivity;
 private int turns=0;
 private String gameId;
+private Word word;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +85,16 @@ private String gameId;
 //        });
  //     tg.start();
         joinGame();
+        Word word=new Word(button,"אבא");
+       int num= word.CheckWord("אב");
+       if (num==0)
+           Toast.makeText(getApplicationContext(),"an exists",Toast.LENGTH_LONG).show();
+       else
+           Toast.makeText(getApplicationContext(), "exists ",Toast.LENGTH_LONG).show();
 
-       //startGame("kE18TB2qTAsmpKc2dnGT");
+
+
+        //startGame("kE18TB2qTAsmpKc2dnGT");
         db = FirebaseFirestore.getInstance();
         tableLayout=findViewById(R.id.game_layout);
         playerPoints=findViewById(R.id.player_points);
@@ -233,7 +242,7 @@ private String gameId;
     }
 
 
-    //טיימר
+   //טיימר
     public void setTimer(){
         new CountDownTimer(30000, 1000) {
             public void onTick(long millisUntilFinished) {
@@ -363,4 +372,6 @@ public void creatGame(){
         final String gameId="gameId";
   return gameId;
     }
+
+
 }
