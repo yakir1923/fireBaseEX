@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -34,12 +35,14 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.okhttp.internal.DiskLruCache;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
 
 public class GamePage extends AppCompatActivity {
 private MyButton button;
@@ -70,7 +73,6 @@ private Boolean myTurn;
 private Intent showActivity;
 private int turns=0;
 private String gameId;
-private Word word;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,15 +85,10 @@ private Word word;
 //
 //            }
 //        });
- //     tg.start();
+//      tg.start();
+        int check=CheckWord("אבא");
+        myTurn=true;
         joinGame();
-        Word word=new Word(button,"אבא");
-       int num= word.CheckWord("אב");
-       if (num==0)
-           Toast.makeText(getApplicationContext(),"an exists",Toast.LENGTH_LONG).show();
-       else
-           Toast.makeText(getApplicationContext(), "exists ",Toast.LENGTH_LONG).show();
-
 
 
         //startGame("kE18TB2qTAsmpKc2dnGT");
@@ -372,6 +369,109 @@ public void creatGame(){
         final String gameId="gameId";
   return gameId;
     }
+    public int CheckWord(String str) {
+        char c = str.charAt(0);
+        ArrayList<InputStream> filesList = new ArrayList<>();
+        InputStream input1 = getResources().openRawResource(R.raw.words1);
+        InputStream input2 = getResources().openRawResource(R.raw.words2);
+        InputStream input3 = getResources().openRawResource(R.raw.words3);
+        InputStream input4 = getResources().openRawResource(R.raw.words4);
+        InputStream input5 = getResources().openRawResource(R.raw.words5);
+        InputStream input6 = getResources().openRawResource(R.raw.words6);
+        filesList.add(input1);
+        filesList.add(input2);
+        filesList.add(input3);
+        filesList.add(input4);
+        filesList.add(input5);
+        filesList.add(input6);
+        Scanner scanner1;
+        String line1;
+        int val = 0;
+        for (InputStream temp : filesList) {
+            scanner1 = new Scanner(temp);
+            while (scanner1.hasNext()) {
+                line1 = scanner1.nextLine();
+                if (line1.equals(str)) {
+                    val = 1;
+                }
+            }
+        }
+        return val;
+    }
+//
+//        if (c == 'א' || c == 'ב' || c == 'ג' || c == 'ד') {
+//            InputStream input = getResources().openRawResource(R.raw.words1);
+//            Scanner scan = new Scanner(input);
+//            while (scan.hasNext()) {
+//                String line = scan.nextLine();
+//                if (line==str) {
+//                    return 1;
+//                } else {
+//                    return 0;
+//                }
+//            }
+//
+//        }
+//        if (c == 'ה') {
+//            InputStream input=getResources().openRawResource(R.raw.words2);
+//            Scanner scan = new Scanner(input);
+//            while (scan.hasNext()) {
+//                String line = scan.nextLine();
+//                if (line.equalsIgnoreCase(str.trim())) {
+//                    return 1;
+//                } else {
+//                    return 0;
+//                }
+//            }
+//        }
+//        if (c == 'ח' || c == 'ט' || c == 'י' || c == 'כ' || c == 'ל') {
+//            InputStream input =getResources().openRawResource(R.raw.words3);
+//            Scanner scan = new Scanner(input);
+//            while (scan.hasNext()) {
+//                String line = scan.nextLine();
+//                if (line.equalsIgnoreCase(str.trim())) {
+//                    return 1;
+//                } else {
+//                    return 0;
+//                }
+//            }
+//        }
+//        else if (c == 'מ' || c == 'נ') {
+//            InputStream input =getResources().openRawResource(R.raw.words4);
+//            Scanner scan = new Scanner(input);
+//            while (scan.hasNext()) {
+//                String line = scan.nextLine();
+//                if (line.equalsIgnoreCase(str.trim())) {
+//                    return 1;
+//                } else {
+//                    return 0;
+//                }
+//            }
+//        }
+//        if (c == 'ס' || c == 'ע' || c == 'פ' || c == 'צ' || c == 'ק' || c == 'ר' || c == 'ש' || c == 'ת') {
+//            InputStream input =getResources().openRawResource(R.raw.words5);
+//            Scanner scan = new Scanner(input);
+//            while (scan.hasNext()) {
+//                String line = scan.nextLine();
+//                if (line.equalsIgnoreCase(str.trim())) {
+//                    return 1;
+//                } else {
+//                    return 0;
+//                }
+//            }
+//        }
+//        if (c == 'ו' || c == 'ז') {
+//            InputStream input =getResources().openRawResource(R.raw.words6);
+//            Scanner scan = new Scanner(input);
+//            while (scan.hasNext()) {
+//                String line = scan.nextLine();
+//                if (line.equalsIgnoreCase(str.trim())) {
+//                    return 1;
+//                } else {
+//                    return 0;
+//                }
+//            }
+//        }
+//        return 0;
+    }
 
-
-}
