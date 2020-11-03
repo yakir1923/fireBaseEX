@@ -3,14 +3,18 @@ package com.example.firebaseex;
 import android.content.Context;
 import android.util.AttributeSet;
 
-public class MyButton extends androidx.appcompat.widget.AppCompatButton {
-    private int x,y;
+import java.util.ArrayList;
+
+public class MyButton extends androidx.appcompat.widget.AppCompatButton{
+    private int x, y;
     private String letter;
-    public MyButton(Context context, int x, int y){
+
+    public MyButton(Context context, int x, int y) {
         super(context);
-        this.x=x;
-        this.y=y;
+        this.x = x;
+        this.y = y;
     }
+
     public MyButton(Context context) {
         super(context);
 
@@ -23,6 +27,7 @@ public class MyButton extends androidx.appcompat.widget.AppCompatButton {
     public MyButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
     @Override
     public float getX() {
         return x;
@@ -49,4 +54,5 @@ public class MyButton extends androidx.appcompat.widget.AppCompatButton {
         this.letter = letter;
     }
 
-}
+
+    }

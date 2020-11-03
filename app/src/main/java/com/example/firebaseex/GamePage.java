@@ -11,7 +11,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -39,6 +38,9 @@ import com.squareup.okhttp.internal.DiskLruCache;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +64,7 @@ private Drawable drawable;
 private int idNum;
 private ArrayList<MyButton> buttonList;
 private ArrayList<Letter> letterArrayList;
-private ArrayList<Button> playerArrayList;
+ private ArrayList<Button> playerArrayList;
 private TableRow playerHand;
 private TableRow opponentHand;
 private static String tempLetter;
@@ -74,18 +76,21 @@ private Boolean myTurn;
 private Intent showActivity;
 private int turns=0;
 private String gameId;
-private EditText getWord;
-
+private ArrayList<MyButton> wordButton;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_page);
         userDitale=getSharedPreferences("login",MODE_PRIVATE);
+        Thread tg=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int check=CheckWord("אבא");
+            }
+        });
+      tg.start();
 
-
-
-        int check=CheckWord("אבא");
         myTurn=true;
         joinGame();
 
@@ -99,8 +104,6 @@ private EditText getWord;
         opponentPoints=findViewById(R.id.opponent_points);
         playerHand=findViewById(R.id.player_hand);
         opponentHand=findViewById(R.id.opponent_hand);
-        getWord=findViewById(R.id.getWord);
-
         playerCurrentPoints=0;
         opponentCurrentPoints=0;
         playerPoints.setText("0");
@@ -108,10 +111,11 @@ private EditText getWord;
 
         playerName.setText(userDitale.getString("name",null));
         idNum=0;
-        opponentName.setText(setUserName());
-        timer = findViewById(R.id.timer_round);
-        setTimer();
+       opponentName.setText(setUserName());
+            timer = findViewById(R.id.timer_round);
+            setTimer();
         nextTurn=findViewById(R.id.next_turn);
+        nextTurn.setBackground(getDrawable(R.drawable.active_button_color));
 
         //יצירת רשימה של אותיות
         letterArrayList=new ArrayList<Letter>();
@@ -138,8 +142,10 @@ private EditText getWord;
         letterArrayList.add(letter=new Letter("ש",50,R.drawable.shin));
         letterArrayList.add(letter=new Letter("ת",40,R.drawable.taf));
 
+
         //יצירת מסך וגם שמירה של כל הכפתורים ברשימה
         buttonList=new ArrayList<MyButton>();
+        wordButton=new ArrayList<MyButton>();
         for (i=0;i<10;i++) {
             tableRow=new TableRow(this);
             TableRow.LayoutParams params=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -157,8 +163,10 @@ private EditText getWord;
                 public void onClick(View view) {
                     MyButton myButton=(MyButton)view;
                     //check location of button
-                    //Toast.makeText(getApplicationContext(),myButton.getX()+","+myButton.getY(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),myButton.getX()+","+myButton.getY(),Toast.LENGTH_SHORT).show();
                     if (myButton.getLetter()!=null) {
+                        //the player puts letters on the board
+                        wordButton.remove(myButton);
                         tempLetter=myButton.getLetter();
                         myButton.setBackground(getDrawable(R.drawable.my_button));
                         myButton.setLetter(null);
@@ -168,6 +176,7 @@ private EditText getWord;
                             if (l.getLett()==tempLetter)
                             myButton.setBackgroundDrawable(getDrawable(l.getIcon()));
                             myButton.setLetter(tempLetter);
+                            wordButton.add(myButton);
                             TableRow.LayoutParams buttonParams=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                             myButton.setLayoutParams(buttonParams);
                         }
@@ -182,6 +191,7 @@ private EditText getWord;
 
             //יצרה של היד של השחקן
         }
+
         for (i=0;i<10;i++){
             Random random=new Random();
             int rndNum=random.nextInt(22);
@@ -202,7 +212,6 @@ private EditText getWord;
                         tempLetter = myButton.getLetter();
                         myButton.setLetter(null);
                         myButton.setBackground(getDrawable(R.drawable.my_button));
-
                     }
                     else{
                         for (Letter l:letterArrayList){
@@ -212,7 +221,6 @@ private EditText getWord;
                                 myButton.setLetter(tempLetter);
                                 TableRow.LayoutParams buttonParamsPlayer=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                                 myButton.setLayoutParams(buttonParamsPlayer);
-
                          }
                         }
                         tempLetter=null;
@@ -223,15 +231,19 @@ private EditText getWord;
         }
         nextTurn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                String word=getWord.getText().toString();
-                int ok=CheckWord(word);
-                if (ok==1)
-                {
-                    Toast.makeText(GamePage.this,"existe",Toast.LENGTH_LONG).show();
-                }
-                else {
-                    Toast.makeText(GamePage.this," an existe",Toast.LENGTH_LONG).show();
+            public void onClick(View v) {
+                String s="";
+                int firstLocation;
+                ArrayList<MyButton> arrayList=new ArrayList<MyButton>();
+                for (i=0;i<10;i++) {
+                    for (MyButton mb : wordButton) {
+                        if (mb.getY()==wordButton.get(i).getY()){
+                            if (mb.getX()<wordButton.get(i).getX()){
+                                s+=mb.getLetter();
+                                CheckWord(s);
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -372,12 +384,11 @@ public void creatGame(){
                 });
 
     }
-
+    //TODO find game id
     public String searchForGameId(){
         final String gameId="gameId";
-         return gameId;
+  return gameId;
     }
-
     public int CheckWord(String str) {
         char c = str.charAt(0);
         ArrayList<InputStream> filesList = new ArrayList<>();
@@ -406,11 +417,6 @@ public void creatGame(){
             }
         }
         return val;
-    }
-    public int CheckIfLetters(String word){
-
-
-        return 0;
     }
 //
 //        if (c == 'א' || c == 'ב' || c == 'ג' || c == 'ד') {
@@ -487,6 +493,5 @@ public void creatGame(){
 //            }
 //        }
 //        return 0;
-
     }
 
