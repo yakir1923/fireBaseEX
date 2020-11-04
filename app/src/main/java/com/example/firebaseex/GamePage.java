@@ -183,6 +183,9 @@ private String s="";
                             TableRow.LayoutParams buttonParams=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                             myButton.setLayoutParams(buttonParams);
                         }
+                       //לעשות רשימה של האותיות שנכנסות לבדוק מיקום שהן נכנסו ולהכניס לפי הסדר לרשימה
+
+                        s+=tempLetter;
                         tempLetter = null;
 
                     }
@@ -234,19 +237,8 @@ private String s="";
         nextTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(CheckWord(s)==1)
-                {
-                    timer.setText("done!");
-                    try {
-                        if (turns<10) {
-                            Thread.sleep(2000);
-                            setTimer();
-                            turns++;
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+                int n =CheckWord(s);
+
             }
         });
     }
@@ -344,6 +336,7 @@ public void creatGame(){
                     Log.w("result", "Listen failed.", e);
                     return;
                 }
+
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("result", "Current data: " + snapshot.getData());
                     Toast.makeText(getApplicationContext(),snapshot.getString("data"),Toast.LENGTH_LONG).show();
@@ -425,7 +418,7 @@ public void creatGame(){
             for (MyButton mb : wordButton) {
                 if (mb.getY()==wordButton.get(i).getY()){
                     if (mb.getX()<wordButton.get(i).getX()){
-                        s=s+mb.getLetter().toString();
+                        s=s+mb.getLetter();
                         CheckWord(s);
                     }
                 }
