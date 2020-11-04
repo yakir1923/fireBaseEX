@@ -41,15 +41,6 @@
                 android:gravity="bottom|center"
                 android:textColor="#EFE087" />
 
-            <EditText
-                android:id="@+id/getWord"
-                android:layout_width="129dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="הכנס מילה"
-                android:inputType="textPersonName"
-                android:textColor="#EFE087"
-                android:textColorHint="#EFE087" />
 
         </TableRow>
 
@@ -80,7 +71,7 @@
                 android:layout_height="match_parent"
                 android:background="#4A4948"
                 android:text="סיים תור"
-                android:textColor="#0E0E0E" />
+                android:textColor="#EFE087" />
 
         </TableRow>
 

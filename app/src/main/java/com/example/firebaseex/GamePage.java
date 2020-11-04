@@ -77,6 +77,7 @@ private Intent showActivity;
 private int turns=0;
 private String gameId;
 private ArrayList<MyButton> wordButton;
+private String s="";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +88,11 @@ private ArrayList<MyButton> wordButton;
             @Override
             public void run() {
                 int check=CheckWord("אבא");
+                getAWord();
             }
+
         });
-      tg.start();
+        tg.start();
 
         myTurn=true;
         joinGame();
@@ -111,9 +114,9 @@ private ArrayList<MyButton> wordButton;
 
         playerName.setText(userDitale.getString("name",null));
         idNum=0;
-       opponentName.setText(setUserName());
-            timer = findViewById(R.id.timer_round);
-            setTimer();
+        opponentName.setText(setUserName());
+        timer = findViewById(R.id.timer_round);
+        setTimer();
         nextTurn=findViewById(R.id.next_turn);
         nextTurn.setBackground(getDrawable(R.drawable.active_button_color));
 
@@ -202,8 +205,8 @@ private ArrayList<MyButton> wordButton;
             button.setLetter(letterArrayList.get(rndNum).getLett());
             TableRow.LayoutParams buttonParamsPlayer=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             button.setLayoutParams(buttonParamsPlayer);
-        //   playerArrayList.add(button);
-          //  button.setBackground(getDrawable(R.drawable.active_button_color));
+            //   playerArrayList.add(button);
+              //  button.setBackground(getDrawable(R.drawable.active_button_color));
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -227,22 +230,21 @@ private ArrayList<MyButton> wordButton;
                     }
                 }
             });
-
         }
         nextTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String s="";
-                int firstLocation;
-                ArrayList<MyButton> arrayList=new ArrayList<MyButton>();
-                for (i=0;i<10;i++) {
-                    for (MyButton mb : wordButton) {
-                        if (mb.getY()==wordButton.get(i).getY()){
-                            if (mb.getX()<wordButton.get(i).getX()){
-                                s+=mb.getLetter();
-                                CheckWord(s);
-                            }
+                if(CheckWord(s)==1)
+                {
+                    timer.setText("done!");
+                    try {
+                        if (turns<10) {
+                            Thread.sleep(2000);
+                            setTimer();
+                            turns++;
                         }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -257,8 +259,6 @@ private ArrayList<MyButton> wordButton;
            return "yakir moses";
         }
     }
-
-
    //טיימר
     public void setTimer(){
         new CountDownTimer(30000, 1000) {
@@ -347,12 +347,12 @@ public void creatGame(){
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("result", "Current data: " + snapshot.getData());
                     Toast.makeText(getApplicationContext(),snapshot.getString("data"),Toast.LENGTH_LONG).show();
-                    if (snapshot.getString("user1").toString()!="yakir1923@gmail.com"){
-                        playerName.setText("yakir moses");
-                        opponentName.setText("shani moses");
+                    if (snapshot.getString("user1").toString()!=userDitale.getString("email",null)){
+                        playerName.setText(snapshot.getString("user2").toString());
+                        opponentName.setText(snapshot.getString("user1").toString());
                     }else {
-                        playerName.setText("shani moses");
-                        opponentName.setText("yakir moses");
+                        playerName.setText(snapshot.getString("user1").toString());
+                        opponentName.setText(snapshot.getString("user2").toString());
 
 
                     }
@@ -418,7 +418,27 @@ public void creatGame(){
         }
         return val;
     }
-//
+    public void getAWord(){
+        int firstLocation;
+        ArrayList<MyButton> arrayList=new ArrayList<MyButton>();
+        for (i=0;i<10;i++) {
+            for (MyButton mb : wordButton) {
+                if (mb.getY()==wordButton.get(i).getY()){
+                    if (mb.getX()<wordButton.get(i).getX()){
+                        s=s+mb.getLetter().toString();
+                        CheckWord(s);
+                    }
+                }
+                else if(mb.getX()==wordButton.get(i).getX()){
+                    if (mb.getY()<wordButton.get(i).getY()){
+                        s=s+mb.getLetter();
+                        CheckWord(s);
+                    }
+                }
+            }
+        }
+    }
+
 //        if (c == 'א' || c == 'ב' || c == 'ג' || c == 'ד') {
 //            InputStream input = getResources().openRawResource(R.raw.words1);
 //            Scanner scan = new Scanner(input);
