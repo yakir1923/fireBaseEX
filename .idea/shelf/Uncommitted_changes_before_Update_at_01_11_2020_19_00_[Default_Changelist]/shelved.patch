@@ -1,0 +1,211 @@
+Index: app/src/main/java/com/example/firebaseex/GamePage.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.firebaseex;\r\n\r\nimport android.content.Intent;\r\nimport android.content.SharedPreferences;\r\nimport android.graphics.drawable.Drawable;\r\nimport android.os.Bundle;\r\nimport android.os.CountDownTimer;\r\nimport android.util.Log;\r\nimport android.view.Gravity;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.Button;\r\nimport android.widget.TableLayout;\r\nimport android.widget.TableRow;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport com.google.android.gms.tasks.OnCompleteListener;\r\nimport com.google.android.gms.tasks.OnFailureListener;\r\nimport com.google.android.gms.tasks.OnSuccessListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.firebase.database.annotations.Nullable;\r\nimport com.google.firebase.firestore.DocumentReference;\r\nimport com.google.firebase.firestore.DocumentSnapshot;\r\nimport com.google.firebase.firestore.EventListener;\r\nimport com.google.firebase.firestore.FirebaseFirestore;\r\nimport com.google.firebase.firestore.FirebaseFirestoreException;\r\nimport com.google.firebase.firestore.QuerySnapshot;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.Random;\r\n\r\npublic class GamePage extends AppCompatActivity {\r\nprivate MyButton button;\r\nprivate int i,j;\r\nprivate TableLayout tableLayout;\r\nprivate TableRow tableRow;\r\nprivate TextView playerPoints;\r\nprivate TextView playerName;\r\nprivate TextView opponentName;\r\nprivate TextView opponentPoints;\r\nprivate int playerCurrentPoints;\r\nprivate int opponentCurrentPoints;\r\nprivate SharedPreferences.Editor editor;\r\nprivate SharedPreferences userDitale;\r\nprivate Drawable drawable;\r\nprivate int idNum;\r\nprivate ArrayList<Button> buttonList;\r\nprivate ArrayList<Letter> letterArrayList;\r\n private ArrayList<Button> playerArrayList;\r\nprivate TableRow playerHand;\r\nprivate TableRow opponentHand;\r\nprivate static String tempLetter;\r\nprivate int buttonId;\r\nprivate TextView timer;\r\nprivate Button nextTurn;\r\nprivate Letter letter;\r\n//private Boolean myTurn;\r\nprivate Intent showActivity;\r\n  private   int turns=0;\r\n  private   static String gameID;\r\n    FirebaseFirestore db = FirebaseFirestore.getInstance();\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_game_page);\r\n        Thread tg=new Thread(new Runnable() {\r\n            @Override\r\n            public void run() {\r\n                joinGame();\r\n            }\r\n        });\r\n        tg.start();\r\n\r\n\r\n\r\n       //startGame(\"kE18TB2qTAsmpKc2dnGT\");\r\n\r\n        db = FirebaseFirestore.getInstance();\r\n        tableLayout=findViewById(R.id.game_layout);\r\n        playerPoints=findViewById(R.id.player_points);\r\n        playerName=findViewById(R.id.player_name);\r\n        opponentName=findViewById(R.id.opponent_name);\r\n        opponentPoints=findViewById(R.id.opponent_points);\r\n        playerHand=findViewById(R.id.player_hand);\r\n        opponentHand=findViewById(R.id.opponent_hand);\r\n        playerCurrentPoints=0;\r\n        opponentCurrentPoints=0;\r\n        playerPoints.setText(\"0\");\r\n        opponentPoints.setText(\"0\");\r\n        userDitale=getSharedPreferences(\"login\",MODE_PRIVATE);\r\n        playerName.setText(userDitale.getString(\"name\",null));\r\n        idNum=0;\r\n       opponentName.setText(setUserName());\r\n            timer = findViewById(R.id.timer_round);\r\n            setTimer();\r\n        nextTurn=findViewById(R.id.next_turn);\r\n        nextTurn.setBackground(getDrawable(R.drawable.active_button_color));\r\n        nextTurn.setText(\"סיום\");\r\n\r\n        //יצירת רשימה של אותיות\r\n        letterArrayList=new ArrayList<Letter>();\r\n        letterArrayList.add(letter=new Letter(\"א\",10,R.drawable.alef));\r\n        letterArrayList.add(letter=new Letter(\"ב\",10,R.drawable.beit));\r\n        letterArrayList.add(letter=new Letter(\"ג\",20,R.drawable.gimel));\r\n        letterArrayList.add(letter=new Letter(\"ד\",30,R.drawable.daled));\r\n        letterArrayList.add(letter=new Letter(\"ה\",10,R.drawable.hei));\r\n        letterArrayList.add(letter=new Letter(\"ו\",5,R.drawable.vav));\r\n        letterArrayList.add(letter=new Letter(\"ז\",80,R.drawable.zain));\r\n        letterArrayList.add(letter=new Letter(\"ח\",30,R.drawable.chet));\r\n        letterArrayList.add(letter=new Letter(\"ט\",40,R.drawable.tet));\r\n        letterArrayList.add(letter=new Letter(\"י\",30,R.drawable.yud));\r\n        letterArrayList.add(letter=new Letter(\"כ\",70,R.drawable.chaf));\r\n        letterArrayList.add(letter=new Letter(\"ל\",40,R.drawable.lamed));\r\n        letterArrayList.add(letter=new Letter(\"מ\",60,R.drawable.mem));\r\n        letterArrayList.add(letter=new Letter(\"נ\",30,R.drawable.non));\r\n        letterArrayList.add(letter=new Letter(\"ס\",50,R.drawable.samech));\r\n        letterArrayList.add(letter=new Letter(\"ע\",80,R.drawable.aein));\r\n        letterArrayList.add(letter=new Letter(\"פ\",90,R.drawable.pey));\r\n        letterArrayList.add(letter=new Letter(\"צ\",100,R.drawable.tzadik));\r\n        letterArrayList.add(letter=new Letter(\"ק\",60,R.drawable.kof));\r\n        letterArrayList.add(letter=new Letter(\"ר\",40,R.drawable.resha));\r\n        letterArrayList.add(letter=new Letter(\"ש\",50,R.drawable.shin));\r\n        letterArrayList.add(letter=new Letter(\"ת\",40,R.drawable.taf));\r\n\r\n        //יצירת מסך וגם שמירה של כל הכפתורים ברשימה\r\n        buttonList=new ArrayList<Button>();\r\n        for (i=0;i<10;i++) {\r\n            tableRow=new TableRow(this);\r\n            TableRow.LayoutParams params=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);\r\n            tableLayout.addView(tableRow);\r\n            tableRow.setGravity(Gravity.CENTER);\r\n            tableRow.setLayoutParams(params);\r\n            for (j=0;j<10;j++){\r\n                  button=new MyButton(this,i,j);\r\n                  button.setId(idNum);\r\n                  idNum++;\r\n                  button.setBackground(getDrawable(R.drawable.my_button));\r\n                  button.setText(null);\r\n                  button.setOnClickListener(new View.OnClickListener() {\r\n                @Override\r\n                public void onClick(View view) {\r\n                    MyButton myButton=(MyButton)view;\r\n                    //check location of button\r\n                    //Toast.makeText(getApplicationContext(),myButton.getX()+\",\"+myButton.getY(),Toast.LENGTH_SHORT).show();\r\n                    if (myButton.getLetter()!=null) {\r\n                        tempLetter=myButton.getLetter();\r\n                        myButton.setBackground(getDrawable(R.drawable.my_button));\r\n                        myButton.setLetter(null);\r\n                    }else{\r\n\r\n                        for (Letter l:letterArrayList){\r\n                            if (l.getLett()==tempLetter)\r\n                            myButton.setBackgroundDrawable(getDrawable(l.getIcon()));\r\n                            myButton.setLetter(tempLetter);\r\n                            TableRow.LayoutParams buttonParams=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);\r\n                            myButton.setLayoutParams(buttonParams);\r\n                        }\r\n                        tempLetter = null;\r\n\r\n                    }\r\n                }\r\n            });\r\n                tableRow.addView(button);\r\n                buttonList.add(button);\r\n        }\r\n\r\n            //יצרה של היד של השחקן\r\n        }\r\n\r\n        for (i=0;i<10;i++){\r\n            Random random=new Random();\r\n            int rndNum=random.nextInt(22);\r\n            playerHand.addView(button=new MyButton(this,0,0));\r\n            button.setBackground(getDrawable(R.drawable.my_button));\r\n            //button.setText(letterArrayList.get(rndNum).getLett());\r\n            button.setBackgroundDrawable(getDrawable(letterArrayList.get(rndNum).getIcon()));\r\n            button.setLetter(letterArrayList.get(rndNum).getLett());\r\n            TableRow.LayoutParams buttonParamsPlayer=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);\r\n            button.setLayoutParams(buttonParamsPlayer);\r\n        //   playerArrayList.add(button);\r\n          //  button.setBackground(getDrawable(R.drawable.active_button_color));\r\n            button.setOnClickListener(new View.OnClickListener() {\r\n                @Override\r\n                public void onClick(View view) {\r\n                    MyButton myButton=(MyButton)view;\r\n                    if (myButton.getLetter()!=null) {\r\n                        tempLetter = myButton.getLetter();\r\n                        myButton.setLetter(null);\r\n                        myButton.setBackground(getDrawable(R.drawable.my_button));\r\n                    }\r\n                    else{\r\n                        for (Letter l:letterArrayList){\r\n                            if (l.getLett()==tempLetter){\r\n                                myButton.setBackgroundDrawable(getDrawable(l.getIcon()));\r\n                                myButton.setBackground(getDrawable(l.getIcon()));\r\n                                myButton.setLetter(tempLetter);\r\n                                TableRow.LayoutParams buttonParamsPlayer=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);\r\n                                myButton.setLayoutParams(buttonParamsPlayer);\r\n                         }\r\n                        }\r\n                        tempLetter=null;\r\n                    }\r\n                }\r\n            });\r\n\r\n        }\r\n        nextTurn.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                \r\n            }\r\n        });\r\n    }\r\n\r\n    private String setUserName() {\r\n        if (userDitale.getString(\"name\",null)==\"yakir moses\")\r\n        {\r\n            return \"שני\";\r\n        }else{\r\n           return \"yakir moses\";\r\n        }\r\n    }\r\n\r\n\r\n    //טיימר\r\n    public void setTimer(){\r\n        new CountDownTimer(30000, 1000) {\r\n            public void onTick(long millisUntilFinished) {\r\n                timer.setText(\"seconds remaining: \" + millisUntilFinished / 1000);\r\n            }\r\n\r\n            public void onFinish() {\r\n                timer.setText(\"done!\");\r\n                    try {\r\n                        if (turns<10) {\r\n                            Thread.sleep(2000);\r\n       //                     myTurn = !myTurn;\r\n                            setTimer();\r\n                            turns++;\r\n                        }\r\n\r\n                    } catch (InterruptedException e) {\r\n                        e.printStackTrace();\r\n                    }\r\n                }\r\n        }.start();\r\n\r\n    }\r\n    private void sendScore(){\r\n        showActivity = new Intent(GamePage.this, winnerScreen.class);\r\n        showActivity.putExtra(\"score\",Integer.toString(playerCurrentPoints));\r\n    }\r\n\r\n\r\n    private void joinGame() {\r\n        db.collection(\"games\")\r\n                .whereEqualTo(\"user2\", \"\").limit(1)\r\n                .get()\r\n                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {\r\n                    @Override\r\n                    public void onComplete(@NonNull Task<QuerySnapshot> task) {\r\n                        if (task.isSuccessful()) {\r\n                            if(task.getResult().size()==1){\r\n                                DocumentSnapshot documentSnapshot= task.getResult().getDocuments().get(0);\r\n                                Toast.makeText(getApplicationContext(),documentSnapshot.getId(),Toast.LENGTH_LONG).show();\r\n                                Game game=documentSnapshot.toObject(Game.class);\r\n                                if(!game.getUser1().equals(userDitale.getString(\"email\",null))) {\r\n                                    update(documentSnapshot.getId());\r\n                                }else {\r\n                                    startGame(documentSnapshot.getId());\r\n                                }\r\n                            }else{\r\n                                creatGame();\r\n                            }\r\n                        } else {\r\n                            Log.d(\"notJoined\", \"Error getting documents: \", task.getException());\r\n                        }\r\n                    }\r\n                });\r\n    }\r\n\r\npublic void creatGame(){\r\n        final Game game=new Game(userDitale.getString(\"email\",null),\"\",\"hello\");\r\n    db.collection(\"games\")\r\n            .add(game)\r\n            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {\r\n                @Override\r\n                public void onSuccess(DocumentReference documentReference) {\r\n                    Log.d(\"sucsesDB\", \"DocumentSnapshot written with ID: \" + documentReference.getId());\r\n                 gameID=documentReference.getId();\r\n                Toast.makeText(getApplicationContext(),documentReference.getId(),Toast.LENGTH_LONG).show();\r\n                startGame(documentReference.getId());\r\n                }\r\n            })\r\n            .addOnFailureListener(new OnFailureListener() {\r\n                @Override\r\n                public void onFailure(@NonNull Exception e) {\r\n                    Log.w(\"fDb\", \"Error adding document\", e);\r\n                }\r\n            });\r\n\r\n}\r\n    public void  startGame(String gameId){\r\n        final DocumentReference docRef = db.collection(\"games\").document(gameId);\r\n        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {\r\n            @Override\r\n            public void onEvent(@Nullable DocumentSnapshot snapshot,\r\n                                @Nullable FirebaseFirestoreException e) {\r\n                if (e != null) {\r\n                    Log.w(\"result\", \"Listen failed.\", e);\r\n                    return;\r\n                }\r\n                if (snapshot != null && snapshot.exists()) {\r\n                    Log.d(\"result\", \"Current data: \" + snapshot.getData());\r\n                    Toast.makeText(getApplicationContext(),snapshot.getString(\"data\"),Toast.LENGTH_LONG).show();\r\n\r\n                    if (snapshot.getString(\"user1\").toString()!=\"yakir1923@gmail.com\"){\r\n                        playerName.setText(\"yakir moses\");\r\n                        opponentName.setText(\"shani moses\");\r\n                    }else {\r\n                        playerName.setText(\"shani moses\");\r\n                        opponentName.setText(\"yakir moses\");\r\n\r\n\r\n                    }\r\n                } else {\r\n                    Log.d(\"result\", \"Current data: null\");\r\n                }\r\n            }\r\n        });\r\n\r\n    }\r\n    public void update(final String gameId){\r\n        DocumentReference washingtonRef = db.collection(\"games\").document(gameId);\r\n\r\n// Set the \"isCapital\" field of the city 'DC'\r\n        washingtonRef\r\n                .update(\"user2\", userDitale.getString(\"email\",null))\r\n                .addOnSuccessListener(new OnSuccessListener<Void>() {\r\n                    @Override\r\n                    public void onSuccess(Void aVoid) {\r\n                        Log.d(\"sucsesUpDate\", \"DocumentSnapshot successfully updated!\");\r\n                        startGame(gameId);\r\n                    }\r\n                })\r\n                .addOnFailureListener(new OnFailureListener() {\r\n                    @Override\r\n                    public void onFailure(@NonNull Exception e) {\r\n                        Log.w(\"fail\", \"Error updating document\", e);\r\n                    }\r\n                });\r\n\r\n    }\r\n\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/firebaseex/GamePage.java	(revision 52079280ad98f5e25ab2d487b5d6284a2082422d)
++++ app/src/main/java/com/example/firebaseex/GamePage.java	(date 1604162969540)
+@@ -43,7 +43,7 @@
+ private TextView opponentName;
+ private TextView opponentPoints;
+ private int playerCurrentPoints;
+-private int opponentCurrentPoints;
++private int opponentCurrentPoints; 
+ private SharedPreferences.Editor editor;
+ private SharedPreferences userDitale;
+ private Drawable drawable;
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_22_50_[Default_Changelist]/shelved.patch
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_22_50_[Default_Changelist]/shelved.patch	(revision 52079280ad98f5e25ab2d487b5d6284a2082422d)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_22_50_[Default_Changelist]/shelved.patch	(revision 52079280ad98f5e25ab2d487b5d6284a2082422d)
+@@ -1,144 +0,0 @@
+-Index: app/src/main/java/com/example/firebaseex/GamePage.java
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>package com.example.firebaseex;\r\n\r\nimport android.content.Intent;\r\nimport android.content.SharedPreferences;\r\nimport android.graphics.drawable.Drawable;\r\nimport android.os.Bundle;\r\nimport android.os.CountDownTimer;\r\nimport android.view.Gravity;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.Button;\r\nimport android.widget.TableLayout;\r\nimport android.widget.TableRow;\r\nimport android.widget.TextView;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.Random;\r\n\r\npublic class GamePage extends AppCompatActivity {\r\nprivate MyButton button;\r\nprivate int i,j;\r\nprivate TableLayout tableLayout;\r\nprivate TableRow tableRow;\r\nprivate TextView playerPoints;\r\nprivate TextView playerName;\r\nprivate TextView opponentName;\r\nprivate TextView opponentPoints;\r\nprivate int playerCurrentPoints;\r\nprivate int opponentCurrentPoints;\r\nprivate SharedPreferences.Editor editor;\r\nprivate SharedPreferences userDitale;\r\nprivate Drawable drawable;\r\nprivate int idNum;\r\nprivate ArrayList<Button> buttonList;\r\nprivate ArrayList<Letter> letterArrayList;\r\nprivate TableRow playerHand;\r\nprivate TableRow opponentHand;\r\nprivate static String tempLetter;\r\nprivate int buttonId;\r\nprivate TextView timer;\r\nprivate Button nextTurn;\r\nprivate Letter letter;\r\n\r\nprivate Intent showActivity;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_game_page);\r\n        tableLayout=findViewById(R.id.game_layout);\r\n        playerPoints=findViewById(R.id.player_points);\r\n        playerName=findViewById(R.id.player_name);\r\n        opponentName=findViewById(R.id.opponent_name);\r\n        opponentPoints=findViewById(R.id.opponent_points);\r\n        playerHand=findViewById(R.id.player_hand);\r\n        opponentHand=findViewById(R.id.opponent_hand);\r\n        playerCurrentPoints=0;\r\n        opponentCurrentPoints=0;\r\n        playerPoints.setText(\"0\");\r\n        opponentPoints.setText(\"0\");\r\n        userDitale=getSharedPreferences(\"login\",MODE_PRIVATE);\r\n        playerName.setText(userDitale.getString(\"name\",null));\r\n        idNum=0;\r\n        opponentName.setText(\"שני מוזס זמני\");\r\n        timer=findViewById(R.id.timer_round);\r\n        setTimer();\r\n        nextTurn=findViewById(R.id.next_turn);\r\n        nextTurn.setBackground(getDrawable(R.drawable.active_button_color));\r\n        nextTurn.setText(\"סיום\");\r\n\r\n        //יצירת רשימה של אותיות\r\n        letterArrayList=new ArrayList<Letter>();\r\n        letterArrayList.add(letter=new Letter(\"א\",10,R.drawable.alef));\r\n        letterArrayList.add(letter=new Letter(\"ב\",10,R.drawable.beit));\r\n        letterArrayList.add(letter=new Letter(\"ג\",20,R.drawable.gimel));\r\n        letterArrayList.add(letter=new Letter(\"ד\",30,R.drawable.daled));\r\n        letterArrayList.add(letter=new Letter(\"ה\",10,R.drawable.hei));\r\n        letterArrayList.add(letter=new Letter(\"ו\",5,R.drawable.vav));\r\n        letterArrayList.add(letter=new Letter(\"ז\",80,R.drawable.zain));\r\n        letterArrayList.add(letter=new Letter(\"ח\",30,R.drawable.chet));\r\n        letterArrayList.add(letter=new Letter(\"ט\",40,R.drawable.tet));\r\n        letterArrayList.add(letter=new Letter(\"י\",30,R.drawable.yud));\r\n        letterArrayList.add(letter=new Letter(\"כ\",70,R.drawable.chaf));\r\n        letterArrayList.add(letter=new Letter(\"ל\",40,R.drawable.lamed));\r\n        letterArrayList.add(letter=new Letter(\"מ\",60,R.drawable.mem));\r\n        letterArrayList.add(letter=new Letter(\"נ\",30,R.drawable.non));\r\n        letterArrayList.add(letter=new Letter(\"ס\",50,R.drawable.samech));\r\n        letterArrayList.add(letter=new Letter(\"ע\",80,R.drawable.aein));\r\n        letterArrayList.add(letter=new Letter(\"פ\",90,R.drawable.pey));\r\n        letterArrayList.add(letter=new Letter(\"צ\",100,R.drawable.tzadik));\r\n        letterArrayList.add(letter=new Letter(\"ק\",60,R.drawable.kof));\r\n        letterArrayList.add(letter=new Letter(\"ר\",40,R.drawable.resha));\r\n        letterArrayList.add(letter=new Letter(\"ש\",50,R.drawable.shin));\r\n        letterArrayList.add(letter=new Letter(\"ת\",40,R.drawable.taf));\r\n\r\n        //יצירת מסך וגם שמירה של כל הכפתורים ברשימה\r\n        buttonList=new ArrayList<Button>();\r\n        for (i=0;i<10;i++) {\r\n            tableRow=new TableRow(this);\r\n            TableRow.LayoutParams params=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);\r\n            tableLayout.addView(tableRow);\r\n            tableRow.setGravity(Gravity.CENTER);\r\n            tableRow.setLayoutParams(params);\r\n            for (j=0;j<10;j++){\r\n                  button=new MyButton(this,i,j);\r\n                  button.setId(idNum);\r\n                  idNum++;\r\n                  button.setBackground(getDrawable(R.drawable.my_button));\r\n                  button.setText(null);\r\n                  button.setOnClickListener(new View.OnClickListener() {\r\n                @Override\r\n                public void onClick(View view) {\r\n                    MyButton myButton=(MyButton)view;\r\n                    if (myButton.getLetter()!=null) {\r\n                        tempLetter=myButton.getLetter();\r\n                        myButton.setBackground(getDrawable(R.drawable.my_button));\r\n                        myButton.setLetter(null);\r\n                    }else{\r\n\r\n                        for (Letter l:letterArrayList){\r\n                            if (l.getLett()==tempLetter)\r\n                            myButton.setBackgroundDrawable(getDrawable(l.getIcon()));\r\n                            myButton.setLetter(tempLetter);\r\n                            TableRow.LayoutParams buttonParams=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);\r\n                            myButton.setLayoutParams(buttonParams);\r\n                        }\r\n                        tempLetter = null;\r\n\r\n                    }\r\n                }\r\n            });\r\n                tableRow.addView(button);\r\n                buttonList.add(button);\r\n        }\r\n\r\n            //יצרה של היד של השחקן\r\n        }\r\n        for (i=0;i<10;i++){\r\n            Random random=new Random();\r\n            int rndNum=random.nextInt(22);\r\n            playerHand.addView(button=new MyButton(this,0,0));\r\n            button.setBackground(getDrawable(R.drawable.my_button));\r\n            //button.setText(letterArrayList.get(rndNum).getLett());\r\n            button.setBackgroundDrawable(getDrawable(letterArrayList.get(rndNum).getIcon()));\r\n            button.setLetter(letterArrayList.get(rndNum).getLett());\r\n            TableRow.LayoutParams buttonParamsPlayer=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);\r\n            button.setLayoutParams(buttonParamsPlayer);\r\n          //  button.setBackground(getDrawable(R.drawable.active_button_color));\r\n            button.setOnClickListener(new View.OnClickListener() {\r\n                @Override\r\n                public void onClick(View view) {\r\n                    MyButton myButton=(MyButton)view;\r\n                    if (myButton.getLetter()!=null) {\r\n                        tempLetter = myButton.getLetter();\r\n                        myButton.setLetter(null);\r\n                        myButton.setBackground(getDrawable(R.drawable.my_button));\r\n                    }\r\n                    else{\r\n                        for (Letter l:letterArrayList){\r\n                            if (l.getLett()==tempLetter){\r\n                                myButton.setBackgroundDrawable(getDrawable(l.getIcon()));\r\n                                myButton.setBackground(getDrawable(l.getIcon()));\r\n                                myButton.setLetter(tempLetter);\r\n                                TableRow.LayoutParams buttonParamsPlayer=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);\r\n                                myButton.setLayoutParams(buttonParamsPlayer);\r\n                         }\r\n                        }\r\n                        tempLetter=null;\r\n                    }\r\n                }\r\n            });\r\n\r\n        }\r\n        nextTurn.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                \r\n            }\r\n        });\r\n    }\r\n    //טיימר\r\n    public void setTimer(){\r\n        new CountDownTimer(30000, 1000) {\r\n\r\n            public void onTick(long millisUntilFinished) {\r\n                timer.setText(\"seconds remaining: \" + millisUntilFinished / 1000);\r\n            }\r\n\r\n            public void onFinish() {\r\n                timer.setText(\"done!\");\r\n            }\r\n        }.start();\r\n    }\r\n    private void sendScore(){\r\n        showActivity = new Intent(GamePage.this, winnerScreen.class);\r\n        showActivity.putExtra(\"score\",Integer.toString(playerCurrentPoints));\r\n    }\r\n}
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- app/src/main/java/com/example/firebaseex/GamePage.java	(revision 93780daace386ade54d82f8eea3413b536a5bd4b)
+-+++ app/src/main/java/com/example/firebaseex/GamePage.java	(date 1603562316675)
+-@@ -197,4 +197,6 @@
+-         showActivity = new Intent(GamePage.this, winnerScreen.class);
+-         showActivity.putExtra("score",Integer.toString(playerCurrentPoints));
+-     }
+-+
+-+
+- }
+-\ No newline at end of file
+-Index: app/src/main/java/com/example/firebaseex/boxesPage.java
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>package com.example.firebaseex;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport android.content.Intent;\r\nimport android.os.Bundle;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.ImageButton;\r\nimport android.widget.Toast;\r\nimport android.animation.ObjectAnimator;\r\n\r\npublic class boxesPage extends AppCompatActivity {\r\n\r\n    private Button backHomeButton;\r\n    private Intent goTOHome;\r\n    private Button showCards;\r\n    private Intent goTOCards;\r\n    public Bundle bundle;\r\n   public ObjectAnimator animation;\r\n    private ImageButton woodBox;\r\n    private ImageButton silverBox;\r\n    private ImageButton goldBox;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_boxes_page);\r\n\r\n        bundle=getIntent().getExtras();\r\n        backHomeButton=findViewById(R.id.back_button);\r\n        goTOHome=new Intent(this,HomePage.class);\r\n        showCards=findViewById(R.id.show_cards);\r\n        goTOCards=new Intent(this,cardPage.class);\r\n        woodBox=findViewById(R.id.wood_box);\r\n        silverBox=findViewById(R.id.silver_box);\r\n        goldBox=findViewById(R.id.gold_box);\r\n\r\n        backHomeButton.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n                Toast.makeText(boxesPage.this, \"back\",Toast.LENGTH_LONG).show();\r\n                startActivity(goTOHome);\r\n            }\r\n        });\r\n\r\n        showCards.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n                Toast.makeText(boxesPage.this, \"cards\",Toast.LENGTH_LONG).show();\r\n                startActivity(goTOCards);\r\n            }\r\n        });\r\n\r\n        woodBox.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                anima(woodBox);\r\n                Toast.makeText(boxesPage.this,\"נקנה בהצלחה\",Toast.LENGTH_LONG).show();\r\n            }\r\n        });\r\n\r\n        silverBox.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                anima(silverBox);\r\n                Toast.makeText(boxesPage.this,\"נקנה בהצלחה\",Toast.LENGTH_LONG).show();\r\n            }\r\n        });\r\n\r\n        goldBox.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                anima(goldBox);\r\n                Toast.makeText(boxesPage.this,\"נקנה בהצלחה\",Toast.LENGTH_LONG).show();\r\n            }\r\n        });\r\n\r\n\r\n\r\n\r\n    }\r\n    public void anima(ImageButton image){\r\n        animation = ObjectAnimator.ofFloat(image,  \"rotation\", 0f, 10f,0f);\r\n        animation.setDuration(100);\r\n        animation.setRepeatCount(2);\r\n        animation.start();\r\n    }\r\n}
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- app/src/main/java/com/example/firebaseex/boxesPage.java	(revision 93780daace386ade54d82f8eea3413b536a5bd4b)
+-+++ app/src/main/java/com/example/firebaseex/boxesPage.java	(date 1603568992503)
+-@@ -1,14 +1,16 @@
+- package com.example.firebaseex;
+- 
+--import androidx.appcompat.app.AppCompatActivity;
+--
+-+import android.animation.ObjectAnimator;
+- import android.content.Intent;
+- import android.os.Bundle;
+- import android.view.View;
+- import android.widget.Button;
+- import android.widget.ImageButton;
+- import android.widget.Toast;
+--import android.animation.ObjectAnimator;
+-+
+-+import androidx.appcompat.app.AppCompatActivity;
+-+
+-+import java.util.ArrayList;
+- 
+- public class boxesPage extends AppCompatActivity {
+- 
+-@@ -21,6 +23,9 @@
+-     private ImageButton woodBox;
+-     private ImageButton silverBox;
+-     private ImageButton goldBox;
+-+    private ArrayList <cards> cardsArrayList;
+-+    private cards card;
+-+
+- 
+-     @Override
+-     protected void onCreate(Bundle savedInstanceState) {
+-@@ -36,6 +41,7 @@
+-         silverBox=findViewById(R.id.silver_box);
+-         goldBox=findViewById(R.id.gold_box);
+- 
+-+
+-         backHomeButton.setOnClickListener(new View.OnClickListener() {
+-             @Override
+-             public void onClick(View view) {
+-@@ -52,6 +58,16 @@
+-             }
+-         });
+- 
+-+
+-+        cardsArrayList=new ArrayList<cards>();
+-+        cardsArrayList.add(card=new cards("Freeze_time",R.drawable.card1));
+-+        cardsArrayList.add(card=new cards("Letter_theft",R.drawable.card2));
+-+        cardsArrayList.add(card=new cards("Exchange_letters",R.drawable.card3));
+-+        cardsArrayList.add(card=new cards("Stealing_time",R.drawable.card4));
+-+        cardsArrayList.add(card=new cards("Doubling_the_score",R.drawable.card5));
+-+        cardsArrayList.add(card=new cards("5_bonuses",R.drawable.card6));
+-+
+-+
+-         woodBox.setOnClickListener(new View.OnClickListener() {
+-             @Override
+-             public void onClick(View v) {
+-Index: .idea/inspectionProfiles/Project_Default.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/inspectionProfiles/Project_Default.xml	(date 1603559541724)
+-+++ .idea/inspectionProfiles/Project_Default.xml	(date 1603559541724)
+-@@ -0,0 +1,10 @@
+-+<component name="InspectionProjectProfileManager">
+-+  <profile version="1.0">
+-+    <option name="myName" value="Project Default" />
+-+    <inspection_tool class="ConstantConditions" enabled="true" level="WARNING" enabled_by_default="true">
+-+      <option name="SUGGEST_NULLABLE_ANNOTATIONS" value="false" />
+-+      <option name="DONT_REPORT_TRUE_ASSERT_STATEMENTS" value="false" />
+-+    </inspection_tool>
+-+    <inspection_tool class="Deprecation" enabled="false" level="WARNING" enabled_by_default="false" />
+-+  </profile>
+-+</component>
+-\ No newline at end of file
+-Index: app/src/main/java/com/example/firebaseex/cards.java
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- app/src/main/java/com/example/firebaseex/cards.java	(date 1603568545126)
+-+++ app/src/main/java/com/example/firebaseex/cards.java	(date 1603568545126)
+-@@ -0,0 +1,34 @@
+-+package com.example.firebaseex;
+-+
+-+public class cards {
+-+
+-+    private String cardName;
+-+    private int icon;
+-+
+-+
+-+    public cards(){
+-+    }
+-+
+-+    public cards(String cardName, int icon) {
+-+        this.cardName = cardName;
+-+        this.icon = icon;
+-+
+-+    }
+-+
+-+    public String getCardName() {
+-+        return cardName;
+-+    }
+-+
+-+    public void setCardName(String cardName) {
+-+        this.cardName = cardName;
+-+    }
+-+
+-+    public int getIcon() {
+-+        return icon;
+-+    }
+-+
+-+    public void setIcon(int icon) {
+-+        this.icon = icon;
+-+    }
+-+
+-+}
+-diff --git .idea/shelf/Uncommitted_changes_before_Update_at_16_10_2020_15_02__Default_Changelist_.xml .idea/shelf/Uncommitted_changes_before_Update_at_16_10_2020_15_02__Default_Changelist_.xml
+-diff --git .idea/shelf/Uncommitted_changes_before_Update_at_21_10_2020_12_44__Default_Changelist_.xml .idea/shelf/Uncommitted_changes_before_Update_at_21_10_2020_12_44__Default_Changelist_.xml
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_22_50__Default_Changelist_.xml
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_22_50__Default_Changelist_.xml	(revision 52079280ad98f5e25ab2d487b5d6284a2082422d)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_22_50__Default_Changelist_.xml	(revision 52079280ad98f5e25ab2d487b5d6284a2082422d)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_24_10_2020_22_50_[Default_Changelist]" date="1603569017388" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_22_50_[Default_Changelist]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 24/10/2020 22:50 [Default Changelist]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_20_12_[Default_Changelist]/shelved.patch
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_20_12_[Default_Changelist]/shelved.patch	(revision 52079280ad98f5e25ab2d487b5d6284a2082422d)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_20_12_[Default_Changelist]/shelved.patch	(revision 52079280ad98f5e25ab2d487b5d6284a2082422d)
+@@ -1,19 +0,0 @@
+-Index: .idea/inspectionProfiles/Project_Default.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+---- .idea/inspectionProfiles/Project_Default.xml	(date 1603533519382)
+-+++ .idea/inspectionProfiles/Project_Default.xml	(date 1603533519382)
+-@@ -0,0 +1,10 @@
+-+<component name="InspectionProjectProfileManager">
+-+  <profile version="1.0">
+-+    <option name="myName" value="Project Default" />
+-+    <inspection_tool class="ConstantConditions" enabled="true" level="WARNING" enabled_by_default="true">
+-+      <option name="SUGGEST_NULLABLE_ANNOTATIONS" value="false" />
+-+      <option name="DONT_REPORT_TRUE_ASSERT_STATEMENTS" value="false" />
+-+    </inspection_tool>
+-+    <inspection_tool class="Deprecation" enabled="false" level="WARNING" enabled_by_default="false" />
+-+  </profile>
+-+</component>
+-\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_20_12__Default_Changelist_.xml
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_20_12__Default_Changelist_.xml	(revision 52079280ad98f5e25ab2d487b5d6284a2082422d)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_20_12__Default_Changelist_.xml	(revision 52079280ad98f5e25ab2d487b5d6284a2082422d)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_24_10_2020_20_12_[Default_Changelist]" date="1603559542026" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_24_10_2020_20_12_[Default_Changelist]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 24/10/2020 20:12 [Default Changelist]" />
+-</changelist>
+\ No newline at end of file

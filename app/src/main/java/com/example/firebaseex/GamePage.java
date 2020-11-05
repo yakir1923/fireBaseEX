@@ -84,6 +84,7 @@ private String s="";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_page);
         userDitale=getSharedPreferences("login",MODE_PRIVATE);
+        editor=userDitale.edit();
         Thread tg=new Thread(new Runnable() {
             @Override
             public void run() {
@@ -96,6 +97,7 @@ private String s="";
 
         myTurn=true;
         joinGame();
+        Toast.makeText(getApplicationContext(),userDitale.getString("game_id",null),Toast.LENGTH_LONG).show();
 
 
         //startGame("kE18TB2qTAsmpKc2dnGT");
@@ -284,8 +286,12 @@ private String s="";
                         if (task.isSuccessful()) {
                             if(task.getResult().size()==1){
                                 DocumentSnapshot documentSnapshot= task.getResult().getDocuments().get(0);
-                             //   Toast.makeText(getApplicationContext(),documentSnapshot.getId(),Toast.LENGTH_LONG).show();
+                              // Toast.makeText(getApplicationContext(),documentSnapshot.getId(),Toast.LENGTH_LONG).show();
+                                editor.putString("game_id",documentSnapshot.getId());
+                                editor.commit();
+                                editor.apply();
                                 Game game=documentSnapshot.toObject(Game.class);
+
                                 if(!game.getUser1().equals(userDitale.getString("email",null))) {
                                     update(documentSnapshot.getId());
                                 }else {
@@ -341,6 +347,7 @@ public void  startGame(String gameId){
                 } else {
                     Log.d("result", "Current data: null");
                 }
+
             }
         });
     }
