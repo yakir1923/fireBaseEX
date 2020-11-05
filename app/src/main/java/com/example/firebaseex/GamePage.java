@@ -114,7 +114,6 @@ private String s="";
 
         playerName.setText(userDitale.getString("name",null));
         idNum=0;
-        opponentName.setText(setUserName());
         timer = findViewById(R.id.timer_round);
         setTimer();
         nextTurn=findViewById(R.id.next_turn);
@@ -167,12 +166,14 @@ private String s="";
                     MyButton myButton=(MyButton)view;
                     //check location of button
                     Toast.makeText(getApplicationContext(),myButton.getX()+","+myButton.getY(),Toast.LENGTH_SHORT).show();
+
                     if (myButton.getLetter()!=null) {
                         //the player puts letters on the board
                         wordButton.remove(myButton);
                         tempLetter=myButton.getLetter();
                         myButton.setBackground(getDrawable(R.drawable.my_button));
                         myButton.setLetter(null);
+
                     }else{
 
                         for (Letter l:letterArrayList){
@@ -183,7 +184,7 @@ private String s="";
                             TableRow.LayoutParams buttonParams=new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                             myButton.setLayoutParams(buttonParams);
                         }
-                       //לעשות רשימה של האותיות שנכנסות לבדוק מיקום שהן נכנסו ולהכניס לפי הסדר לרשימה
+                //       לעשות רשימה של האותיות שנכנסות לבדוק מיקום שהן נכנסו ולהכניס לפי הסדר לרשימה
 
                         s+=tempLetter;
                         tempLetter = null;
@@ -237,20 +238,12 @@ private String s="";
         nextTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int n =CheckWord(s);
+                Toast.makeText(GamePage.this,s,Toast.LENGTH_SHORT).show();
 
             }
         });
     }
 
-    private String setUserName() {
-        if (userDitale.getString("name",null)=="yakir moses")
-        {
-            return "שני";
-        }else{
-           return "yakir moses";
-        }
-    }
    //טיימר
     public void setTimer(){
         new CountDownTimer(30000, 1000) {
@@ -326,7 +319,7 @@ public void creatGame(){
             });
 
 }
-    public void  startGame(String gameId){
+public void  startGame(String gameId){
         final DocumentReference docRef = db.collection("games").document(gameId);
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -336,25 +329,21 @@ public void creatGame(){
                     Log.w("result", "Listen failed.", e);
                     return;
                 }
-
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("result", "Current data: " + snapshot.getData());
                     Toast.makeText(getApplicationContext(),snapshot.getString("data"),Toast.LENGTH_LONG).show();
                     if (snapshot.getString("user1").toString()!=userDitale.getString("email",null)){
-                        playerName.setText(snapshot.getString("user2").toString());
-                        opponentName.setText(snapshot.getString("user1").toString());
-                    }else {
                         playerName.setText(snapshot.getString("user1").toString());
                         opponentName.setText(snapshot.getString("user2").toString());
-
-
+                    }else {
+                        playerName.setText(snapshot.getString("user2").toString());
+                        opponentName.setText(snapshot.getString("user1").toString());
                     }
                 } else {
                     Log.d("result", "Current data: null");
                 }
             }
         });
-
     }
     public void update(final String gameId){
         DocumentReference washingtonRef = db.collection("games").document(gameId);
