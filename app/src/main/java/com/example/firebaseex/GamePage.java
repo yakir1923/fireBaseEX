@@ -333,7 +333,7 @@ public void  startGame(String gameId){
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("result", "Current data: " + snapshot.getData());
                     Toast.makeText(getApplicationContext(),snapshot.getString("data"),Toast.LENGTH_LONG).show();
-                    if (snapshot.getString("user1").toString()!=userDitale.getString("email",null)){
+                    if (!snapshot.getString("user1").equals(userDitale.getString("email",null))){
                         opponentName.setText(snapshot.getString("user1").toString());
                     }else {
                         opponentName.setText(snapshot.getString("user2").toString());
