@@ -118,6 +118,7 @@ private String s="";
         setTimer();
         nextTurn=findViewById(R.id.next_turn);
         nextTurn.setBackground(getDrawable(R.drawable.active_button_color));
+        playerName.setText(userDitale.getString("email",null));
 
         //יצירת רשימה של אותיות
         letterArrayList=new ArrayList<Letter>();
@@ -333,11 +334,9 @@ public void  startGame(String gameId){
                     Log.d("result", "Current data: " + snapshot.getData());
                     Toast.makeText(getApplicationContext(),snapshot.getString("data"),Toast.LENGTH_LONG).show();
                     if (snapshot.getString("user1").toString()!=userDitale.getString("email",null)){
-                        playerName.setText(snapshot.getString("user1").toString());
-                        opponentName.setText(snapshot.getString("user2").toString());
-                    }else {
-                        playerName.setText(snapshot.getString("user2").toString());
                         opponentName.setText(snapshot.getString("user1").toString());
+                    }else {
+                        opponentName.setText(snapshot.getString("user2").toString());
                     }
                 } else {
                     Log.d("result", "Current data: null");
