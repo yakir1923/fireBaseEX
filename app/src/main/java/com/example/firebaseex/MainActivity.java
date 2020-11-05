@@ -131,7 +131,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
             int i = 0;
             while ((mLine = reader.readLine()) != null) {
 
-                texts.put(mLine.split(":")[0], mLine.split(":")[1]);
+                texts.put(mLine.split(" ")[0], mLine.split(" ")[1]);
 
 
             }
