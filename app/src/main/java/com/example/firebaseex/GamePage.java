@@ -80,6 +80,7 @@ public class GamePage extends AppCompatActivity {
     private String gameId;
     private ArrayList<MyButton> wordButton;
     private static String s = "";
+    private int score=0;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -94,7 +95,6 @@ public class GamePage extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), userDitale.getString("game_id", null), Toast.LENGTH_LONG).show();
 
 
-        //startGame("kE18TB2qTAsmpKc2dnGT");
         db = FirebaseFirestore.getInstance();
         tableLayout = findViewById(R.id.game_layout);
         playerPoints = findViewById(R.id.player_points);
@@ -105,7 +105,7 @@ public class GamePage extends AppCompatActivity {
         opponentHand = findViewById(R.id.opponent_hand);
         playerCurrentPoints = 0;
         opponentCurrentPoints = 0;
-        playerPoints.setText("0");
+        playerPoints.setText(String.valueOf(score));
         opponentPoints.setText("0");
 
         playerName.setText(userDitale.getString("name", null));
@@ -162,32 +162,34 @@ public class GamePage extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         MyButton myButton = (MyButton) view;
-                        //check location of button
-                        Toast.makeText(getApplicationContext(), myButton.getX() + "," + myButton.getY(), Toast.LENGTH_SHORT).show();
+                        if (myButton.getSetted()==false) {
+                            //check location of button
+                            Toast.makeText(getApplicationContext(), myButton.getX() + "," + myButton.getY(), Toast.LENGTH_SHORT).show();
 
-                        if (myButton.getLetter() != null) {
-                            //the player puts letters on the board
-                            wordButton.remove(myButton);
-                            tempLetter = myButton.getLetter();
-                            myButton.setBackground(getDrawable(R.drawable.my_button));
-                            myButton.setLetter(null);
+                            if (myButton.getLetter() != null) {
+                                //the player puts letters on the board
+                                wordButton.remove(myButton);
+                                tempLetter = myButton.getLetter();
+                                myButton.setBackground(getDrawable(R.drawable.my_button));
+                                myButton.setLetter(null);
 
-                        } else {
+                            } else {
 
-                            for (Letter l : letterArrayList) {
-                                if (l.getLett() == tempLetter)
-                                    myButton.setBackgroundDrawable(getDrawable(l.getIcon()));
-                                myButton.setLetter(tempLetter);
+                                for (Letter l : letterArrayList) {
+                                    if (l.getLett() == tempLetter)
+                                        myButton.setBackgroundDrawable(getDrawable(l.getIcon()));
+                                    myButton.setLetter(tempLetter);
 
-                                TableRow.LayoutParams buttonParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                                myButton.setLayoutParams(buttonParams);
+                                    TableRow.LayoutParams buttonParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                                    myButton.setLayoutParams(buttonParams);
+                                }
+                                //       לעשות רשימה של האותיות שנכנסות לבדוק מיקום שהן נכנסו ולהכניס לפי הסדר לרשימה
+
+                                //     s+=tempLetter;
+                                wordButton.add(myButton);
+                                tempLetter = null;
+
                             }
-                            //       לעשות רשימה של האותיות שנכנסות לבדוק מיקום שהן נכנסו ולהכניס לפי הסדר לרשימה
-
-                            //     s+=tempLetter;
-                            wordButton.add(myButton);
-                            tempLetter = null;
-
                         }
                     }
                 });
@@ -233,14 +235,25 @@ public class GamePage extends AppCompatActivity {
                 }
             });
         }
+        //TODO
         nextTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getAWord();
                 int x=CheckWord(s);
                 Toast.makeText(GamePage.this, s+""+x, Toast.LENGTH_SHORT).show();
+                for (MyButton myButton:wordButton){
+                    myButton.setSetted(true);
+                    for (Letter letter:letterArrayList){
+                        if (myButton.getLetter()==letter.getLett()){
+                            score+=letter.getScoring();
+                        }
+                    }
+                }
+                playerPoints.setText(String.valueOf(score));
 
             }
+
         });
     }
 
@@ -404,6 +417,7 @@ public class GamePage extends AppCompatActivity {
     }
 
     public void getAWord() {
+
         ArrayList<MyButton> arrayList = new ArrayList();
         if (wordButton.get(0).getX()==wordButton.get(1).getX()) {
             boolean flag = true;
@@ -430,6 +444,26 @@ public class GamePage extends AppCompatActivity {
         }
         for (MyButton mb:wordButton){
             s=s+mb.getLetter();
+        }
+    }
+
+    private void scanLine(char charXOrY,int cordinateEq) {
+        if (charXOrY=='x') {
+            for (MyButton button : buttonList) {
+                if (button.getY()==cordinateEq&&button.getLetter()!=null){
+                    if (button.getSetted()) {
+                        wordButton.add(button);
+                    }
+                }
+            }
+        } else{
+                for (MyButton button : buttonList) {
+                    if (button.getX()==cordinateEq&&button.getLetter()!=null){
+                        if (button.getSetted()) {
+                            wordButton.add(button);
+                        }
+                    }
+                }
         }
     }
 }

@@ -8,11 +8,13 @@ import java.util.ArrayList;
 public class MyButton extends androidx.appcompat.widget.AppCompatButton{
     private int x, y;
     private String letter;
+    private Boolean isSetted;
 
     public MyButton(Context context, int x, int y) {
         super(context);
         this.x = x;
         this.y = y;
+        this.isSetted=false;
     }
 
     public MyButton(Context context) {
@@ -54,5 +56,11 @@ public class MyButton extends androidx.appcompat.widget.AppCompatButton{
         this.letter = letter;
     }
 
-
+    public Boolean getSetted() {
+        return isSetted;
     }
+
+    public void setSetted(Boolean setted) {
+        isSetted = setted;
+    }
+}
