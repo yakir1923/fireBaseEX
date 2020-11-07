@@ -28,6 +28,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -36,6 +37,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.okhttp.internal.DiskLruCache;
 
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,6 +49,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 
+import static java.util.Collections.checkedMap;
 import static java.util.Collections.swap;
 
 public class GamePage extends AppCompatActivity {
@@ -77,7 +80,7 @@ public class GamePage extends AppCompatActivity {
     private Boolean myTurn;
     private Intent showActivity;
     private int turns = 0;
-    private String gameId;
+    private static String gameId;
     private ArrayList<MyButton> wordButton;
     private static String s = "";
     private int score=0;
@@ -92,8 +95,10 @@ public class GamePage extends AppCompatActivity {
 
         myTurn = true;
         joinGame();
-        Toast.makeText(getApplicationContext(), userDitale.getString("game_id", null), Toast.LENGTH_LONG).show();
 
+        userDitale = getSharedPreferences("login", MODE_PRIVATE);
+       gameId=userDitale.getString("game_id",null);
+       // gameId= getSharedPreferences("game_id", "");
 
         db = FirebaseFirestore.getInstance();
         tableLayout = findViewById(R.id.game_layout);
@@ -164,7 +169,7 @@ public class GamePage extends AppCompatActivity {
                         MyButton myButton = (MyButton) view;
                         if (myButton.getSetted()==false) {
                             //check location of button
-                            Toast.makeText(getApplicationContext(), myButton.getX() + "," + myButton.getY(), Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(getApplicationContext(), myButton.getX() + "," + myButton.getY(), Toast.LENGTH_SHORT).show();
 
                             if (myButton.getLetter() != null) {
                                 //the player puts letters on the board
@@ -240,8 +245,8 @@ public class GamePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 getAWord();
-                int x=CheckWord(s);
-                Toast.makeText(GamePage.this, s+""+x, Toast.LENGTH_SHORT).show();
+                CheckWord(s);
+               // Toast.makeText(GamePage.this, s+"", Toast.LENGTH_SHORT).show();
                 for (MyButton myButton:wordButton){
                     myButton.setSetted(true);
                     for (Letter letter:letterArrayList){
@@ -250,12 +255,39 @@ public class GamePage extends AppCompatActivity {
                         }
                     }
                 }
+                String a=userDitale.getString("email",null)+"$"+(int)wordButton.get(0).getX()+"$"+(int)wordButton.get(0).getY();
+                if (wordButton.get(0).getX()==wordButton.get(1).getX()){
+                   a+="$R";
+                }else{
+                    a+="$C";
+                }
+               chh(a,s);
                 playerPoints.setText(String.valueOf(score));
+                wordButton.removeAll(wordButton);
+                s="";
 
             }
 
         });
+
     }
+    public void chh(String a,String b){
+
+        db.collection("games").document(userDitale.getString("game_id",null)).update("data2", FieldValue.arrayUnion(a+"$"+b)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+              //  Toast.makeText(getApplicationContext(),"aaa",Toast.LENGTH_LONG).show();
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                Log.e("fail", "onFailure:"+e.getMessage() );
+            }
+        });
+    }
+
 
     //טיימר
     public void setTimer() {
@@ -297,7 +329,7 @@ public class GamePage extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             if (task.getResult().size() == 1) {
                                 DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(0);
-                                // Toast.makeText(getApplicationContext(),documentSnapshot.getId(),Toast.LENGTH_LONG).show();
+                              //   Toast.makeText(getApplicationContext(),documentSnapshot.getId(),Toast.LENGTH_LONG).show();
                                 editor.putString("game_id", documentSnapshot.getId());
                                 editor.commit();
                                 editor.apply();
@@ -326,6 +358,9 @@ public class GamePage extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d("sucsesDB", "DocumentSnapshot written with ID: " + documentReference.getId());
+                        editor.putString("game_id", documentReference.getId());
+                        editor.commit();
+                        editor.apply();
                         startGame(documentReference.getId());
                     }
                 })
@@ -339,7 +374,11 @@ public class GamePage extends AppCompatActivity {
     }
 
     public void startGame(String gameId) {
+
         final DocumentReference docRef = db.collection("games").document(gameId);
+        editor.putString("game_id", gameId);
+        editor.commit();
+        editor.apply();
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -350,11 +389,17 @@ public class GamePage extends AppCompatActivity {
                 }
                 if (snapshot != null && snapshot.exists()) {
                     Log.d("result", "Current data: " + snapshot.getData());
-                    Toast.makeText(getApplicationContext(), snapshot.getString("data"), Toast.LENGTH_LONG).show();
+                   // Toast.makeText(getApplicationContext(), snapshot.getString("data"), Toast.LENGTH_LONG).show();
                     if (!snapshot.getString("user1").equals(userDitale.getString("email", null))) {
                         opponentName.setText(snapshot.getString("user1").toString());
                     } else {
                         opponentName.setText(snapshot.getString("user2").toString());
+                    }
+                    ArrayList<String> data2 = (ArrayList<String>) snapshot.get("data2");
+                    if(data2!=null)
+                    {
+                       getRESS(data2);
+
                     }
                 } else {
                     Log.d("result", "Current data: null");
@@ -364,9 +409,39 @@ public class GamePage extends AppCompatActivity {
         });
     }
 
+    public void  getRESS(ArrayList<String> data2){
+        Toast.makeText(getApplicationContext(),data2.get(data2.size()-1),Toast.LENGTH_LONG).show();
+        String[] res = data2.get(data2.size()-1).split("\\$");
+        if(!userDitale.getString("email",null).equalsIgnoreCase(res[0]))
+        {
+            String letters = res[4];
+            ArrayList<MyButton> newButtonList=new ArrayList<MyButton>();
+            Toast.makeText(getApplicationContext(),res[4],Toast.LENGTH_LONG).show();
+            int row=Integer.parseInt(res[1]);
+            int col=Integer.parseInt(res[2]);
+            for (int i=0;i<letters.length();i++){
+                String s1=letters.charAt(i)+"";
+                MyButton button=new MyButton(getApplicationContext(),row,col);
+                button.setLetter(s1);
+                for (Letter l:letterArrayList){
+                    if (l.getLett()==button.getLetter()){
+                        button.setBackground(getDrawable(l.getIcon()));
+                    }
+                }
+                if(res[3].equalsIgnoreCase("R")){
+                    col--;
+                }else {
+                    row++;
+                }
+            }
+        }
+    }
+
     public void update(final String gameId) {
         DocumentReference washingtonRef = db.collection("games").document(gameId);
-
+        editor.putString("game_id", gameId);
+        editor.commit();
+        editor.apply();
         // Set the "isCapital" field of the city 'DC'
         washingtonRef
                 .update("user2", userDitale.getString("email", null))
@@ -386,37 +461,48 @@ public class GamePage extends AppCompatActivity {
 
     }
 
-    public int CheckWord(String str) {
-        char c = str.charAt(0);
-        ArrayList<InputStream> filesList = new ArrayList<>();
-        InputStream input1 = getResources().openRawResource(R.raw.words1);
-        InputStream input2 = getResources().openRawResource(R.raw.words2);
-        InputStream input3 = getResources().openRawResource(R.raw.words3);
-        InputStream input4 = getResources().openRawResource(R.raw.words4);
-        InputStream input5 = getResources().openRawResource(R.raw.words5);
-        InputStream input6 = getResources().openRawResource(R.raw.words6);
-        filesList.add(input1);
-        filesList.add(input2);
-        filesList.add(input3);
-        filesList.add(input4);
-        filesList.add(input5);
-        filesList.add(input6);
-        Scanner scanner1;
-        String line1;
-        int val = 0;
-        for (InputStream temp : filesList) {
-            scanner1 = new Scanner(temp);
-            while (scanner1.hasNext()) {
-                line1 = scanner1.nextLine();
-                if (line1.equals(str)) {
-                    val = 1;
+    public void CheckWord(final String str) {
+        Thread thread=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                char c = str.charAt(0);
+                ArrayList<InputStream> filesList = new ArrayList<>();
+                InputStream input1 = getResources().openRawResource(R.raw.words1);
+                InputStream input2 = getResources().openRawResource(R.raw.words2);
+                InputStream input3 = getResources().openRawResource(R.raw.words3);
+                InputStream input4 = getResources().openRawResource(R.raw.words4);
+                InputStream input5 = getResources().openRawResource(R.raw.words5);
+                InputStream input6 = getResources().openRawResource(R.raw.words6);
+                filesList.add(input1);
+                filesList.add(input2);
+                filesList.add(input3);
+                filesList.add(input4);
+                filesList.add(input5);
+                filesList.add(input6);
+                Scanner scanner1;
+                String line1;
+                int val = 0;
+                for (InputStream temp : filesList) {
+                    scanner1 = new Scanner(temp);
+                    while (scanner1.hasNext()) {
+                        line1 = scanner1.nextLine();
+                        if (line1.equals(str)) {
+                            val = 1;
+                        }
+                    }
                 }
+                test(val);
             }
-        }
-        return val;
+        });
+
+    }
+    public void test(int val){
+       // Toast.makeText(getApplicationContext(),String.valueOf(val),Toast.LENGTH_LONG).show();
     }
 
     public void getAWord() {
+
+        try {
 
         ArrayList<MyButton> arrayList = new ArrayList();
         if (wordButton.get(0).getX()==wordButton.get(1).getX()) {
@@ -441,6 +527,9 @@ public class GamePage extends AppCompatActivity {
                     }
                 }
             }
+        }
+        }catch (Exception e){
+            Log.e("eror_thread", "getAWord: "+e.getMessage());
         }
         for (MyButton mb:wordButton){
             s=s+mb.getLetter();
