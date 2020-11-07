@@ -419,18 +419,19 @@ public class GamePage extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),res[4],Toast.LENGTH_LONG).show();
             int row=Integer.parseInt(res[1]);
             int col=Integer.parseInt(res[2]);
-            for (int i=0;i<letters.length();i++){
-                String s1=letters.charAt(i)+"";
-                MyButton button=new MyButton(getApplicationContext(),row,col);
-                button.setLetter(s1);
-                for (Letter l:letterArrayList){
-                    if (l.getLett()==button.getLetter()){
+            for (int i=0;i<letters.length();i++) {
+                String s1 = letters.charAt(i) + "";
+                int pos = row * 10 + col;
+            MyButton button =  buttonList.get(pos);
+            button.setLetter(s1);
+                for (Letter l : letterArrayList) {
+                    if (l.getLett().equalsIgnoreCase(button.getLetter())) {
                         button.setBackground(getDrawable(l.getIcon()));
                     }
                 }
-                if(res[3].equalsIgnoreCase("R")){
+                if (res[3].equalsIgnoreCase("R")) {
                     col--;
-                }else {
+                } else {
                     row++;
                 }
             }
