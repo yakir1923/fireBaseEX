@@ -151,18 +151,20 @@ public class GamePage extends AppCompatActivity {
         buttonList = new ArrayList<MyButton>();
         wordButton = new ArrayList<MyButton>();
 
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < 9; i++) {
             tableRow = new TableRow(this);
             TableRow.LayoutParams params = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             tableLayout.addView(tableRow);
             tableRow.setGravity(Gravity.CENTER);
             tableRow.setLayoutParams(params);
-            for (j = 0; j < 10; j++) {
+            for (j = 0; j < 9; j++) {
                 button = new MyButton(this, i, j);
                 button.setId(idNum);
                 idNum++;
                 button.setBackground(getDrawable(R.drawable.my_button));
+//                button.setHeight();
                 button.setText(null);
+              //  button.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -421,12 +423,14 @@ public class GamePage extends AppCompatActivity {
             int col=Integer.parseInt(res[2]);
             for (int i=0;i<letters.length();i++) {
                 String s1 = letters.charAt(i) + "";
-                int pos = row * 10 + col;
+                int pos = row * 9 + col;
             MyButton button =  buttonList.get(pos);
             button.setLetter(s1);
                 for (Letter l : letterArrayList) {
                     if (l.getLett().equalsIgnoreCase(button.getLetter())) {
                         button.setBackground(getDrawable(l.getIcon()));
+                        TableRow.LayoutParams buttonParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                        button.setLayoutParams(buttonParams);
                     }
                 }
                 if (res[3].equalsIgnoreCase("R")) {
