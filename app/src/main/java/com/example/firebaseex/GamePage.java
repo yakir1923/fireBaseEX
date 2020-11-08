@@ -162,8 +162,7 @@ public class GamePage extends AppCompatActivity {
                 button.setId(idNum);
                 idNum++;
                 button.setBackground(getDrawable(R.drawable.my_button));
-//                button.setHeight();
-                button.setText(null);
+                button.setLetter(" ");
               //  button.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -172,13 +171,12 @@ public class GamePage extends AppCompatActivity {
                         if (myButton.getSetted()==false) {
                             //check location of button
                            // Toast.makeText(getApplicationContext(), myButton.getX() + "," + myButton.getY(), Toast.LENGTH_SHORT).show();
-
-                            if (myButton.getLetter() != null) {
+                            if (myButton.getLetter() !=" ") {
                                 //the player puts letters on the board
                                 wordButton.remove(myButton);
                                 tempLetter = myButton.getLetter();
                                 myButton.setBackground(getDrawable(R.drawable.my_button));
-                                myButton.setLetter(null);
+                                myButton.setLetter(" ");
 
                             } else {
 
@@ -186,7 +184,6 @@ public class GamePage extends AppCompatActivity {
                                     if (l.getLett() == tempLetter)
                                         myButton.setBackgroundDrawable(getDrawable(l.getIcon()));
                                     myButton.setLetter(tempLetter);
-
                                     TableRow.LayoutParams buttonParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                                     myButton.setLayoutParams(buttonParams);
                                 }
@@ -194,7 +191,7 @@ public class GamePage extends AppCompatActivity {
 
                                 //     s+=tempLetter;
                                 wordButton.add(myButton);
-                                tempLetter = null;
+                                tempLetter =" ";
 
                             }
                         }
@@ -223,9 +220,9 @@ public class GamePage extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     MyButton myButton = (MyButton) view;
-                    if (myButton.getLetter() != null) {
+                    if (myButton.getLetter() !=" ") {
                         tempLetter = myButton.getLetter();
-                        myButton.setLetter(null);
+                        myButton.setLetter(" ");
                         myButton.setBackground(getDrawable(R.drawable.my_button));
                     } else {
                         for (Letter l : letterArrayList) {
@@ -237,7 +234,7 @@ public class GamePage extends AppCompatActivity {
                                 myButton.setLayoutParams(buttonParamsPlayer);
                             }
                         }
-                        tempLetter = null;
+                        tempLetter =" ";
                     }
                 }
             });
@@ -257,13 +254,16 @@ public class GamePage extends AppCompatActivity {
                         }
                     }
                 }
-                String a=userDitale.getString("email",null)+"$"+(int)wordButton.get(0).getX()+"$"+(int)wordButton.get(0).getY();
-                if (wordButton.get(0).getX()==wordButton.get(1).getX()){
-                   a+="$R";
-                }else{
-                    a+="$C";
-                }
-               chh(a,s);
+//                String a=userDitale.getString("email",null)+"$"+(int)wordButton.get(0).getX()+"$"+(int)wordButton.get(0).getY();
+//                if (wordButton.get(0).getX()==wordButton.get(1).getX()){
+//                   a+="$R";
+//                }else{
+//                    a+="$C";
+//                }
+                String a="";
+                for (MyButton button:buttonList)
+                    a+=button.getLetter();
+               chh(a);
                 playerPoints.setText(String.valueOf(score));
                 wordButton.removeAll(wordButton);
                 s="";
@@ -273,9 +273,9 @@ public class GamePage extends AppCompatActivity {
         });
 
     }
-    public void chh(String a,String b){
+    public void chh(String a){
 
-        db.collection("games").document(userDitale.getString("game_id",null)).update("data2", FieldValue.arrayUnion(a+"$"+b)).addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("games").document(userDitale.getString("game_id",null)).update("data2",a).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
               //  Toast.makeText(getApplicationContext(),"aaa",Toast.LENGTH_LONG).show();
@@ -397,11 +397,13 @@ public class GamePage extends AppCompatActivity {
                     } else {
                         opponentName.setText(snapshot.getString("user2").toString());
                     }
-                    ArrayList<String> data2 = (ArrayList<String>) snapshot.get("data2");
+                    String data2 = (String) snapshot.get("data2");
                     if(data2!=null)
                     {
-                       getRESS(data2);
-
+                        Log.d("length_data2", "onEvent: "+data2.length()+" "+data2);
+                     //  getRESS(data2);
+                        getRESS2(data2);
+                        int x;
                     }
                 } else {
                     Log.d("result", "Current data: null");
@@ -409,6 +411,23 @@ public class GamePage extends AppCompatActivity {
 
             }
         });
+    }
+    public void getRESS2(String data2){
+        Toast.makeText(getApplicationContext(),data2,Toast.LENGTH_LONG).show();
+        char[] c=data2.toCharArray();
+        for (int a=0;a<80;a++){
+            buttonList.get(a).setLetter(String.valueOf(c[a]));
+            if (!(String.valueOf(c[a]).equalsIgnoreCase(" "))){
+                for (Letter l:letterArrayList){
+                    if (buttonList.get(a).getLetter()==l.getLett()){
+                        buttonList.get(a).setBackground(getDrawable(l.getIcon()));
+                        TableRow.LayoutParams buttonParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                        buttonList.get(a).setLayoutParams(buttonParams);
+                    }
+            }
+
+            }
+        }
     }
 
     public void  getRESS(ArrayList<String> data2){

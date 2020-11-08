@@ -15,6 +15,7 @@ public class MyButton extends androidx.appcompat.widget.AppCompatButton{
         this.x = x;
         this.y = y;
         this.isSetted=false;
+        this.letter=" ";
     }
 
     public MyButton(Context context) {

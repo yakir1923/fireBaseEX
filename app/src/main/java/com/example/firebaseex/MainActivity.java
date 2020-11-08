@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.BufferedReader;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity<mCallbackManager> extends AppCompatActivity {
     // Access a Cloud Firestore instance from your Activity
@@ -56,11 +58,12 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+      //  addLetters();
         goToHomePage=new Intent(this,User_profile.class);
         mAuth = FirebaseAuth.getInstance();
         userDitale=getSharedPreferences("login",MODE_PRIVATE);
         //TODO need
-        //deleteSharedPreferences1();
+       // deleteSharedPreferences1();
        if (userDitale.getString("name",null)!=null&&
         userDitale.getString("email",null)!=null) {
             goToHomePage = new Intent(this, HomePage.class);
@@ -120,7 +123,12 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
     }
 
     public void addLetters() {
+        Thread tr=new Thread(new Runnable() {
+            @Override
+            public void run() {
+
         BufferedReader reader = null;
+        ArrayList<String> list =new ArrayList<>();
 
         try {
             reader = new BufferedReader(
@@ -130,19 +138,28 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
             String mLine;
             int i = 0;
             while ((mLine = reader.readLine()) != null) {
-
-                texts.put(mLine.split(" ")[0], mLine.split(" ")[1]);
+            i++;
+            //    texts.put(mLine.split(" ")[0], mLine.split(" ")[1]);
+                list.add(mLine);
+                if(i%500==0)
+                {
+                    Log.d("words", "run: "+mLine);
+                }
 
 
             }
-            db.collection("translation").document("translation").set(texts);
-            db.collection("translation").document("translation").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    HashMap<String, String> translation = new HashMap<>();
-                    Log.i("TAG", "onComplete: " + task.getResult().get("test"));
-                }
-            });
+            Map<String,List> map =new HashMap<>();
+            map.put("list",list);
+
+            //db.collection("translation").document("translation").set(texts);
+            db.collection("translation2").document("translation2").set(map);
+//            db.collection("translation").document("translation").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                @Override
+//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                    HashMap<String, String> translation = new HashMap<>();
+//                    Log.i("TAG", "onComplete: " + task.getResult().get("test"));
+//                }
+//            });
         } catch (IOException e) {
             Toast.makeText(getApplicationContext(), "Error reading file!", Toast.LENGTH_LONG).show();
             e.printStackTrace();
@@ -156,6 +173,9 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
 
             }
         }
+            }
+        });
+        tr.start();
     }
 
     public void fireBaseOnClick() {
