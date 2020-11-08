@@ -93,7 +93,7 @@ public class GamePage extends AppCompatActivity {
         userDitale = getSharedPreferences("login", MODE_PRIVATE);
         editor = userDitale.edit();
 
-        myTurn = true;
+
         joinGame();
 
         userDitale = getSharedPreferences("login", MODE_PRIVATE);
@@ -146,6 +146,8 @@ public class GamePage extends AppCompatActivity {
         letterArrayList.add(letter = new Letter("ש", 50, R.drawable.shin));
         letterArrayList.add(letter = new Letter("ת", 40, R.drawable.taf));
 
+
+        playerArrayList = new ArrayList<Button>();
 
         //יצירת מסך וגם שמירה של כל הכפתורים ברשימה
         buttonList = new ArrayList<MyButton>();
@@ -203,41 +205,8 @@ public class GamePage extends AppCompatActivity {
             //יצרה של היד של השחקן
         }
 
-        for (i = 0; i < 10; i++) {
-            Random random = new Random();
-            int rndNum = random.nextInt(22);
-            playerHand.addView(button = new MyButton(this, 0, 0));
-            button.setBackground(getDrawable(R.drawable.my_button));
-            //button.setText(letterArrayList.get(rndNum).getLett());
-            button.setBackgroundDrawable(getDrawable(letterArrayList.get(rndNum).getIcon()));
-            button.setLetter(letterArrayList.get(rndNum).getLett());
-            TableRow.LayoutParams buttonParamsPlayer = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            button.setLayoutParams(buttonParamsPlayer);
-            //   playerArrayList.add(button);
-            //  button.setBackground(getDrawable(R.drawable.active_button_color));
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    MyButton myButton = (MyButton) view;
-                    if (myButton.getLetter() !=null) {
-                        tempLetter = myButton.getLetter();
-                        myButton.setLetter(null);
-                        myButton.setBackground(getDrawable(R.drawable.my_button));
-                    } else {
-                        for (Letter l : letterArrayList) {
-                            if (l.getLett() == tempLetter) {
-                                myButton.setBackgroundDrawable(getDrawable(l.getIcon()));
-                                myButton.setBackground(getDrawable(l.getIcon()));
-                                myButton.setLetter(tempLetter);
-                                TableRow.LayoutParams buttonParamsPlayer = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                                myButton.setLayoutParams(buttonParamsPlayer);
-                            }
-                        }
-                        tempLetter =null;
-                    }
-                }
-            });
-        }
+        getPlayerCards();
+
         //TODO
         nextTurn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,11 +240,64 @@ public class GamePage extends AppCompatActivity {
                 wordButton.removeAll(wordButton);
                 s="";
 
+
+                myTurn=false;
+                for(Button b:playerArrayList) {
+                    button.setEnabled(false);
+                }
+
+
             }
 
         });
 
     }
+
+    public void getPlayerCards() {
+        for (i = 0; i < 10; i++) {
+            Random random = new Random();
+            int rndNum = random.nextInt(22);
+            playerHand.addView(button = new MyButton(this, 0, 0));
+            button.setBackground(getDrawable(R.drawable.my_button));
+            //button.setText(letterArrayList.get(rndNum).getLett());
+            button.setBackgroundDrawable(getDrawable(letterArrayList.get(rndNum).getIcon()));
+            button.setLetter(letterArrayList.get(rndNum).getLett());
+            TableRow.LayoutParams buttonParamsPlayer = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            button.setLayoutParams(buttonParamsPlayer);
+            //   playerArrayList.add(button);
+            //  button.setBackground(getDrawable(R.drawable.active_button_color));
+
+            playerArrayList.add(i,button);
+
+
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MyButton myButton = (MyButton) view;
+                    if (myButton.getLetter() !=null) {
+                        tempLetter = myButton.getLetter();
+                        myButton.setLetter(null);
+                        myButton.setBackground(getDrawable(R.drawable.my_button));
+                    } else {
+                        for (Letter l : letterArrayList) {
+                            if (l.getLett() == tempLetter) {
+                                myButton.setBackgroundDrawable(getDrawable(l.getIcon()));
+                                myButton.setBackground(getDrawable(l.getIcon()));
+                                myButton.setLetter(tempLetter);
+                                TableRow.LayoutParams buttonParamsPlayer = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                                myButton.setLayoutParams(buttonParamsPlayer);
+                            }
+                        }
+                        tempLetter =null;
+                    }
+                }
+            });
+
+
+        }
+
+    }
+
     public void chh(String a){
 
         db.collection("games").document(userDitale.getString("game_id",null)).update("data2",a).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -397,8 +419,10 @@ public class GamePage extends AppCompatActivity {
                    // Toast.makeText(getApplicationContext(), snapshot.getString("data"), Toast.LENGTH_LONG).show();
                     if (!snapshot.getString("user1").equals(userDitale.getString("email", null))) {
                         opponentName.setText(snapshot.getString("user1").toString());
+                        myTurn=false;
                     } else {
                         opponentName.setText(snapshot.getString("user2").toString());
+                        myTurn=true;
                     }
                     String data2 = (String) snapshot.get("data2");
                     if(data2!=null)
@@ -415,6 +439,7 @@ public class GamePage extends AppCompatActivity {
             }
         });
     }
+
     public void getRESS2(String data2){
         Toast.makeText(getApplicationContext(),data2,Toast.LENGTH_LONG).show();
         char[] c=data2.toCharArray() ;
