@@ -454,7 +454,7 @@ public class GamePage extends AppCompatActivity {
                 } else {
                     Log.d("result", "Current data: null");
                 }
-
+//55
             }
         });
     }
