@@ -6,6 +6,8 @@ public class Game {
     String user1;
     String user2;
     String data;
+    Boolean user1turn;
+    int opponentPoints;
 
     public Game() {
     }
@@ -14,6 +16,8 @@ public class Game {
         this.user1 = user1;
         this.user2 = user2;
         this.data = data;
+        user1turn=true;
+        opponentPoints=0;
     }
 
     public String getUser1() {
@@ -38,5 +42,21 @@ public class Game {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public Boolean getUser1turn() {
+        return user1turn;
+    }
+
+    public void setUser1turn(Boolean user1turn) {
+        this.user1turn = user1turn;
+    }
+
+    public int getOpponentPoints() {
+        return opponentPoints;
+    }
+
+    public void setOpponentPoints(int opponentPoints) {
+        this.opponentPoints = opponentPoints;
     }
 }
