@@ -396,7 +396,7 @@ public class GamePage extends AppCompatActivity {
     }
 
     public void creatGame() {
-        final Game game = new Game(userDitale.getString("email", null), "", "hello",userDitale.getString("name",null));
+        final Game game = new Game(userDitale.getString("email", null), "", "hello");
         db.collection("games")
                 .add(game)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -418,7 +418,7 @@ public class GamePage extends AppCompatActivity {
 
     }
 
-    public void startGame(String gameId) {
+    public void startGame(final String gameId) {
 
         final DocumentReference docRef = db.collection("games").document(gameId);
         editor.putString("game_id", gameId);
@@ -426,7 +426,7 @@ public class GamePage extends AppCompatActivity {
         editor.apply();
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot,
+            public void onEvent(@Nullable final DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
                     Log.w("result", "Listen failed.", e);
@@ -438,11 +438,13 @@ public class GamePage extends AppCompatActivity {
                     if (!snapshot.getString("user1").equals(userDitale.getString("email", null))) {
                         opponentName.setText(snapshot.getString("user1").toString());
                        myTurn=!snapshot.getBoolean("user1turn");
-                       db.collection("games").document("game_id").update("user2Name",userDitale.getString("name",null));
+                       String user2name=userDitale.getString("name",null);
+                        db.collection("games").document(userDitale.getString("game_id",null)).update("user2Name",userDitale.getString("name",null));
 //                       opponentCurrentPoints=Integer.parseInt(snapshot.getString("opponentPoints"));
                     } else {
                         opponentName.setText(snapshot.getString("user2").toString());
                         myTurn=snapshot.getBoolean("user1turn");
+                        db.collection("games").document(userDitale.getString("game_id",null)).update("user1Name",userDitale.getString("name",null));
                     }
                     String data2 = (String) snapshot.get("data2");
                     if(data2!=null)

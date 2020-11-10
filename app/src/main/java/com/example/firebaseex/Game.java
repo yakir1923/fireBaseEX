@@ -14,13 +14,14 @@ public class Game {
     public Game() {
     }
 
-    public Game(String user1, String user2, String data,String user1Name) {
+    public Game(String user1, String user2, String data) {
         this.user1 = user1;
         this.user2 = user2;
         this.data = data;
         user1turn=true;
         opponentPoints=0;
-        this.user1Name=user1Name;
+        //this.user1Name=user1Name;
+        this.user2Name=" ";
     }
 
     public String getUser1() {
