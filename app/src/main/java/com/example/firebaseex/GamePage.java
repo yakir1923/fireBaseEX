@@ -220,7 +220,7 @@ public class GamePage extends AppCompatActivity {
                 getAWord();
                 CheckWord(s);
 
-               // Toast.makeText(GamePage.this, s+"", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(GamePage.this, s+"", Toast.LENGTH_SHORT).show();
                 for (MyButton myButton:wordButton){
                     myButton.setSetted(true);
                     for (Letter letter:letterArrayList){
@@ -232,27 +232,27 @@ public class GamePage extends AppCompatActivity {
                 String a="";
                 for (MyButton button:buttonList)
                     if (button.getLetter()!=null)
-                    a+=button.getLetter();
+                        a+=button.getLetter();
                     else {
                         a+=" ";
                     }
-               chh(a);
+                chh(a);
                 playerPoints.setText(String.valueOf(score));
                 wordButton.removeAll(wordButton);
                 s="";
 
-
-               if(myTurn==true) {
-                   for (MyButton b : playerArrayList) {
-                       b.setEnabled(false);
-                   }
-               }
-
+//
+//               if(!myTurn) {
+//                   for (MyButton b : playerArrayList) {
+//                       b.setEnabled(false);
+//                   }
+//               }
                 resetPlayerHand();
-               tempLetter=null;
+                tempLetter=null;
             }
 
         });
+
 
     }
 
@@ -275,6 +275,8 @@ public class GamePage extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     MyButton myButton = (MyButton) view;
+
+
                     if (myButton.getLetter() !=null) {
                         tempLetter = myButton.getLetter();
                         myButton.setLetter(null);
@@ -588,31 +590,37 @@ public class GamePage extends AppCompatActivity {
 
     public void getAWord() {
 
+
         try {
-        ArrayList<MyButton> arrayList = new ArrayList();
-        if (wordButton.get(0).getX()==wordButton.get(1).getX()) {
-            boolean flag = true;
-            for (int i = 0; i < wordButton.size() && flag; i++) {
-                flag = false;
-                for (int j = 0; j < wordButton.size() - i - 1; j++) {
-                    if (wordButton.get(j).getY() < wordButton.get(j + 1).getY()) {
-                        flag = true;
-                        swap(wordButton, j, j + 1);
+            ArrayList<MyButton> arrayList = new ArrayList();
+            if (wordButton.get(0).getX()==wordButton.get(1).getX()) {
+                boolean flag = true;
+                scanLine('y',(int)wordButton.get(0).getX());
+                for (int i = 0; i < wordButton.size() && flag; i++) {
+                    flag = false;
+                    for (int j = 0; j < wordButton.size() - i - 1; j++) {
+                        if (wordButton.get(j).getY() < wordButton.get(j + 1).getY()) {
+                            flag = true;
+                            swap(wordButton, j, j + 1);
+                        }
                     }
                 }
-            }
-        }else {
-            boolean flag = true;
-            for (int i = 0; i < wordButton.size() && flag; i++) {
-                flag = false;
-                for (int j = 0; j < wordButton.size() - i - 1; j++) {
-                    if (wordButton.get(j).getX() > wordButton.get(j + 1).getX()) {
-                        flag = true;
-                        swap(wordButton, j, j + 1);
+
+            }else {
+                boolean flag = true;
+                scanLine('x',(int)wordButton.get(0).getY());
+                for (int i = 0; i < wordButton.size() && flag; i++) {
+                    flag = false;
+                    for (int j = 0; j < wordButton.size() - i - 1; j++) {
+                        if (wordButton.get(j).getX() > wordButton.get(j + 1).getX()) {
+                            flag = true;
+                            swap(wordButton, j, j + 1);
+                        }
                     }
                 }
+
             }
-        }
+
         }catch (Exception e){
             Log.e("eror_thread", "getAWord: "+e.getMessage());
         }
@@ -621,32 +629,8 @@ public class GamePage extends AppCompatActivity {
         }
         Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
     }
-    public void checkC(){
-        String string="";
-        boolean thisTurn=false;
-        ArrayList<MyButton> tempList=new ArrayList<MyButton>();
-        for (int i=0;i<9;i++) {
-            for (int j = 0; j < 73; j += 9) {
-                if (buttonList.get(j+i).getLetter() != null) {
-                    tempList.add(buttonList.get(j+i));
-                         thisTurn=false;
-                    for (MyButton myButton2 : tempList) {
-                        if (wordButton.contains(myButton2)) {
-                            thisTurn=true;
-                        }
-                    }
-                    }
-                for (MyButton myButton2 : tempList) {
-                    if (thisTurn){
-                        string += myButton2.getLetter();
-                    }
-                }
 
-            }
-            Toast.makeText(getApplicationContext(), " " + string, Toast.LENGTH_LONG).show();
-            break;
-        }
-        }
+
 
     private void scanLine(char charXOrY,int cordinateEq) {
         if (charXOrY=='x') {
@@ -668,80 +652,3 @@ public class GamePage extends AppCompatActivity {
         }
     }
 }
-
-//        if (c == 'א' || c == 'ב' || c == 'ג' || c == 'ד') {
-//            InputStream input = getResources().openRawResource(R.raw.words1);
-//            Scanner scan = new Scanner(input);
-//            while (scan.hasNext()) {
-//                String line = scan.nextLine();
-//                if (line==str) {
-//                    return 1;
-//                } else {
-//                    return 0;
-//                }
-//            }
-//
-//        }
-//        if (c == 'ה') {
-//            InputStream input=getResources().openRawResource(R.raw.words2);
-//            Scanner scan = new Scanner(input);
-//            while (scan.hasNext()) {
-//                String line = scan.nextLine();
-//                if (line.equalsIgnoreCase(str.trim())) {
-//                    return 1;
-//                } else {
-//                    return 0;
-//                }
-//            }
-//        }
-//        if (c == 'ח' || c == 'ט' || c == 'י' || c == 'כ' || c == 'ל') {
-//            InputStream input =getResources().openRawResource(R.raw.words3);
-//            Scanner scan = new Scanner(input);
-//            while (scan.hasNext()) {
-//                String line = scan.nextLine();
-//                if (line.equalsIgnoreCase(str.trim())) {
-//                    return 1;
-//                } else {
-//                    return 0;
-//                }
-//            }
-//        }
-//        else if (c == 'מ' || c == 'נ') {
-//            InputStream input =getResources().openRawResource(R.raw.words4);
-//            Scanner scan = new Scanner(input);
-//            while (scan.hasNext()) {
-//                String line = scan.nextLine();
-//                if (line.equalsIgnoreCase(str.trim())) {
-//                    return 1;
-//                } else {
-//                    return 0;
-//                }
-//            }
-//        }
-//        if (c == 'ס' || c == 'ע' || c == 'פ' || c == 'צ' || c == 'ק' || c == 'ר' || c == 'ש' || c == 'ת') {
-//            InputStream input =getResources().openRawResource(R.raw.words5);
-//            Scanner scan = new Scanner(input);
-//            while (scan.hasNext()) {
-//                String line = scan.nextLine();
-//                if (line.equalsIgnoreCase(str.trim())) {
-//                    return 1;
-//                } else {
-//                    return 0;
-//                }
-//            }
-//        }
-//        if (c == 'ו' || c == 'ז') {
-//            InputStream input =getResources().openRawResource(R.raw.words6);
-//            Scanner scan = new Scanner(input);
-//            while (scan.hasNext()) {
-//                String line = scan.nextLine();
-//                if (line.equalsIgnoreCase(str.trim())) {
-//                    return 1;
-//                } else {
-//                    return 0;
-//                }
-//            }
-//        }
-//        return 0;
-
-
