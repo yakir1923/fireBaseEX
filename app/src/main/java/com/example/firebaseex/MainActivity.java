@@ -58,7 +58,7 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-      //  addLetters();
+        //addLetters();
         goToHomePage=new Intent(this,User_profile.class);
         mAuth = FirebaseAuth.getInstance();
         userDitale=getSharedPreferences("login",MODE_PRIVATE);
@@ -137,22 +137,32 @@ public class MainActivity<mCallbackManager> extends AppCompatActivity {
             // do reading, usually loop until end of file reading
             String mLine;
             int i = 0;
+            Map<String,String> map =new HashMap<>();
             while ((mLine = reader.readLine()) != null) {
-            i++;
+                i++;
             //    texts.put(mLine.split(" ")[0], mLine.split(" ")[1]);
-                list.add(mLine);
+                //list.add(mLine);
                 if(i%500==0)
                 {
                     Log.d("words", "run: "+mLine);
                 }
-
-
+                 map.put(String.valueOf(i),mLine);
             }
-            Map<String,List> map =new HashMap<>();
-            map.put("list",list);
 
-            //db.collection("translation").document("translation").set(texts);
-            db.collection("translation2").document("translation2").set(map);
+
+            db.collection("translation").document("translation").set(texts);
+            db.collection("translation2").document("translation2").set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Log.i("upload_letters", "onComplete: completed");
+                }
+            });
+//            db.collection("translation2").document("translation2").delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Void> task) {
+//                    Log.i("delete", "onComplete: deleted");
+//                }
+//            });
 //            db.collection("translation").document("translation").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 //                @Override
 //                public void onComplete(@NonNull Task<DocumentSnapshot> task) {

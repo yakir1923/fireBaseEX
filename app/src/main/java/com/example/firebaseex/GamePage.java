@@ -77,7 +77,7 @@ public class GamePage extends AppCompatActivity {
     private TextView timer;
     private Button nextTurn;
     private Letter letter;
-    private Boolean myTurn;
+    private static Boolean myTurn;
     private Intent showActivity;
     private int turns = 0;
     private static String gameId;
@@ -95,7 +95,7 @@ public class GamePage extends AppCompatActivity {
 
 
         joinGame();
-
+        myTurn=false;
         userDitale = getSharedPreferences("login", MODE_PRIVATE);
        gameId=userDitale.getString("game_id",null);
        // gameId= getSharedPreferences("game_id", "");
@@ -211,8 +211,10 @@ public class GamePage extends AppCompatActivity {
         nextTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //checkC();
                 getAWord();
                 CheckWord(s);
+
                // Toast.makeText(GamePage.this, s+"", Toast.LENGTH_SHORT).show();
                 for (MyButton myButton:wordButton){
                     myButton.setSetted(true);
@@ -222,12 +224,6 @@ public class GamePage extends AppCompatActivity {
                         }
                     }
                 }
-//                String a=userDitale.getString("email",null)+"$"+(int)wordButton.get(0).getX()+"$"+(int)wordButton.get(0).getY();
-//                if (wordButton.get(0).getX()==wordButton.get(1).getX()){
-//                   a+="$R";
-//                }else{
-//                    a+="$C";
-//                }
                 String a="";
                 for (MyButton button:buttonList)
                     if (button.getLetter()!=null)
@@ -248,8 +244,6 @@ public class GamePage extends AppCompatActivity {
                }
                 resetPlayerHand();
                tempLetter=null;
-               myTurn=!myTurn;
-
             }
 
         });
@@ -396,7 +390,7 @@ public class GamePage extends AppCompatActivity {
     }
 
     public void creatGame() {
-        final Game game = new Game(userDitale.getString("email", null), "", "hello");
+        final Game game = new Game(userDitale.getString("email", null), "", "hello",userDitale.getString("name",null));
         db.collection("games")
                 .add(game)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -438,7 +432,8 @@ public class GamePage extends AppCompatActivity {
                     if (!snapshot.getString("user1").equals(userDitale.getString("email", null))) {
                         opponentName.setText(snapshot.getString("user1").toString());
                        myTurn=!snapshot.getBoolean("user1turn");
-                       opponentCurrentPoints=Integer.parseInt(snapshot.getString("opponentPoints"));
+                       db.collection("games").document("game_id").update("user2Name",userDitale.getString("name",null));
+//                       opponentCurrentPoints=Integer.parseInt(snapshot.getString("opponentPoints"));
                     } else {
                         opponentName.setText(snapshot.getString("user2").toString());
                         myTurn=snapshot.getBoolean("user1turn");
@@ -460,7 +455,7 @@ public class GamePage extends AppCompatActivity {
     }
 
     public void getRESS2(String data2){
-        Toast.makeText(getApplicationContext(),data2,Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(),data2,Toast.LENGTH_LONG).show();
         char[] c=data2.toCharArray() ;
                 String ch = "";
                 MyButton button ;
@@ -577,13 +572,12 @@ public class GamePage extends AppCompatActivity {
 
     }
     public void test(int val){
-       // Toast.makeText(getApplicationContext(),String.valueOf(val),Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),String.valueOf(val),Toast.LENGTH_LONG).show();
     }
 
     public void getAWord() {
 
         try {
-
         ArrayList<MyButton> arrayList = new ArrayList();
         if (wordButton.get(0).getX()==wordButton.get(1).getX()) {
             boolean flag = true;
@@ -614,7 +608,34 @@ public class GamePage extends AppCompatActivity {
         for (MyButton mb:wordButton){
             s=s+mb.getLetter();
         }
+        Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
     }
+    public void checkC(){
+        String string="";
+        boolean thisTurn=false;
+        ArrayList<MyButton> tempList=new ArrayList<MyButton>();
+        for (int i=0;i<9;i++) {
+            for (int j = 0; j < 73; j += 9) {
+                if (buttonList.get(j+i).getLetter() != null) {
+                    tempList.add(buttonList.get(j+i));
+                         thisTurn=false;
+                    for (MyButton myButton2 : tempList) {
+                        if (wordButton.contains(myButton2)) {
+                            thisTurn=true;
+                        }
+                    }
+                    }
+                for (MyButton myButton2 : tempList) {
+                    if (thisTurn){
+                        string += myButton2.getLetter();
+                    }
+                }
+
+            }
+            Toast.makeText(getApplicationContext(), " " + string, Toast.LENGTH_LONG).show();
+            break;
+        }
+        }
 
     private void scanLine(char charXOrY,int cordinateEq) {
         if (charXOrY=='x') {
