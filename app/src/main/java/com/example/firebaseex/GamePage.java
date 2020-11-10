@@ -119,7 +119,7 @@ public class GamePage extends AppCompatActivity {
         opponentPoints.setText("0");
         idNum = 0;
         timer = findViewById(R.id.timer_round);
-        setTimer();
+      //  setTimer();
         nextTurn = findViewById(R.id.next_turn);
         nextTurn.setBackground(getDrawable(R.drawable.active_button_color));
         playerName.setText(userDitale.getString("name", null));
@@ -248,6 +248,16 @@ public class GamePage extends AppCompatActivity {
                }
                 resetPlayerHand();
                 tempLetter=null;
+                //TODO
+            //    setTimer();
+
+                db.collection("games").document(userDitale.getString("game_id",null)).update("user1turn",myTurn).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.i("my_turn", "onSuccess: "+myTurn);
+
+                    }
+                });
             }
 
         });
@@ -317,8 +327,12 @@ public class GamePage extends AppCompatActivity {
                 Log.e("fail", "onFailure:"+e.getMessage() );
             }
         });
-        db.collection("games").document(userDitale.getString("game_id",null)).update("user1turn",!myTurn);
-        db.collection("games").document(userDitale.getString("game_id",null)).update("opponentPoints",score);
+        db.collection("games").document(userDitale.getString("game_id",null)).update("opponentPoints",score).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+            }
+        });
     }
 
 
@@ -326,15 +340,16 @@ public class GamePage extends AppCompatActivity {
     public void setTimer() {
         new CountDownTimer(30000, 1000) {
             public void onTick(long millisUntilFinished) {
+
                 timer.setText("seconds remaining: " + millisUntilFinished / 1000);
             }
 
             public void onFinish() {
                 timer.setText("done!");
                 try {
-                    if (turns < 10) {
+                    if (turns < 6) {
                         Thread.sleep(2000);
-                        setTimer();
+                        //setTimer();
                         turns++;
                         db.collection("games").document(userDitale.getString("game_id",null)).update("user1turn",!myTurn);
                         resetPlayerHand();
@@ -447,7 +462,7 @@ public class GamePage extends AppCompatActivity {
 //                       opponentCurrentPoints=Integer.parseInt(snapshot.getString("opponentPoints"));
                     } else {
                         opponentName.setText(snapshot.getString("user2Name").toString());
-                        myTurn=snapshot.getBoolean("user1turn");
+                        myTurn=!snapshot.getBoolean("user1turn");
                         db.collection("games").document(userDitale.getString("game_id",null)).update("user1Name",userDitale.getString("name",null));
                     }
                     String data2 = (String) snapshot.get("data2");
