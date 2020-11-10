@@ -441,7 +441,7 @@ public class GamePage extends AppCompatActivity {
                    // Toast.makeText(getApplicationContext(), snapshot.getString("data"), Toast.LENGTH_LONG).show();
                     if (!snapshot.getString("user1").equals(userDitale.getString("email", null))) {
                         opponentName.setText(snapshot.getString("user1Name").toString());
-                       myTurn=!snapshot.getBoolean("user1turn");
+                       myTurn=snapshot.getBoolean("user1turn");
                        String user2name=userDitale.getString("name",null);
                         db.collection("games").document(userDitale.getString("game_id",null)).update("user2Name",userDitale.getString("name",null));
 //                       opponentCurrentPoints=Integer.parseInt(snapshot.getString("opponentPoints"));
