@@ -117,14 +117,13 @@ public class GamePage extends AppCompatActivity {
         opponentCurrentPoints = 0;
         playerPoints.setText(String.valueOf(score));
         opponentPoints.setText("0");
-
-        playerName.setText(userDitale.getString("name", null));
         idNum = 0;
         timer = findViewById(R.id.timer_round);
         setTimer();
         nextTurn = findViewById(R.id.next_turn);
         nextTurn.setBackground(getDrawable(R.drawable.active_button_color));
-        playerName.setText(userDitale.getString("email", null));
+        playerName.setText(userDitale.getString("name", null));
+
 
         //יצירת רשימה של אותיות
         letterArrayList = new ArrayList<Letter>();
@@ -174,7 +173,7 @@ public class GamePage extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         MyButton myButton = (MyButton) view;
-                        if (myButton.getSetted()==false) {
+                        if (!myButton.getSetted()) {
                             //check location of button
                            // Toast.makeText(getApplicationContext(), myButton.getX() + "," + myButton.getY(), Toast.LENGTH_SHORT).show();
                             if (myButton.getLetter() !=null) {
@@ -241,12 +240,12 @@ public class GamePage extends AppCompatActivity {
                 wordButton.removeAll(wordButton);
                 s="";
 
-//
-//               if(!myTurn) {
-//                   for (MyButton b : playerArrayList) {
-//                       b.setEnabled(false);
-//                   }
-//               }
+
+               if(!myTurn) {
+                   for (MyButton b : playerArrayList) {
+                       b.setEnabled(false);
+                   }
+               }
                 resetPlayerHand();
                 tempLetter=null;
             }
@@ -274,24 +273,27 @@ public class GamePage extends AppCompatActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    MyButton myButton = (MyButton) view;
+
+                    if (myTurn) {
+                        MyButton myButton = (MyButton) view;
 
 
-                    if (myButton.getLetter() !=null) {
-                        tempLetter = myButton.getLetter();
-                        myButton.setLetter(null);
-                        myButton.setBackground(getDrawable(R.drawable.my_button));
-                    } else {
-                        for (Letter l : letterArrayList) {
-                            if (l.getLett() == tempLetter) {
-                                myButton.setBackgroundDrawable(getDrawable(l.getIcon()));
-                                myButton.setBackground(getDrawable(l.getIcon()));
-                                myButton.setLetter(tempLetter);
-                                TableRow.LayoutParams buttonParamsPlayer = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                                myButton.setLayoutParams(buttonParamsPlayer);
+                        if (myButton.getLetter() != null) {
+                            tempLetter = myButton.getLetter();
+                            myButton.setLetter(null);
+                            myButton.setBackground(getDrawable(R.drawable.my_button));
+                        } else {
+                            for (Letter l : letterArrayList) {
+                                if (l.getLett() == tempLetter) {
+                                    myButton.setBackgroundDrawable(getDrawable(l.getIcon()));
+                                    myButton.setBackground(getDrawable(l.getIcon()));
+                                    myButton.setLetter(tempLetter);
+                                    TableRow.LayoutParams buttonParamsPlayer = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                                    myButton.setLayoutParams(buttonParamsPlayer);
+                                }
                             }
+                            tempLetter = null;
                         }
-                        tempLetter =null;
                     }
                 }
             });
@@ -438,13 +440,13 @@ public class GamePage extends AppCompatActivity {
                     Log.d("result", "Current data: " + snapshot.getData());
                    // Toast.makeText(getApplicationContext(), snapshot.getString("data"), Toast.LENGTH_LONG).show();
                     if (!snapshot.getString("user1").equals(userDitale.getString("email", null))) {
-                        opponentName.setText(snapshot.getString("user1").toString());
+                        opponentName.setText(snapshot.getString("user1Name").toString());
                        myTurn=!snapshot.getBoolean("user1turn");
                        String user2name=userDitale.getString("name",null);
                         db.collection("games").document(userDitale.getString("game_id",null)).update("user2Name",userDitale.getString("name",null));
 //                       opponentCurrentPoints=Integer.parseInt(snapshot.getString("opponentPoints"));
                     } else {
-                        opponentName.setText(snapshot.getString("user2").toString());
+                        opponentName.setText(snapshot.getString("user2Name").toString());
                         myTurn=snapshot.getBoolean("user1turn");
                         db.collection("games").document(userDitale.getString("game_id",null)).update("user1Name",userDitale.getString("name",null));
                     }
