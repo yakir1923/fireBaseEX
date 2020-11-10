@@ -250,19 +250,15 @@ public class GamePage extends AppCompatActivity {
                 tempLetter=null;
                 //TODO
             //    setTimer();
-
-                db.collection("games").document(userDitale.getString("game_id",null)).update("user1turn",myTurn).addOnSuccessListener(new OnSuccessListener<Void>() {
+                myTurn=!myTurn;
+                db.collection("games").document(userDitale.getString("game_id",null)).update("user1turn",myTurn).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.i("my_turn", "onSuccess: "+myTurn);
+                    public void onComplete(@NonNull Task<Void> task) {
 
                     }
                 });
             }
-
         });
-
-
     }
 
     public void getPlayerCards() {
@@ -456,13 +452,13 @@ public class GamePage extends AppCompatActivity {
                    // Toast.makeText(getApplicationContext(), snapshot.getString("data"), Toast.LENGTH_LONG).show();
                     if (!snapshot.getString("user1").equals(userDitale.getString("email", null))) {
                         opponentName.setText(snapshot.getString("user1Name").toString());
-                       myTurn=snapshot.getBoolean("user1turn");
+                       myTurn=!snapshot.getBoolean("user1turn");
                        String user2name=userDitale.getString("name",null);
                         db.collection("games").document(userDitale.getString("game_id",null)).update("user2Name",userDitale.getString("name",null));
 //                       opponentCurrentPoints=Integer.parseInt(snapshot.getString("opponentPoints"));
                     } else {
                         opponentName.setText(snapshot.getString("user2Name").toString());
-                        myTurn=!snapshot.getBoolean("user1turn");
+                        myTurn=snapshot.getBoolean("user1turn");
                         db.collection("games").document(userDitale.getString("game_id",null)).update("user1Name",userDitale.getString("name",null));
                     }
                     String data2 = (String) snapshot.get("data2");
@@ -567,10 +563,6 @@ public class GamePage extends AppCompatActivity {
         Thread thread=new Thread(new Runnable() {
             @Override
             public void run() {
-
-                final DocumentReference docRefW = db.collection("translation").document(s);
-
-
                 ArrayList<InputStream> filesList = new ArrayList<>();
                 InputStream input1 = getResources().openRawResource(R.raw.words1);
                 InputStream input2 = getResources().openRawResource(R.raw.words2);
@@ -596,50 +588,47 @@ public class GamePage extends AppCompatActivity {
                         }
                     }
                 }
-                test(val);
             }
         });
-
-    }
-    public void test(int val){
-        Toast.makeText(getApplicationContext(),String.valueOf(val),Toast.LENGTH_LONG).show();
     }
 
     public void getAWord() {
-
-
-        try {
-            ArrayList<MyButton> arrayList = new ArrayList();
-            if (wordButton.get(0).getX()==wordButton.get(1).getX()) {
-                boolean flag = true;
-                scanLine('y',(int)wordButton.get(0).getX());
-                for (int i = 0; i < wordButton.size() && flag; i++) {
-                    flag = false;
-                    for (int j = 0; j < wordButton.size() - i - 1; j++) {
-                        if (wordButton.get(j).getY() < wordButton.get(j + 1).getY()) {
-                            flag = true;
-                            swap(wordButton, j, j + 1);
+        if(wordButton.size()==1)
+            check1Letter();
+        else {
+            try {
+                ArrayList<MyButton> arrayList = new ArrayList();
+                if (wordButton.get(0).getX() == wordButton.get(1).getX()) {
+                    boolean flag = true;
+                    scanLine('y', (int) wordButton.get(0).getX());
+                    for (int i = 0; i < wordButton.size() && flag; i++) {
+                        flag = false;
+                        for (int j = 0; j < wordButton.size() - i - 1; j++) {
+                            if (wordButton.get(j).getY() < wordButton.get(j + 1).getY()) {
+                                flag = true;
+                                swap(wordButton, j, j + 1);
+                            }
                         }
                     }
-                }
 
-            }else {
-                boolean flag = true;
-                scanLine('x',(int)wordButton.get(0).getY());
-                for (int i = 0; i < wordButton.size() && flag; i++) {
-                    flag = false;
-                    for (int j = 0; j < wordButton.size() - i - 1; j++) {
-                        if (wordButton.get(j).getX() > wordButton.get(j + 1).getX()) {
-                            flag = true;
-                            swap(wordButton, j, j + 1);
+                } else {
+                    boolean flag = true;
+                    scanLine('x', (int) wordButton.get(0).getY());
+                    for (int i = 0; i < wordButton.size() && flag; i++) {
+                        flag = false;
+                        for (int j = 0; j < wordButton.size() - i - 1; j++) {
+                            if (wordButton.get(j).getX() > wordButton.get(j + 1).getX()) {
+                                flag = true;
+                                swap(wordButton, j, j + 1);
+                            }
                         }
                     }
+
                 }
 
+            } catch (Exception e) {
+                Log.e("eror_thread", "getAWord: " + e.getMessage());
             }
-
-        }catch (Exception e){
-            Log.e("eror_thread", "getAWord: "+e.getMessage());
         }
         for (MyButton mb:wordButton){
             s=s+mb.getLetter();
@@ -647,7 +636,17 @@ public class GamePage extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
     }
 
-
+    private void check1Letter(){
+    int x,y;
+    y=(int) wordButton.get(0).getY();
+    x=(int)wordButton.get(0).getX();
+    if(wordButton.size()==1){
+        scanLine('x',(int)wordButton.get(0).getY());
+    }
+    if(wordButton.size()==1){
+        scanLine('y',(int)wordButton.get(0).getX());
+    }
+    }
 
     private void scanLine(char charXOrY,int cordinateEq) {
         if (charXOrY=='x') {

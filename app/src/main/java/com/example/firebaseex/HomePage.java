@@ -28,7 +28,7 @@ public Bundle bundle;
         bundle=getIntent().getExtras();
         showProfile=findViewById(R.id.show_profile);
         goToProfile=new Intent(this,User_profile.class);
-        goToShop=new Intent(this,boxesPage.class);
+        goToShop=new Intent(this,Instructions.class);
         startTheGame=new Intent(this,loadingScreen.class);
 
         showProfile.setOnClickListener(new View.OnClickListener() {

@@ -12,13 +12,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".loseScreen"></activity>
+        <activity android:name=".Instructions"></activity>
+        <activity android:name=".loseScreen" />
         <activity android:name=".winnerScreen" />
         <activity android:name=".loadingScreen" />
         <activity android:name=".GamePage" />
         <activity android:name=".settingsPage" />
-        <activity android:name=".cardPage" />
-        <activity android:name=".boxesPage" />
         <activity android:name=".HomePage" />
         <activity android:name=".User_profile" />
         <activity android:name=".MainActivity">
@@ -31,8 +30,8 @@
 
         <service
             android:name=".settingsPage"
-            android:enabled="true"
-            />
+            android:enabled="true" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"
