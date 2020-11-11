@@ -471,7 +471,14 @@ public class GamePage extends AppCompatActivity {
                         Log.d("length_data2", "onEvent: "+data2.length()+" "+data2);
                      //  getRESS(data2);
                         getRESS2(data2);
-                        int x;
+                        String points="";
+                        if (player1or2.equals("user1")){
+                            myTurn=snapshot.getBoolean("user1turn");
+                        }else {
+                            myTurn=!snapshot.getBoolean("user1turn");
+                            Log.i("user2Points", "onEvent: "+snapshot.getString("user2Points"));
+                            points=(String) snapshot.get("user2Points");
+                        }
                     }
                 } else {
                     Log.d("result", "Current data: null");
@@ -502,7 +509,6 @@ public class GamePage extends AppCompatActivity {
                         buttonList.get(a).setSetted(true);
                     }
                 }
-          //  }
                 //aa
             }
         }
