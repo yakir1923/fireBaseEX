@@ -7,9 +7,11 @@ public class Game {
     String user2;
     String data;
     boolean user1turn;
-    int opponentPoints;
+    String user1Points;
+    String user2Points;
     String user1Name;
     String user2Name;
+
 
     public Game() {
     }
@@ -18,9 +20,9 @@ public class Game {
         this.user1 = user1;
         this.user2 = user2;
         this.data = data;
-        user1turn=true;
-        opponentPoints=0;
-        //this.user1Name=user1Name;
+        this.user1turn=true;
+        this.user1Points="0";
+        this.user2Points="0";
         this.user2Name=" ";
     }
 
@@ -56,14 +58,6 @@ public class Game {
         this.user1turn = user1turn;
     }
 
-    public int getOpponentPoints() {
-        return opponentPoints;
-    }
-
-    public void setOpponentPoints(int opponentPoints) {
-        this.opponentPoints = opponentPoints;
-    }
-
     public String getUser1Name() {
         return user1Name;
     }
@@ -78,6 +72,22 @@ public class Game {
 
     public void setUser2Name(String user2Name) {
         this.user2Name = user2Name;
+    }
+
+    public String getUser1Points() {
+        return user1Points;
+    }
+
+    public void setUser1Points(String user1Points) {
+        this.user1Points = user1Points;
+    }
+
+    public String getUser2Points() {
+        return user2Points;
+    }
+
+    public void setUser2Points(String user2Points) {
+        this.user2Points = user2Points;
     }
 }
 

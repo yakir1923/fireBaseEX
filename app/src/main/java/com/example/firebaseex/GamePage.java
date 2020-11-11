@@ -89,6 +89,7 @@ public class GamePage extends AppCompatActivity {
     private ArrayList<MyButton> wordButton;
     private static String s = "";
     private int score=0;
+    private static String player1or2="";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -251,12 +252,6 @@ public class GamePage extends AppCompatActivity {
                 //TODO
             //    setTimer();
                // myTurn=!myTurn;
-                db.collection("games").document(userDitale.getString("game_id",null)).update("user1turn",!myTurn).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        myTurn=!myTurn;
-                    }
-                });
 
             }
         });
@@ -324,12 +319,21 @@ public class GamePage extends AppCompatActivity {
                 Log.e("fail", "onFailure:"+e.getMessage() );
             }
         });
-        db.collection("games").document(userDitale.getString("game_id",null)).update("opponentPoints",score).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
+        if (player1or2.equals("user1")) {
+            db.collection("games").document(userDitale.getString("game_id", null)).update("user1Points", String.valueOf(score)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
 
-            }
-        });
+                }
+            });
+        }else {
+            db.collection("games").document(userDitale.getString("game_id", null)).update("user2Points", String.valueOf(score)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+
+                }
+            });
+        }
     }
     //טיימר
     public void setTimer() {
@@ -346,7 +350,6 @@ public class GamePage extends AppCompatActivity {
                         Thread.sleep(2000);
                         //setTimer();
                         turns++;
-                        db.collection("games").document(userDitale.getString("game_id",null)).update("user1turn",!myTurn);
                         resetPlayerHand();
                         tempLetter=null;
                     }
@@ -454,11 +457,13 @@ public class GamePage extends AppCompatActivity {
                        myTurn=!snapshot.getBoolean("user1turn");
                        String user2name=userDitale.getString("name",null);
                         db.collection("games").document(userDitale.getString("game_id",null)).update("user2Name",userDitale.getString("name",null));
-//                       opponentCurrentPoints=Integer.parseInt(snapshot.getString("opponentPoints"));
+
+                        player1or2="user2";
                     } else {
                         opponentName.setText(snapshot.getString("user2Name").toString());
                         myTurn=snapshot.getBoolean("user1turn");
                         db.collection("games").document(userDitale.getString("game_id",null)).update("user1Name",userDitale.getString("name",null));
+                        player1or2="user1";
                     }
                     String data2 = (String) snapshot.get("data2");
                     if(data2!=null)
@@ -466,7 +471,18 @@ public class GamePage extends AppCompatActivity {
                         Log.d("length_data2", "onEvent: "+data2.length()+" "+data2);
                      //  getRESS(data2);
                         getRESS2(data2);
-                        int x;
+                        String points="";
+                        if (player1or2.equals("user1")){
+                            myTurn=(boolean)snapshot.get("user1turn");
+                            points=(String) snapshot.get("user1Points");
+                            playerPoints.setText(points);
+                        }else {
+                            myTurn=!(boolean)snapshot.get("user1turn");
+                            Log.i("user2Points", "onEvent: "+snapshot.getString("user2Points"));
+                            points=(String) snapshot.get("user2Points");
+                            opponentPoints.setText(points);
+                        }
+
                     }
                 } else {
                     Log.d("result", "Current data: null");
@@ -497,7 +513,6 @@ public class GamePage extends AppCompatActivity {
                         buttonList.get(a).setSetted(true);
                     }
                 }
-          //  }
                 //aa
             }
         }
