@@ -457,7 +457,7 @@ public class GamePage extends AppCompatActivity {
                        myTurn=!snapshot.getBoolean("user1turn");
                        String user2name=userDitale.getString("name",null);
                         db.collection("games").document(userDitale.getString("game_id",null)).update("user2Name",userDitale.getString("name",null));
-//                       opponentCurrentPoints=Integer.parseInt(snapshot.getString("opponentPoints"));
+
                         player1or2="user2";
                     } else {
                         opponentName.setText(snapshot.getString("user2Name").toString());
@@ -473,12 +473,16 @@ public class GamePage extends AppCompatActivity {
                         getRESS2(data2);
                         String points="";
                         if (player1or2.equals("user1")){
-                            myTurn=snapshot.getBoolean("user1turn");
+                            myTurn=(boolean)snapshot.get("user1turn");
+                            points=(String) snapshot.get("user1Points");
+                            playerPoints.setText(points);
                         }else {
-                            myTurn=!snapshot.getBoolean("user1turn");
+                            myTurn=!(boolean)snapshot.get("user1turn");
                             Log.i("user2Points", "onEvent: "+snapshot.getString("user2Points"));
                             points=(String) snapshot.get("user2Points");
+                            opponentPoints.setText(points);
                         }
+
                     }
                 } else {
                     Log.d("result", "Current data: null");
