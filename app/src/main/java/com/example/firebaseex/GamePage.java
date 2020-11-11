@@ -250,13 +250,14 @@ public class GamePage extends AppCompatActivity {
                 tempLetter=null;
                 //TODO
             //    setTimer();
-                myTurn=!myTurn;
-                db.collection("games").document(userDitale.getString("game_id",null)).update("user1turn",myTurn).addOnCompleteListener(new OnCompleteListener<Void>() {
+               // myTurn=!myTurn;
+                db.collection("games").document(userDitale.getString("game_id",null)).update("user1turn",!myTurn).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-
+                        myTurn=!myTurn;
                     }
                 });
+
             }
         });
     }
@@ -330,8 +331,6 @@ public class GamePage extends AppCompatActivity {
             }
         });
     }
-
-
     //טיימר
     public void setTimer() {
         new CountDownTimer(30000, 1000) {
@@ -598,6 +597,7 @@ public class GamePage extends AppCompatActivity {
         else {
             try {
                 ArrayList<MyButton> arrayList = new ArrayList();
+
                 if (wordButton.get(0).getX() == wordButton.get(1).getX()) {
                     boolean flag = true;
                     scanLine('y', (int) wordButton.get(0).getX());
@@ -640,11 +640,32 @@ public class GamePage extends AppCompatActivity {
     int x,y;
     y=(int) wordButton.get(0).getY();
     x=(int)wordButton.get(0).getX();
+
     if(wordButton.size()==1){
+        boolean flag = true;
         scanLine('x',(int)wordButton.get(0).getY());
+        for (int i = 0; i < wordButton.size() && flag; i++) {
+            flag = false;
+            for (int j = 0; j < wordButton.size() - i - 1; j++) {
+                if (wordButton.get(j).getX() > wordButton.get(j + 1).getX()) {
+                    flag = true;
+                    swap(wordButton, j, j + 1);
+                }
+            }
+        }
     }
     if(wordButton.size()==1){
+        boolean flag = true;
         scanLine('y',(int)wordButton.get(0).getX());
+        for (int i = 0; i < wordButton.size() && flag; i++) {
+            flag = false;
+            for (int j = 0; j < wordButton.size() - i - 1; j++) {
+                if (wordButton.get(j).getY() < wordButton.get(j + 1).getY()) {
+                    flag = true;
+                    swap(wordButton, j, j + 1);
+                }
+            }
+        }
     }
     }
 
@@ -658,10 +679,11 @@ public class GamePage extends AppCompatActivity {
                 }
             }
         } else{
-                for (MyButton button : buttonList) {
-                    if (button.getX()==cordinateEq&&button.getLetter()!=null){
-                        if (button.getSetted()) {
-                            wordButton.add(button);
+                for (int i=80;i>=0;i-=9) {
+                    MyButton m=buttonList.get(i);
+                    if (m.getX()==cordinateEq&&m.getLetter()!=null){
+                        if (m.getSetted()) {
+                            wordButton.add(m);
                         }
                     }
                 }
