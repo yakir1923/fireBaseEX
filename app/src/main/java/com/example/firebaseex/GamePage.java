@@ -89,6 +89,7 @@ public class GamePage extends AppCompatActivity {
     private ArrayList<MyButton> wordButton;
     private static String s = "";
     private int score=0;
+    private static String player1or2="";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -318,17 +319,21 @@ public class GamePage extends AppCompatActivity {
                 Log.e("fail", "onFailure:"+e.getMessage() );
             }
         });
-        db.collection("games").document(userDitale.getString("game_id",null)).update("opponentPoints",String.valueOf(score)).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
+        if (player1or2.equals("user1")) {
+            db.collection("games").document(userDitale.getString("game_id", null)).update("user1Points", String.valueOf(score)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
 
-            }
-        });
-        db.collection("games").document(userDitale.getString("game_id",null)).update("user1turn",!myTurn).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-            }
-        });
+                }
+            });
+        }else {
+            db.collection("games").document(userDitale.getString("game_id", null)).update("user2Points", String.valueOf(score)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+
+                }
+            });
+        }
     }
     //טיימר
     public void setTimer() {
@@ -345,7 +350,6 @@ public class GamePage extends AppCompatActivity {
                         Thread.sleep(2000);
                         //setTimer();
                         turns++;
-                        db.collection("games").document(userDitale.getString("game_id",null)).update("user1turn",!myTurn);
                         resetPlayerHand();
                         tempLetter=null;
                     }
@@ -454,10 +458,12 @@ public class GamePage extends AppCompatActivity {
                        String user2name=userDitale.getString("name",null);
                         db.collection("games").document(userDitale.getString("game_id",null)).update("user2Name",userDitale.getString("name",null));
 //                       opponentCurrentPoints=Integer.parseInt(snapshot.getString("opponentPoints"));
+                        player1or2="user2";
                     } else {
                         opponentName.setText(snapshot.getString("user2Name").toString());
                         myTurn=snapshot.getBoolean("user1turn");
                         db.collection("games").document(userDitale.getString("game_id",null)).update("user1Name",userDitale.getString("name",null));
+                        player1or2="user1";
                     }
                     String data2 = (String) snapshot.get("data2");
                     if(data2!=null)
