@@ -251,12 +251,6 @@ public class GamePage extends AppCompatActivity {
                 //TODO
             //    setTimer();
                // myTurn=!myTurn;
-                db.collection("games").document(userDitale.getString("game_id",null)).update("user1turn",!myTurn).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        myTurn=!myTurn;
-                    }
-                });
 
             }
         });
@@ -324,10 +318,15 @@ public class GamePage extends AppCompatActivity {
                 Log.e("fail", "onFailure:"+e.getMessage() );
             }
         });
-        db.collection("games").document(userDitale.getString("game_id",null)).update("opponentPoints",score).addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("games").document(userDitale.getString("game_id",null)).update("opponentPoints",String.valueOf(score)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
 
+            }
+        });
+        db.collection("games").document(userDitale.getString("game_id",null)).update("user1turn",!myTurn).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
             }
         });
     }
